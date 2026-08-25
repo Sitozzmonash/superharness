@@ -69,6 +69,10 @@ class SearchError(ProviderError):
     """Raised for normalized web-search failures."""
 
 
+class VisionError(ProviderError):
+    """Raised for normalized vision-provider failures."""
+
+
 class SkillError(SuperHarnessError):
     """Raised when skill discovery, validation, or execution fails."""
 

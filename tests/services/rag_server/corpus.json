@@ -1,0 +1,5 @@
+[
+  {"text": "The release policy requires a canary deployment before production.", "source": "policy.md", "metadata": {"section": "release"}},
+  {"text": "Security reviews are mandatory for changes to authentication.", "source": "security.md", "metadata": {"section": "review"}},
+  {"text": "Documentation updates ship in the same change as public APIs.", "source": "docs.md", "metadata": {"section": "delivery"}}
+]

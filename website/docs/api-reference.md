@@ -45,3 +45,12 @@ Every `Event` has an ID, timezone-aware timestamp, optional correlation IDs, and
 - `ContextFragment`, `ContextKind`, `ContextAssembler`, `ContextDebugSnapshot`, and `AgentsMdLoader`.
 - `ContextSummary`: immutable summary ID, content, covered-message count, and UTC timestamp.
 - `TurnHandle.events`, `wait`, `steer`, `cancel`, and `interrupt`.
+# Knowledge API
+
+- `ZhipuWebSearchProvider.search(query, top_n=5) -> SearchResponse`
+- `HTTPRAGProvider.retrieve(query, top_n=3) -> tuple[RAGDocument, ...]`
+- `ZhipuVisionProvider.analyze(image, prompt) -> VisionResult`
+- `KnowledgeRouter.search_context(...)` and `rag_context(...)`
+- `KnowledgeRouter.tools() -> tuple[Tool, ...]`
+
+Provider failures raise `SearchError`, `RAGError`, or `VisionError`. Cancellation propagates as `asyncio.CancelledError`.

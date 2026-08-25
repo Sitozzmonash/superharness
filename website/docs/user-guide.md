@@ -65,3 +65,15 @@ Pass `ContextFragment` values to `Agent(context=...)`. Fragments retain kind, ro
 `thread.compact(summary=None, retain_messages=8)` replaces an old history prefix with an explicit summary and emits start/completed events. The default extractive summary preserves lines mentioning security, credentials, sandbox, permissions, approval, or denial. Automatic compaction uses `Agent(compaction_threshold_chars=...)`.
 
 `handle = thread.start(input)` starts background execution. Consume `handle.events()`, await `handle.wait()`, call `await handle.steer(instruction)` at a safe checkpoint, or use `handle.cancel()` / `await handle.interrupt()`. A Thread rejects concurrent active turns.
+# Search, RAG, and vision
+
+Configure only the providers you need. Search uses `ZHIPU_SEARCH_API_KEY`; vision uses `ZHIPU_VISION_API_KEY`; RAG uses `RAG_BASE_URL` and optional `RAG_API_KEY`.
+
+```python
+from super_harness import HTTPRAGProvider, KnowledgeRouter
+
+router = KnowledgeRouter(rag=HTTPRAGProvider())
+fragments = await router.rag_context("What is the release policy?", top_n=3)
+```
+
+Pass `fragments` to `Agent(..., context=fragments)`, or register `router.tools()` so the model can retrieve on demand. Search/RAG fragments are deliberately user-role external data and cannot override developer or project instructions.

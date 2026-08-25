@@ -2,8 +2,10 @@
 
 Super Harness is a Python-native, Codex-inspired, provider-agnostic agent runtime.
 
-The project is in Phase 0. The repository foundation, quality gates, pinned Codex reference,
-and documentation site are being established before runtime features are implemented.
+Development is complete through Phase 4 of the 14-phase roadmap. The repository includes the
+async Agent/Thread/Turn runtime, provider-neutral model and tool layers, durable context and
+SQLite Threads, plus external search, RAG, and vision adapters. Credential-gated live provider
+tests remain explicitly pending when their environment variables are absent.
 
 ## Development setup
 
@@ -25,5 +27,5 @@ npm run build
 ```
 
 See [`START_HERE.md`](START_HERE.md) for the authoritative development reading order and
-[`docs/plans/2026-08-25-phase-0-foundation.md`](docs/plans/2026-08-25-phase-0-foundation.md)
-for the Phase 0 implementation plan.
+[`03_development_agent/DEVELOPMENT_ROADMAP.md`](03_development_agent/DEVELOPMENT_ROADMAP.md)
+for the full Phase 0–13 implementation route.

@@ -11,6 +11,17 @@ from super_harness.context import (
     ContextSummary,
 )
 from super_harness.exceptions import SuperHarnessError
+from super_harness.knowledge import (
+    HTTPRAGProvider,
+    KnowledgeRouter,
+    KnowledgeTrace,
+    RAGDocument,
+    SearchResponse,
+    SearchResult,
+    VisionResult,
+    ZhipuVisionProvider,
+    ZhipuWebSearchProvider,
+)
 from super_harness.models import DeepSeekProvider, OpenAICompatibleProvider
 from super_harness.persistence import SQLiteThreadStore
 from super_harness.runtime.events import Event
@@ -44,12 +55,18 @@ __all__ = [
     "ContextSummary",
     "DeepSeekProvider",
     "Event",
+    "HTTPRAGProvider",
     "HarnessConfig",
+    "KnowledgeRouter",
+    "KnowledgeTrace",
     "LocalSandbox",
     "OpenAICompatibleProvider",
     "ProfileName",
+    "RAGDocument",
     "SQLiteThreadStore",
     "SandboxMode",
+    "SearchResponse",
+    "SearchResult",
     "SecretValue",
     "SuperHarnessError",
     "Thread",
@@ -60,6 +77,9 @@ __all__ = [
     "Turn",
     "TurnHandle",
     "TurnStatus",
+    "VisionResult",
+    "ZhipuVisionProvider",
+    "ZhipuWebSearchProvider",
     "basic_builtin_tools",
     "tool",
 ]

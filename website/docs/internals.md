@@ -25,3 +25,6 @@ Phase 3 stores transactional snapshots in versioned SQLite tables for Thread met
 Context assembly sorts typed fragments by authority, deduplicates stable `(kind, source, content)` identities, applies one total character budget, and retains provenance for redacted inspection. Project AGENTS files are lower authority than the current user message and are rendered earlier as marked user context.
 
 Compaction persists an explicit summary and recent suffix. `TurnHandle` pumps the same authoritative Thread event stream; steering is queued until the next model-step checkpoint, while cancellation and interruption remain distinct terminal states. See `docs/research/codex/durable-thread-context-compaction.md`.
+# External knowledge pipeline
+
+`KnowledgeRouter` sits between the runtime and three async protocols: `WebSearchProvider`, `RAGProvider`, and `VisionProvider`. Concrete adapters own provider-specific HTTP shapes and return immutable neutral values. Search and RAG context is tagged `ContextKind.RAG` and rendered at user authority. Optional `KnowledgeTrace` sinks receive operation, provider, success, item count, and redacted metadata; credentials and image bodies are never included.

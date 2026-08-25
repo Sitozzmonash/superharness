@@ -23,3 +23,6 @@ Phase 3 adds three credential-free examples:
 - `07_durable_thread`: close/reopen SQLite, resume, and fork.
 - `08_agents_context_debug`: hierarchical AGENTS discovery and redacted provenance.
 - `09_compaction_and_control`: history compaction and TurnHandle interruption.
+# Search, RAG, and vision examples
+
+Examples `10`–`12` cover direct search, context injection, and tool exposure. Examples `13`–`15` cover direct RAG, RAG context, and RAG tools. Examples `16`–`18` cover local image, remote image, and vision tool use. Credentialed examples read only the documented environment variables.
