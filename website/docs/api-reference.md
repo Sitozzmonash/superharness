@@ -36,3 +36,12 @@ Every `Event` has an ID, timezone-aware timestamp, optional correlation IDs, and
 - Built-ins: `file_read_tool`, `file_write_tool`, `file_search_tool`, `shell_tool`, `python_tool`, and `basic_builtin_tools`.
 
 `ToolResult` exposes call ID, name, bounded output, success, truncation flag, original character count, and normalized error type.
+
+## Durable Thread and context
+
+- `SQLiteThreadStore(path)`: `save`, `load`, `archive`, `ids`, `close`, and context-manager support.
+- `Agent.resume(thread_id)` / `Agent.fork(thread_id)`.
+- `Thread.archive`, `fork`, `compact`, `debug_context`, and `start`.
+- `ContextFragment`, `ContextKind`, `ContextAssembler`, `ContextDebugSnapshot`, and `AgentsMdLoader`.
+- `ContextSummary`: immutable summary ID, content, covered-message count, and UTC timestamp.
+- `TurnHandle.events`, `wait`, `steer`, `cancel`, and `interrupt`.

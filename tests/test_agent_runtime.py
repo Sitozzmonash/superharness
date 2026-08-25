@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 import asyncio
-from collections.abc import AsyncIterator
+from collections.abc import AsyncGenerator, AsyncIterator
+from typing import cast
 
 import pytest
 
-from super_harness import Agent
+from super_harness import Agent, Event
 from super_harness import tool as define_tool
 from super_harness.exceptions import ToolError
 from super_harness.models import (
@@ -66,7 +67,7 @@ async def test_multi_turn_history_and_lifecycle_events() -> None:
         "turn.completed",
     ]
     assert [message.role for message in provider.requests[1].messages] == [
-        MessageRole.SYSTEM,
+        MessageRole.DEVELOPER,
         MessageRole.USER,
         MessageRole.ASSISTANT,
         MessageRole.USER,
@@ -243,3 +244,83 @@ async def test_parallel_safe_tools_execute_concurrently() -> None:
 
     assert response.text == "done"
     assert max_active == 2
+
+
+@pytest.mark.asyncio
+async def test_turn_handle_steers_at_tool_checkpoint() -> None:
+    gate = asyncio.Event()
+
+    @define_tool
+    async def checkpoint() -> str:
+        await gate.wait()
+        return "ready"
+
+    class SteeringProvider(RecordingProvider):
+        async def stream(self, request: ModelRequest) -> AsyncIterator[ModelStreamEvent]:
+            self.requests.append(request)
+            yield ModelStreamEvent(ModelStreamEventType.STARTED)
+            if len(self.requests) == 1:
+                call = ToolCall("checkpoint_1", "checkpoint", {}, "{}")
+                yield ModelStreamEvent(
+                    ModelStreamEventType.COMPLETED,
+                    response=ModelResponse(tool_calls=(call,)),
+                )
+            else:
+                yield ModelStreamEvent(
+                    ModelStreamEventType.COMPLETED,
+                    response=ModelResponse("steered"),
+                )
+
+    provider = SteeringProvider([])
+    handle = Agent(provider, tools=[checkpoint]).thread().start("begin")
+    iterator = handle.events().__aiter__()
+    seen: list[str] = []
+    while True:
+        event = await anext(iterator)
+        seen.append(event.type)
+        if event.type == "tool.started":
+            break
+    await handle.steer("use the revised goal")
+    gate.set()
+    async for event in iterator:
+        seen.append(event.type)
+    response = await handle.wait()
+
+    assert response.text == "steered"
+    assert "turn.steered" in seen
+    second_request = "\n".join(message.content for message in provider.requests[1].messages)
+    assert "use the revised goal" in second_request
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    ("operation", "expected"),
+    [("cancel", TurnStatus.CANCELLED), ("interrupt", TurnStatus.INTERRUPTED)],
+)
+async def test_turn_handle_cancel_and_interrupt(operation: str, expected: TurnStatus) -> None:
+    thread = Agent(BlockingProvider([])).thread()
+    handle = thread.start("wait")
+    iterator = handle.events().__aiter__()
+    assert (await anext(iterator)).type == "turn.started"
+    if operation == "cancel":
+        handle.cancel()
+    else:
+        await handle.interrupt()
+    with pytest.raises(asyncio.CancelledError):
+        async for _ in iterator:
+            pass
+    assert thread.turns[0].status is expected
+
+
+@pytest.mark.asyncio
+async def test_thread_rejects_concurrent_turn_and_recovers_after_stream_close() -> None:
+    thread = Agent(RecordingProvider(["after-close"])).thread()
+    first = thread.astream("first")
+    assert (await anext(first)).type == "turn.started"
+    second = thread.astream("second")
+    with pytest.raises(RuntimeError, match="active turn"):
+        await anext(second)
+    await cast(AsyncGenerator[Event, None], first).aclose()
+
+    assert thread.turns[0].status is TurnStatus.INTERRUPTED
+    assert (await thread.arun("third")).text == "after-close"

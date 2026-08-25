@@ -2,9 +2,19 @@
 
 from super_harness.agent import Agent
 from super_harness.config import HarnessConfig, ProfileName, SecretValue
+from super_harness.context import (
+    AgentsMdLoader,
+    ContextAssembler,
+    ContextDebugSnapshot,
+    ContextFragment,
+    ContextKind,
+    ContextSummary,
+)
 from super_harness.exceptions import SuperHarnessError
 from super_harness.models import DeepSeekProvider, OpenAICompatibleProvider
+from super_harness.persistence import SQLiteThreadStore
 from super_harness.runtime.events import Event
+from super_harness.runtime.handle import TurnHandle
 from super_harness.runtime.thread import Thread
 from super_harness.runtime.turn import Turn, TurnStatus
 from super_harness.tools import (
@@ -23,15 +33,22 @@ from super_harness.tools import (
 
 __all__ = [
     "Agent",
+    "AgentsMdLoader",
     "ApprovalDecision",
     "ApprovalPolicy",
     "ApprovalRequest",
+    "ContextAssembler",
+    "ContextDebugSnapshot",
+    "ContextFragment",
+    "ContextKind",
+    "ContextSummary",
     "DeepSeekProvider",
     "Event",
     "HarnessConfig",
     "LocalSandbox",
     "OpenAICompatibleProvider",
     "ProfileName",
+    "SQLiteThreadStore",
     "SandboxMode",
     "SecretValue",
     "SuperHarnessError",
@@ -41,6 +58,7 @@ __all__ = [
     "ToolRegistry",
     "ToolResult",
     "Turn",
+    "TurnHandle",
     "TurnStatus",
     "basic_builtin_tools",
     "tool",

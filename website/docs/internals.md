@@ -19,3 +19,9 @@ Phase 2 adds a deterministic `ToolRegistry` and one `ToolExecutor` pipeline: res
 Assistant tool calls and tool outputs are stored as neutral messages. Chat Completions receives assistant `tool_calls` plus `tool` messages; Responses receives `function_call` plus `function_call_output` items. A bounded model-step budget prevents an infinite tool loop.
 
 The local sandbox resolves paths before I/O and terminates process groups on cancellation, but cannot constrain arbitrary child-process system calls. Shell and Python are disabled outside full-access mode. Research details are in `docs/research/codex/tool-runtime-sandbox-approval.md`.
+
+Phase 3 stores transactional snapshots in versioned SQLite tables for Thread metadata, ordered messages, and ordered Turns. Tool calls, usage, structured output, summary IDs, timestamps, archive state, and fork lineage remain provider-neutral. A resumed pending/running/waiting-tool Turn is marked interrupted rather than silently completed.
+
+Context assembly sorts typed fragments by authority, deduplicates stable `(kind, source, content)` identities, applies one total character budget, and retains provenance for redacted inspection. Project AGENTS files are lower authority than the current user message and are rendered earlier as marked user context.
+
+Compaction persists an explicit summary and recent suffix. `TurnHandle` pumps the same authoritative Thread event stream; steering is queued until the next model-step checkpoint, while cancellation and interruption remain distinct terminal states. See `docs/research/codex/durable-thread-context-compaction.md`.

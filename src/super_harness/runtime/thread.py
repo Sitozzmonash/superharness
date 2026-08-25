@@ -3,12 +3,23 @@
 from __future__ import annotations
 
 import asyncio
+import copy
 from collections.abc import AsyncIterator, Iterator, Mapping, Sequence
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
-from typing import Any, TypeVar
+from typing import TYPE_CHECKING, Any, TypeVar
 from uuid import uuid4
 
+from super_harness.context import (
+    ContextAssembler,
+    ContextDebugEntry,
+    ContextDebugSnapshot,
+    ContextFragment,
+    ContextKind,
+    ContextSummary,
+    extractive_summary,
+    redact_text,
+)
 from super_harness.exceptions import ToolError
 from super_harness.models import (
     Message,
@@ -24,6 +35,11 @@ from super_harness.tools import ToolExecutor, ToolRegistry, ToolResult
 from .events import Event
 from .turn import Turn, TurnStatus
 
+if TYPE_CHECKING:
+    from super_harness.persistence import SQLiteThreadStore
+
+    from .handle import TurnHandle
+
 T = TypeVar("T")
 
 
@@ -33,6 +49,26 @@ def _message_list() -> list[Message]:
 
 def _turn_list() -> list[Turn]:
     return []
+
+
+def _summary_list() -> list[ContextSummary]:
+    return []
+
+
+def _metadata() -> dict[str, Any]:
+    return {}
+
+
+def _context() -> ContextAssembler:
+    return ContextAssembler()
+
+
+def _interrupts() -> set[str]:
+    return set()
+
+
+def _steering() -> dict[str, list[str]]:
+    return {}
 
 
 def _sync(operation: AsyncIterator[T]) -> list[T]:
@@ -56,6 +92,17 @@ class Thread:
     tool_registry: ToolRegistry | None = None
     tool_executor: ToolExecutor | None = None
     max_model_steps: int = 8
+    context: ContextAssembler = field(default_factory=_context)
+    store: SQLiteThreadStore | None = None
+    archived: bool = False
+    parent_thread_id: str | None = None
+    metadata: dict[str, Any] = field(default_factory=_metadata)
+    summaries: list[ContextSummary] = field(default_factory=_summary_list)
+    compaction_threshold_chars: int = 100_000
+    compaction_retain_messages: int = 8
+    _interrupt_turn_ids: set[str] = field(default_factory=_interrupts, repr=False)
+    _steering_by_turn: dict[str, list[str]] = field(default_factory=_steering, repr=False)
+    _active_turn_id: str | None = field(default=None, repr=False)
     thread_id: str = field(default_factory=lambda: str(uuid4()))
     created_at: datetime = field(default_factory=lambda: datetime.now(UTC))
     updated_at: datetime = field(default_factory=lambda: datetime.now(UTC))
@@ -70,7 +117,16 @@ class Thread:
     ) -> ModelRequest:
         messages: list[Message] = []
         if self.instructions:
-            messages.append(Message(MessageRole.SYSTEM, self.instructions))
+            messages.append(Message(MessageRole.DEVELOPER, self.instructions))
+        messages.extend(self.context.messages())
+        messages.extend(
+            ContextFragment(
+                ContextKind.SUMMARY,
+                summary.content,
+                f"summary:{summary.summary_id}",
+            ).render()
+            for summary in self.summaries
+        )
         messages.extend(self.messages)
         definitions = list(tools)
         if self.tool_registry is not None:
@@ -84,16 +140,38 @@ class Thread:
         tools: Sequence[ToolDefinition] = (),
         output_schema: Mapping[str, Any] | None = None,
     ) -> AsyncIterator[Event]:
+        if self.archived:
+            raise RuntimeError("cannot run an archived thread")
+        if self._active_turn_id is not None:
+            raise RuntimeError("thread already has an active turn")
         if not input.strip():
             raise ValueError("turn input must be non-empty")
         turn = Turn(input)
+        self._active_turn_id = turn.turn_id
         self.turns.append(turn)
         self.messages.append(Message(MessageRole.USER, input))
         self.updated_at = datetime.now(UTC)
         turn.start()
-        yield Event("turn.started", thread_id=self.thread_id, turn_id=turn.turn_id)
+        self._persist()
         try:
+            yield Event("turn.started", thread_id=self.thread_id, turn_id=turn.turn_id)
+            if self._history_characters() > self.compaction_threshold_chars:
+                for event in self.compact():
+                    yield event
             for step in range(1, self.max_model_steps + 1):
+                for instruction in self._steering_by_turn.pop(turn.turn_id, []):
+                    self.messages.append(
+                        Message(
+                            MessageRole.USER,
+                            f"<steering>{instruction}</steering>",
+                        )
+                    )
+                    yield Event(
+                        "turn.steered",
+                        thread_id=self.thread_id,
+                        turn_id=turn.turn_id,
+                        payload={"instruction": instruction},
+                    )
                 response: ModelResponse | None = None
                 request = self._request(tools=tools, output_schema=output_schema)
                 async for model_event in self.provider.stream(request):
@@ -187,6 +265,7 @@ class Thread:
                                 tool_call_id=result.call_id,
                             )
                         )
+                        self._persist()
                         yield Event(
                             "tool.completed",
                             thread_id=self.thread_id,
@@ -206,6 +285,7 @@ class Thread:
                         )
                     )
                 self.updated_at = datetime.now(UTC)
+                self._persist()
                 yield Event(
                     "turn.completed",
                     thread_id=self.thread_id,
@@ -215,13 +295,27 @@ class Thread:
                 break
             if turn.status in {TurnStatus.RUNNING, TurnStatus.WAITING_TOOL}:
                 raise ToolError(f"tool loop exceeded maximum of {self.max_model_steps} model steps")
-        except asyncio.CancelledError:
-            turn.cancel()
+        except GeneratorExit:
+            turn.status = TurnStatus.INTERRUPTED
+            turn.error = "event stream consumer closed"
+            turn.completed_at = datetime.now(UTC)
             self.updated_at = datetime.now(UTC)
+            self._persist()
+            raise
+        except asyncio.CancelledError:
+            if turn.turn_id in self._interrupt_turn_ids:
+                turn.status = TurnStatus.INTERRUPTED
+                turn.completed_at = datetime.now(UTC)
+                self._interrupt_turn_ids.discard(turn.turn_id)
+            else:
+                turn.cancel()
+            self.updated_at = datetime.now(UTC)
+            self._persist()
             raise
         except Exception as exc:
             turn.fail(exc)
             self.updated_at = datetime.now(UTC)
+            self._persist()
             yield Event(
                 "turn.failed",
                 thread_id=self.thread_id,
@@ -229,6 +323,119 @@ class Thread:
                 payload={"error_type": type(exc).__name__, "message": str(exc)},
             )
             raise
+        finally:
+            self._active_turn_id = None
+
+    def _persist(self) -> None:
+        if self.store is not None:
+            self.store.save(self)
+
+    def queue_steering(self, turn_id: str, instruction: str) -> None:
+        self._steering_by_turn.setdefault(turn_id, []).append(instruction)
+
+    def request_interrupt(self, turn_id: str) -> None:
+        self._interrupt_turn_ids.add(turn_id)
+
+    def start(
+        self,
+        input: str,
+        *,
+        tools: Sequence[ToolDefinition] = (),
+        output_schema: Mapping[str, Any] | None = None,
+    ) -> TurnHandle:
+        from .handle import TurnHandle
+
+        return TurnHandle(self, input, tools=tools, output_schema=output_schema)
+
+    def _history_characters(self) -> int:
+        return sum(len(message.content) for message in self.messages)
+
+    def compact(
+        self,
+        summary: str | None = None,
+        *,
+        retain_messages: int | None = None,
+    ) -> tuple[Event, Event]:
+        retain = self.compaction_retain_messages if retain_messages is None else retain_messages
+        if retain < 1:
+            raise ValueError("compaction must retain at least one recent message")
+        count = max(len(self.messages) - retain, 0)
+        started = Event(
+            "compaction.started",
+            thread_id=self.thread_id,
+            payload={"before_messages": len(self.messages), "summarized_messages": count},
+        )
+        if count:
+            old = self.messages[:count]
+            previous_count = sum(item.summarized_messages for item in self.summaries)
+            previous_messages = [Message(MessageRole.USER, item.content) for item in self.summaries]
+            content = summary or extractive_summary([*previous_messages, *old])
+            self.summaries[:] = [ContextSummary(content, previous_count + count)]
+            del self.messages[:count]
+            self.updated_at = datetime.now(UTC)
+            self._persist()
+        completed = Event(
+            "compaction.completed",
+            thread_id=self.thread_id,
+            payload={
+                "after_messages": len(self.messages),
+                "summary_id": self.summaries[-1].summary_id if count else None,
+            },
+        )
+        return started, completed
+
+    def debug_context(self) -> ContextDebugSnapshot:
+        entries = tuple(
+            ContextDebugEntry(
+                fragment.kind,
+                fragment.source,
+                fragment.role,
+                fragment.effective_priority,
+                redact_text(fragment.content),
+            )
+            for fragment in self.context.ordered()
+        ) + tuple(
+            ContextDebugEntry(
+                ContextKind.SUMMARY,
+                f"summary:{summary.summary_id}",
+                MessageRole.USER,
+                70,
+                redact_text(summary.content),
+            )
+            for summary in self.summaries
+        )
+        return ContextDebugSnapshot(
+            self.thread_id,
+            entries,
+            len(self.messages),
+            sum(len(entry.content) for entry in entries) + self._history_characters(),
+        )
+
+    def archive(self) -> None:
+        self.archived = True
+        self.updated_at = datetime.now(UTC)
+        self._persist()
+
+    def fork(self, *, thread_id: str | None = None) -> Thread:
+        forked = Thread(
+            provider=self.provider,
+            instructions=self.instructions,
+            tool_registry=self.tool_registry,
+            tool_executor=self.tool_executor,
+            max_model_steps=self.max_model_steps,
+            context=ContextAssembler(self.context.max_chars, list(self.context.fragments)),
+            store=self.store,
+            thread_id=thread_id or str(uuid4()),
+            parent_thread_id=self.thread_id,
+            metadata=copy.deepcopy(self.metadata),
+            messages=list(self.messages),
+            turns=copy.deepcopy(self.turns),
+            summaries=list(self.summaries),
+            compaction_threshold_chars=self.compaction_threshold_chars,
+            compaction_retain_messages=self.compaction_retain_messages,
+        )
+        forked._persist()
+        return forked
 
     async def arun(
         self,

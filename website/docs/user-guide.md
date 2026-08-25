@@ -49,3 +49,19 @@ The runtime validates arguments, requests approval, executes with a timeout, bou
 `ApprovalPolicy.full_access()` is the default. Use `deny_all()` or a sync/async callback returning `ApprovalDecision.ALLOW` or `DENY` for application control.
 
 `LocalSandbox` supports `read_only`, `workspace_write`, and `full_access` path policies. It is a developer convenience, not strong OS isolation. Shell and Python subprocess tools therefore require `full_access`; use the later Docker backend for a stronger boundary.
+
+## Durable Threads
+
+Create `SQLiteThreadStore(path)` and pass it to `Agent`. `agent.thread()` persists immediately; `agent.resume(thread_id)` restores the stable ID and neutral history after restart; `agent.fork(thread_id)` creates an independent child with `parent_thread_id`. `thread.archive()` preserves history but blocks new turns.
+
+## Context and AGENTS.md
+
+Pass `ContextFragment` values to `Agent(context=...)`. Fragments retain kind, role, source, priority, and metadata. Passing `cwd=...` discovers one `AGENTS.override.md` or `AGENTS.md` per directory from the nearest `.git` root down to cwd, never above it. The default total limit is 32 KiB.
+
+`thread.debug_context()` returns a redacted snapshot with ordered provenance and size estimates. RAG/memory fragments are treated as data rather than instruction authority.
+
+## Compaction and active turns
+
+`thread.compact(summary=None, retain_messages=8)` replaces an old history prefix with an explicit summary and emits start/completed events. The default extractive summary preserves lines mentioning security, credentials, sandbox, permissions, approval, or denial. Automatic compaction uses `Agent(compaction_threshold_chars=...)`.
+
+`handle = thread.start(input)` starts background execution. Consume `handle.events()`, await `handle.wait()`, call `await handle.steer(instruction)` at a safe checkpoint, or use `handle.cancel()` / `await handle.interrupt()`. A Thread rejects concurrent active turns.

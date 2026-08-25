@@ -17,3 +17,9 @@ Phase 2 adds:
 - `06_builtin_tools`: local file and Python process tools in a temporary workspace.
 
 Only the DeepSeek example needs a credential; the approval and built-in examples run locally.
+
+Phase 3 adds three credential-free examples:
+
+- `07_durable_thread`: close/reopen SQLite, resume, and fork.
+- `08_agents_context_debug`: hierarchical AGENTS discovery and redacted provenance.
+- `09_compaction_and_control`: history compaction and TurnHandle interruption.
