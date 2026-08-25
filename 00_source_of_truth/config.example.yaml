@@ -1,0 +1,38 @@
+profile: china-dev
+
+models:
+  default:
+    provider: deepseek
+    model: deepseek-v4-flash
+    api_key_env: DEEPSEEK_API_KEY
+  vision:
+    provider: zhipu
+    model: glm-4v-flash
+    api_key_env: ZHIPU_VISION_API_KEY
+
+web_search:
+  provider: zhipu
+  api_key_env: ZHIPU_SEARCH_API_KEY
+
+rag:
+  provider: http
+  base_url_env: RAG_BASE_URL
+  api_key_env: RAG_API_KEY
+  top_n: 5
+
+approval:
+  mode: full_access
+
+sandbox:
+  backend: local
+
+observability:
+  console: true
+  jsonl: true
+
+multi_agent:
+  max_agents: 6
+  max_depth: 2
+
+# This is an illustrative config contract, not a frozen final schema.
+# The development agent must keep the public schema concise and document migrations.

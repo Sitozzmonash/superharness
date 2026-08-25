@@ -1,0 +1,63 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "super-harness"
+version = "0.0.1.dev0"
+description = "Python-native, Codex-inspired, provider-agnostic agent runtime."
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [{ name = "Super Harness contributors" }]
+classifiers = [
+  "Development Status :: 2 - Pre-Alpha",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Typing :: Typed",
+]
+dependencies = ["pydantic>=2.11,<3"]
+
+[project.optional-dependencies]
+dev = [
+  "hatchling>=1.27",
+  "pyright>=1.1.404",
+  "pytest>=8.4",
+  "pytest-asyncio>=1.1",
+  "ruff>=0.12",
+]
+
+[project.scripts]
+super-harness = "super_harness.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/super_harness"]
+
+[tool.pytest.ini_options]
+addopts = "-ra --strict-markers --strict-config"
+testpaths = ["tests"]
+
+[tool.pyright]
+include = ["src", "tests", "tools"]
+pythonVersion = "3.11"
+typeCheckingMode = "strict"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+src = ["src", "tests", "tools"]
+extend-exclude = [
+  "00_source_of_truth",
+  "01_codex_reference",
+  "02_architecture",
+  "03_development_agent",
+  "04_testing",
+  "05_documentation_website",
+  "06_ecosystem",
+  "07_examples",
+  "08_decisions",
+  "references/codex",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
