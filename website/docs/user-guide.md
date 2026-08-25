@@ -90,3 +90,32 @@ fragments = await manager.retrieve_context("release preference", current_thread_
 ```
 
 The default extractor only accepts explicit lines beginning with `Remember:` or `Memory:`. Supply a custom `MemoryExtractor` for application-specific or model-based extraction.
+
+# Agent Skills
+
+Place standard `SKILL.md` packages in a project `.agents/skills/` or `.super-harness/skills/` directory. Discovery loads only names and descriptions; activate a selected Skill to read its instructions, then request supporting files explicitly.
+
+```python
+from super_harness import SkillCatalog, SkillInstaller
+
+catalog = SkillCatalog.discover(cwd=".")
+instructions = catalog.activate("code-review").instructions
+installed = SkillInstaller(".super-harness/skills").install("./my-skill")
+```
+
+The installer accepts local paths, HTTPS Git repositories, and GitHub `/tree/<revision>/<subdir>` URLs. It never overwrites an installed Skill, rejects symbolic links and path escapes, and records the resolved commit and install time.
+
+# MCP
+
+Use `MCPClient` as an async context manager. Stdio starts a child process; Streamable HTTP accepts a URL and optional headers. The official SDK performs protocol negotiation.
+
+```python
+from super_harness import MCPClient, MCPServerConfig, MCPTransport
+
+config = MCPServerConfig("remote", MCPTransport.STREAMABLE_HTTP, url="https://example.com/mcp")
+async with MCPClient(config) as client:
+    tools = await client.as_tools()
+    resources = await client.list_resources()
+```
+
+Use `include_tools` or `exclude_tools` for allow/deny filtering. Common `{ "mcpServers": ... }` JSON is accepted by `import_mcp_servers`. Treat remote tools and resources as untrusted external input and configure a finite timeout.

@@ -22,6 +22,17 @@ from super_harness.knowledge import (
     ZhipuVisionProvider,
     ZhipuWebSearchProvider,
 )
+from super_harness.mcp import (
+    MCPBundle,
+    MCPClient,
+    MCPRegistry,
+    MCPServerConfig,
+    MCPTransport,
+    OfficialMCPRegistry,
+    import_mcp_servers,
+    inspect_mcpb,
+    install_mcpb,
+)
 from super_harness.memory import (
     HeuristicMemoryExtractor,
     MemoryCandidate,
@@ -39,6 +50,15 @@ from super_harness.runtime.events import Event
 from super_harness.runtime.handle import TurnHandle
 from super_harness.runtime.thread import Thread
 from super_harness.runtime.turn import Turn, TurnStatus
+from super_harness.skills import (
+    ActivatedSkill,
+    SkillCatalog,
+    SkillInstaller,
+    SkillMetadata,
+    SkillSource,
+    activate_skill,
+    parse_skill,
+)
 from super_harness.tools import (
     ApprovalDecision,
     ApprovalPolicy,
@@ -54,6 +74,7 @@ from super_harness.tools import (
 )
 
 __all__ = [
+    "ActivatedSkill",
     "Agent",
     "AgentsMdLoader",
     "ApprovalDecision",
@@ -72,12 +93,18 @@ __all__ = [
     "KnowledgeRouter",
     "KnowledgeTrace",
     "LocalSandbox",
+    "MCPBundle",
+    "MCPClient",
+    "MCPRegistry",
+    "MCPServerConfig",
+    "MCPTransport",
     "MemoryCandidate",
     "MemoryKind",
     "MemoryManager",
     "MemoryMatch",
     "MemoryRecord",
     "MemoryTrace",
+    "OfficialMCPRegistry",
     "OpenAICompatibleProvider",
     "ProfileName",
     "RAGDocument",
@@ -87,6 +114,10 @@ __all__ = [
     "SearchResponse",
     "SearchResult",
     "SecretValue",
+    "SkillCatalog",
+    "SkillInstaller",
+    "SkillMetadata",
+    "SkillSource",
     "SuperHarnessError",
     "Thread",
     "Tool",
@@ -100,7 +131,12 @@ __all__ = [
     "WorkingMemory",
     "ZhipuVisionProvider",
     "ZhipuWebSearchProvider",
+    "activate_skill",
     "basic_builtin_tools",
+    "import_mcp_servers",
+    "inspect_mcpb",
+    "install_mcpb",
+    "parse_skill",
     "tool",
 ]
 

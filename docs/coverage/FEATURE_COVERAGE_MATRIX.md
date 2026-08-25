@@ -33,9 +33,9 @@ Every row must reach `PASS` in required columns before V1 release.
 | F19 | Sandbox Docker | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO |
 | F20 | Approval engine | PASS | PASS | PASS | PASS | TODO | PASS | PASS | PASS | PARTIAL | PASS | PARTIAL |
 | F21 | AGENTS.md | PASS | PASS | PASS | PASS | TODO | PASS | PASS | PASS | PARTIAL | PASS | PARTIAL |
-| F22 | Agent Skills / SKILL.md | TODO | TODO | TODO | TODO | external compat | TODO | TODO | TODO | TODO | TODO | TODO |
-| F23 | MCP stdio | TODO | TODO | TODO | TODO | external compat | TODO | TODO | TODO | TODO | TODO | TODO |
-| F24 | MCP HTTP | TODO | TODO | TODO | TODO | external compat | TODO | TODO | TODO | TODO | TODO | TODO |
+| F22 | Agent Skills / SKILL.md | PASS | PASS | PASS | PASS | PASS (pinned GitHub) | PASS | PASS | PASS | PASS | PASS | PASS |
+| F23 | MCP stdio | PASS | PASS | PASS | PASS | PASS (official 1.x/2.x SDKs) | PASS | PASS | PASS | PASS | PASS | PASS |
+| F24 | MCP HTTP | PASS | PASS | PASS | PASS | PASS (official SDK server) | PASS | PASS | PASS | PASS | PASS | PASS |
 | F25 | Plugin system | TODO | TODO | TODO | TODO | external compat | TODO | TODO | TODO | TODO | TODO | TODO |
 | F26 | Hooks | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO |
 | F27 | Autonomous multi-agent | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | >=5 | TODO | TODO |
@@ -46,12 +46,12 @@ Every row must reach `PASS` in required columns before V1 release.
 | F32 | Observability | PASS | PARTIAL | PASS | PASS | TODO | PASS | PASS | PASS | PARTIAL | PASS | PARTIAL |
 | F33 | CLI | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO |
 | F34 | Documentation website | N/A | TODO | TODO | TODO | deployed | N/A | N/A | N/A | N/A | N/A | TODO |
-| F35 | Ecosystem installers | TODO | TODO | TODO | TODO | external compat | TODO | TODO | TODO | TODO | TODO | TODO |
+| F35 | Ecosystem installers | PASS | PARTIAL | PASS | PASS | PASS (pinned GitHub) | PASS | PASS | PASS | PASS | PASS | PARTIAL |
 | F36 | Persona / role | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | >=3 | TODO | TODO |
 | F37 | Config / profiles / secrets | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | >=3 | TODO | TODO |
 | F38 | Retry / timeout / fallback / error model | PASS | PARTIAL | PASS | PASS | TODO | PASS | PASS | PARTIAL | PARTIAL | PASS | PARTIAL |
 | F39 | Security / hardening | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | >=3 | TODO | TODO |
-| F40 | MCPB / MCP Registry compatibility | TODO | TODO | TODO | TODO | external compat | TODO | TODO | TODO | >=3 | TODO | TODO |
+| F40 | MCPB / MCP Registry compatibility | PASS | PASS | PASS | PASS | PASS (live Registry) | PASS | PASS | PASS | PASS | PASS | PASS |
 
 ## Required matrix discipline
 

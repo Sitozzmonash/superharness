@@ -32,3 +32,11 @@ Compaction persists an explicit summary and recent suffix. `TurnHandle` pumps th
 # Memory pipeline
 
 Thread messages provide immediate conversation memory. `WorkingMemory` provides bounded LRU application state. Long-term memory uses an async `MemoryStore`; the built-in SQLite implementation stores immutable typed records under a normalized content fingerprint. `MemoryManager` invokes a replaceable extractor, upserts candidates, retrieves ranked matches from other threads, emits usage/traces, and converts matches to user-role `ContextKind.MEMORY` fragments.
+
+# Skills and MCP
+
+Skill discovery walks explicit, project, user, plugin, and system roots in precedence order. It parses only frontmatter during catalog construction. Activation reads the instruction body, while resource reads are separately confined to the Skill directory. Installation checks out Git into staging, resolves the requested revision, validates the package, and only then copies it to the installation root.
+
+`MCPClient` wraps the official MCP Python `Client`. Stdio uses `StdioServerParameters`; HTTP supplies an isolated `httpx2` client to the SDK Streamable HTTP transport. Public methods bound pagination and cursors, apply operation timeouts, preserve cancellation, and normalize errors. `as_tools` translates server JSON Schema to the standard `Tool` surface while retaining the MCP server namespace and external-risk metadata.
+
+MCPB inspection validates SHA-256, required manifest fields, safe paths, symbolic links, file count, and expanded size before extraction. Registry lookup remains behind the small replaceable `MCPRegistry` protocol because the Official Registry API is versioned independently of the runtime.

@@ -28,3 +28,7 @@ Phase 3 adds three credential-free examples:
 Examples `10`–`12` cover direct search, context injection, and tool exposure. Examples `13`–`15` cover direct RAG, RAG context, and RAG tools. Examples `16`–`18` cover local image, remote image, and vision tool use. Credentialed examples read only the documented environment variables.
 
 Examples `19`–`21` cover working-memory state, LRU behavior, and Agent context. Examples `22`–`24` cover durable storage, cross-thread retrieval, and extraction/consolidation.
+
+# Skills and MCP examples
+
+Examples `25`–`27` cover Skill discovery, progressive activation/resources, and installation. Examples `28`–`30` cover stdio tool discovery/calls/resources. Examples `31`–`33` cover Streamable HTTP negotiation, calls, and prompts. Examples `34`–`36` cover common config import, safe MCPB installation, and Official Registry search.

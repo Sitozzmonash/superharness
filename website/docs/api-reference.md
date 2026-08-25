@@ -61,3 +61,23 @@ Provider failures raise `SearchError`, `RAGError`, or `VisionError`. Cancellatio
 - `SQLiteMemoryStore(path)`: async `remember`, `get`, `search`, `forget`, `close`.
 - `MemoryManager(store, extractor=None, trace_sink=None)`: `consolidate` and `retrieve_context`.
 - `MemoryCandidate`, `MemoryRecord`, `MemoryMatch`, `MemoryKind`, and `MemoryTrace` are provider-neutral values.
+
+# Skills API
+
+- `parse_skill(path) -> SkillMetadata`
+- `activate_skill(metadata) -> ActivatedSkill`
+- `SkillCatalog.discover(...)`, `list`, `get`, and `activate`
+- `ActivatedSkill.read_resource(relative_path) -> bytes`
+- `SkillInstaller(destination).install(source)` and `remove(name)`
+
+Validation and installation failures raise `SkillError`.
+
+# MCP API
+
+- `MCPServerConfig` and `MCPTransport.STDIO` / `STREAMABLE_HTTP`
+- `MCPClient`: `list_tools`, `call_tool`, `list_resources`, `read_resource`, `list_prompts`, `get_prompt`, and `as_tools`
+- `import_mcp_servers(value) -> tuple[MCPServerConfig, ...]`
+- `inspect_mcpb` and `install_mcpb`
+- `MCPRegistry` and `OfficialMCPRegistry`
+
+Protocol, transport, timeout, filtering, registry, and bundle failures raise `MCPError`. Task cancellation is never converted to `MCPError`.
