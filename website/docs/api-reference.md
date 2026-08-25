@@ -81,3 +81,20 @@ Validation and installation failures raise `SkillError`.
 - `MCPRegistry` and `OfficialMCPRegistry`
 
 Protocol, transport, timeout, filtering, registry, and bundle failures raise `MCPError`. Task cancellation is never converted to `MCPError`.
+
+# Hooks API
+
+- `HookEvent`: session, turn, prompt, model, tool, compaction, subagent, and error events.
+- `HookRegistry.register`, `unregister`, `list`, and async `dispatch`.
+- `HookContext`, `HookResult.enrich`, `HookResult.deny`, `HookOutcome`, and `HookTrace`.
+- `HookFailurePolicy.WARN`, `FAIL_OPEN`, and `FAIL_CLOSED`.
+- `Thread.acompact` and `Thread.aclose` dispatch async compaction/session lifecycle hooks.
+
+# Plugins API
+
+- `load_plugin(path) -> PluginManifest`
+- `PluginInstaller(destination)`: `install`, `update`, `remove`, `list`, and `info`.
+- `PluginManager`: lifecycle methods plus `enable`, `disable`, and `capabilities`.
+- `InstalledPlugin`, `PluginCapabilities`, `PluginHookSpec`, and `PluginTrace`.
+
+Plugin validation, installation, conflict, and activation failures raise `PluginError`; hook fail-closed and invalid lifecycle actions raise `HookError`.

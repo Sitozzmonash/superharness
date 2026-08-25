@@ -2,11 +2,11 @@
 
 Super Harness is a Python-native, Codex-inspired, provider-agnostic agent runtime.
 
-Development is complete through Phase 6 of the 14-phase roadmap. The repository includes the
+Development is complete through Phase 7 of the 14-phase roadmap. The repository includes the
 async Agent/Thread/Turn runtime, provider-neutral model and tool layers, durable context and
 SQLite Threads, external search/RAG/vision adapters, cross-thread long-term memory, Agent Skills,
-and MCP stdio/Streamable HTTP plus ecosystem adapters. Credential-gated live provider tests remain
-explicitly pending when their environment variables are absent.
+MCP stdio/Streamable HTTP, installable plugins, and lifecycle hooks. Credential-gated live provider
+tests remain explicitly pending when their environment variables are absent.
 
 ## Development setup
 

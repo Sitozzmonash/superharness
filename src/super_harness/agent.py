@@ -7,6 +7,7 @@ from datetime import UTC, datetime
 from typing import Any
 
 from super_harness.context import AgentsMdLoader, ContextAssembler, ContextFragment
+from super_harness.hooks import HookRegistry
 from super_harness.models import ModelProvider, ModelResponse, ToolDefinition
 from super_harness.persistence import SQLiteThreadStore
 from super_harness.runtime.events import Event
@@ -25,6 +26,7 @@ class Agent:
         instructions: str | None = None,
         tools: Iterable[Tool] = (),
         approval: ApprovalPolicy | None = None,
+        hooks: HookRegistry | None = None,
         max_model_steps: int = 8,
         context: Iterable[ContextFragment] = (),
         cwd: str | None = None,
@@ -37,8 +39,9 @@ class Agent:
         self.provider = provider
         self.instructions = instructions
         self.tool_registry = ToolRegistry(tools)
+        self.hooks = hooks
         self.tool_executor = (
-            ToolExecutor(self.tool_registry, approval=approval)
+            ToolExecutor(self.tool_registry, approval=approval, hooks=hooks)
             if self.tool_registry.list()
             else None
         )
@@ -60,6 +63,7 @@ class Agent:
             context=ContextAssembler(self.context.max_chars, list(self.context.fragments)),
             store=self.store,
             compaction_threshold_chars=self.compaction_threshold_chars,
+            hooks=self.hooks,
         )
         if self.store is not None:
             self.store.save(thread)
@@ -87,6 +91,7 @@ class Agent:
             turns=list(snapshot.turns),
             summaries=list(snapshot.summaries),
             compaction_threshold_chars=self.compaction_threshold_chars,
+            hooks=self.hooks,
         )
         for turn in thread.turns:
             if turn.status.value in {"pending", "running", "waiting_tool"}:

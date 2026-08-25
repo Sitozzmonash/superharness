@@ -32,3 +32,7 @@ Examples `19`–`21` cover working-memory state, LRU behavior, and Agent context
 # Skills and MCP examples
 
 Examples `25`–`27` cover Skill discovery, progressive activation/resources, and installation. Examples `28`–`30` cover stdio tool discovery/calls/resources. Examples `31`–`33` cover Streamable HTTP negotiation, calls, and prompts. Examples `34`–`36` cover common config import, safe MCPB installation, and Official Registry search.
+
+# Plugin and hook examples
+
+Examples `37`–`39` cover plugin installation/provenance, capability activation, and disable/update/remove lifecycle. Examples `40`–`42` cover lifecycle logging, pre-tool policy denial, and plugin-contributed hook registration.

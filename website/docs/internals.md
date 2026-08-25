@@ -40,3 +40,11 @@ Skill discovery walks explicit, project, user, plugin, and system roots in prece
 `MCPClient` wraps the official MCP Python `Client`. Stdio uses `StdioServerParameters`; HTTP supplies an isolated `httpx2` client to the SDK Streamable HTTP transport. Public methods bound pagination and cursors, apply operation timeouts, preserve cancellation, and normalize errors. `as_tools` translates server JSON Schema to the standard `Tool` surface while retaining the MCP server namespace and external-risk metadata.
 
 MCPB inspection validates SHA-256, required manifest fields, safe paths, symbolic links, file count, and expanded size before extraction. Registry lookup remains behind the small replaceable `MCPRegistry` protocol because the Official Registry API is versioned independently of the runtime.
+
+# Plugin and hook pipeline
+
+`HookRegistry` dispatches registrations in `(priority, source, name)` order. Each callback receives a fresh immutable context view over the accumulated data. Async and sync handlers share one timeout/cancellation path. Failure policy is per registration; trace emission happens for success, denial, timeout, and error.
+
+Thread startup dispatches session/prompt/turn hooks, each model step dispatches before/after hooks, `ToolExecutor` dispatches pre/post around execution after approval, and async compaction dispatches pre/post. Failure hooks receive the original exception. Subagent event types are defined now and are connected by the Phase 8 manager.
+
+Plugin loading has two boundaries. Manifest load is data-only and validates paths/version requirements. Explicit activation imports Python entry symbols, namespaces Tools, registers hooks with forced `plugin:<name>` attribution, loads MCP config, and rolls back all earlier registrations if a later conflict occurs. Installer updates stage a complete replacement before swapping directories.

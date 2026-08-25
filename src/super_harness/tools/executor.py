@@ -3,8 +3,11 @@
 from __future__ import annotations
 
 import asyncio
+from collections.abc import Mapping
+from typing import Any, cast
 
 from super_harness.exceptions import ApprovalDenied, ToolError, ToolValidationError
+from super_harness.hooks import HookContext, HookEvent, HookRegistry
 from super_harness.models import ToolCall
 
 from .approval import ApprovalPolicy, ApprovalRequest
@@ -18,21 +21,41 @@ class ToolExecutor:
         registry: ToolRegistry,
         *,
         approval: ApprovalPolicy | None = None,
+        hooks: HookRegistry | None = None,
     ) -> None:
         self.registry = registry
         self.approval = approval or ApprovalPolicy.full_access()
+        self.hooks = hooks
 
     async def execute(self, call: ToolCall) -> ToolResult:
         try:
             item = self.registry.get(call.name)
             arguments = item.validate(call.arguments)
             await self.approval.require(ApprovalRequest(item, arguments, call.call_id))
+            if self.hooks is not None:
+                outcome = await self.hooks.dispatch(
+                    HookContext(
+                        HookEvent.PRE_TOOL_USE,
+                        {"tool": item, "call": call, "arguments": arguments},
+                    )
+                )
+                if outcome.denied:
+                    return ToolResult(
+                        call.call_id,
+                        item.qualified_name,
+                        outcome.deny_reason or "tool denied by hook",
+                        False,
+                        error_type="HookDenied",
+                    )
+                candidate = outcome.data.get("arguments")
+                if isinstance(candidate, Mapping):
+                    arguments = item.validate(cast(Mapping[str, Any], candidate))
             value = await asyncio.wait_for(item.invoke(arguments), timeout=item.metadata.timeout)
             output = stringify_output(value)
             bounded, truncated, original_chars = truncate_output(
                 output, item.metadata.max_output_chars
             )
-            return ToolResult(
+            result = ToolResult(
                 call.call_id,
                 item.qualified_name,
                 bounded,
@@ -40,6 +63,17 @@ class ToolExecutor:
                 truncated,
                 original_chars,
             )
+            if self.hooks is not None:
+                outcome = await self.hooks.dispatch(
+                    HookContext(
+                        HookEvent.POST_TOOL_USE,
+                        {"tool": item, "call": call, "arguments": arguments, "result": result},
+                    )
+                )
+                candidate = outcome.data.get("result")
+                if isinstance(candidate, ToolResult):
+                    result = candidate
+            return result
         except asyncio.CancelledError:
             raise
         except TimeoutError:

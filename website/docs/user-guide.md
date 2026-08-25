@@ -119,3 +119,25 @@ async with MCPClient(config) as client:
 ```
 
 Use `include_tools` or `exclude_tools` for allow/deny filtering. Common `{ "mcpServers": ... }` JSON is accepted by `import_mcp_servers`. Treat remote tools and resources as untrusted external input and configure a finite timeout.
+
+# Plugins
+
+Plugins are installed but remain disabled until explicit activation. A plugin may bundle Skills, namespaced Tools, MCP definitions, hooks, and passive assets/personas/commands.
+
+```python
+from super_harness import HookRegistry, PluginInstaller, PluginManager, ToolRegistry
+
+tools = ToolRegistry()
+hooks = HookRegistry()
+manager = PluginManager(PluginInstaller(".super-harness/plugins"), tools=tools, hooks=hooks)
+manager.install("./plugins/release-tools")
+capabilities = manager.enable("release-tools")
+```
+
+Disable before update or removal. Installation validates in staging and never imports plugin Python. `enable` is the trust boundary that executes declared `./file.py:symbol` entries.
+
+# Hooks
+
+Register sync or async callbacks by `HookEvent`. Use `HookResult.enrich(...)` only with `allow_modify=True`; eligible pre-action events may return `HookResult.deny(reason)`. Choose `WARN`, `FAIL_OPEN`, or `FAIL_CLOSED` per registration and always set a finite timeout.
+
+Hooks supplement observability and application policy; they do not replace the approval engine or sandbox. `HookTrace` reports source, event, duration, success, warning, and denial.

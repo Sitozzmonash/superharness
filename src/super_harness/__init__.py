@@ -11,6 +11,16 @@ from super_harness.context import (
     ContextSummary,
 )
 from super_harness.exceptions import SuperHarnessError
+from super_harness.hooks import (
+    HookContext,
+    HookEvent,
+    HookFailurePolicy,
+    HookOutcome,
+    HookRegistration,
+    HookRegistry,
+    HookResult,
+    HookTrace,
+)
 from super_harness.knowledge import (
     HTTPRAGProvider,
     KnowledgeRouter,
@@ -46,6 +56,16 @@ from super_harness.memory import (
 )
 from super_harness.models import DeepSeekProvider, OpenAICompatibleProvider
 from super_harness.persistence import SQLiteThreadStore
+from super_harness.plugins import (
+    InstalledPlugin,
+    PluginCapabilities,
+    PluginHookSpec,
+    PluginInstaller,
+    PluginManager,
+    PluginManifest,
+    PluginTrace,
+    load_plugin,
+)
 from super_harness.runtime.events import Event
 from super_harness.runtime.handle import TurnHandle
 from super_harness.runtime.thread import Thread
@@ -90,6 +110,15 @@ __all__ = [
     "HTTPRAGProvider",
     "HarnessConfig",
     "HeuristicMemoryExtractor",
+    "HookContext",
+    "HookEvent",
+    "HookFailurePolicy",
+    "HookOutcome",
+    "HookRegistration",
+    "HookRegistry",
+    "HookResult",
+    "HookTrace",
+    "InstalledPlugin",
     "KnowledgeRouter",
     "KnowledgeTrace",
     "LocalSandbox",
@@ -106,6 +135,12 @@ __all__ = [
     "MemoryTrace",
     "OfficialMCPRegistry",
     "OpenAICompatibleProvider",
+    "PluginCapabilities",
+    "PluginHookSpec",
+    "PluginInstaller",
+    "PluginManager",
+    "PluginManifest",
+    "PluginTrace",
     "ProfileName",
     "RAGDocument",
     "SQLiteMemoryStore",
@@ -136,6 +171,7 @@ __all__ = [
     "import_mcp_servers",
     "inspect_mcpb",
     "install_mcpb",
+    "load_plugin",
     "parse_skill",
     "tool",
 ]

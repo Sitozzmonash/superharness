@@ -20,7 +20,8 @@ from super_harness.context import (
     extractive_summary,
     redact_text,
 )
-from super_harness.exceptions import ToolError
+from super_harness.exceptions import HookError, ToolError
+from super_harness.hooks import HookContext, HookEvent, HookRegistry
 from super_harness.models import (
     Message,
     MessageRole,
@@ -100,6 +101,8 @@ class Thread:
     summaries: list[ContextSummary] = field(default_factory=_summary_list)
     compaction_threshold_chars: int = 100_000
     compaction_retain_messages: int = 8
+    hooks: HookRegistry | None = None
+    _session_started: bool = field(default=False, repr=False)
     _interrupt_turn_ids: set[str] = field(default_factory=_interrupts, repr=False)
     _steering_by_turn: dict[str, list[str]] = field(default_factory=_steering, repr=False)
     _active_turn_id: str | None = field(default=None, repr=False)
@@ -146,17 +149,46 @@ class Thread:
             raise RuntimeError("thread already has an active turn")
         if not input.strip():
             raise ValueError("turn input must be non-empty")
+        if self.hooks is not None:
+            if not self._session_started:
+                await self.hooks.dispatch(
+                    HookContext(HookEvent.SESSION_START, thread_id=self.thread_id)
+                )
+                self._session_started = True
+            prompt = await self.hooks.dispatch(
+                HookContext(
+                    HookEvent.USER_PROMPT,
+                    {"input": input},
+                    thread_id=self.thread_id,
+                )
+            )
+            if prompt.denied:
+                raise HookError(prompt.deny_reason or "user prompt denied by hook")
+            candidate_input = prompt.data.get("input")
+            if isinstance(candidate_input, str):
+                input = candidate_input
+            if not input.strip():
+                raise HookError("user prompt hook produced empty input")
         turn = Turn(input)
         self._active_turn_id = turn.turn_id
         self.turns.append(turn)
         self.messages.append(Message(MessageRole.USER, input))
         self.updated_at = datetime.now(UTC)
         turn.start()
-        self._persist()
         try:
+            if self.hooks is not None:
+                await self.hooks.dispatch(
+                    HookContext(
+                        HookEvent.TURN_START,
+                        {"input": input},
+                        self.thread_id,
+                        turn.turn_id,
+                    )
+                )
+            self._persist()
             yield Event("turn.started", thread_id=self.thread_id, turn_id=turn.turn_id)
             if self._history_characters() > self.compaction_threshold_chars:
-                for event in self.compact():
+                for event in await self.acompact():
                     yield event
             for step in range(1, self.max_model_steps + 1):
                 for instruction in self._steering_by_turn.pop(turn.turn_id, []):
@@ -174,6 +206,20 @@ class Thread:
                     )
                 response: ModelResponse | None = None
                 request = self._request(tools=tools, output_schema=output_schema)
+                if self.hooks is not None:
+                    before_model = await self.hooks.dispatch(
+                        HookContext(
+                            HookEvent.BEFORE_MODEL,
+                            {"request": request, "step": step},
+                            self.thread_id,
+                            turn.turn_id,
+                        )
+                    )
+                    if before_model.denied:
+                        raise HookError(before_model.deny_reason or "model request denied by hook")
+                    candidate_request = before_model.data.get("request")
+                    if isinstance(candidate_request, ModelRequest):
+                        request = candidate_request
                 async for model_event in self.provider.stream(request):
                     if model_event.type is ModelStreamEventType.STARTED:
                         yield Event(
@@ -220,6 +266,15 @@ class Thread:
                         break
                 if response is None:
                     raise RuntimeError("provider stream ended without a completed event")
+                if self.hooks is not None:
+                    await self.hooks.dispatch(
+                        HookContext(
+                            HookEvent.AFTER_MODEL,
+                            {"request": request, "response": response, "step": step},
+                            self.thread_id,
+                            turn.turn_id,
+                        )
+                    )
                 if response.tool_calls and self.tool_executor is not None:
                     self.messages.append(
                         Message(
@@ -286,6 +341,15 @@ class Thread:
                     )
                 self.updated_at = datetime.now(UTC)
                 self._persist()
+                if self.hooks is not None:
+                    await self.hooks.dispatch(
+                        HookContext(
+                            HookEvent.TURN_END,
+                            {"response": response, "status": turn.status},
+                            self.thread_id,
+                            turn.turn_id,
+                        )
+                    )
                 yield Event(
                     "turn.completed",
                     thread_id=self.thread_id,
@@ -316,6 +380,15 @@ class Thread:
             turn.fail(exc)
             self.updated_at = datetime.now(UTC)
             self._persist()
+            if self.hooks is not None:
+                await self.hooks.dispatch(
+                    HookContext(
+                        HookEvent.ERROR,
+                        {"error": exc, "error_type": type(exc).__name__},
+                        self.thread_id,
+                        turn.turn_id,
+                    )
+                )
             yield Event(
                 "turn.failed",
                 thread_id=self.thread_id,
@@ -384,6 +457,46 @@ class Thread:
         )
         return started, completed
 
+    async def acompact(
+        self,
+        summary: str | None = None,
+        *,
+        retain_messages: int | None = None,
+    ) -> tuple[Event, Event]:
+        if self.hooks is not None:
+            outcome = await self.hooks.dispatch(
+                HookContext(
+                    HookEvent.PRE_COMPACT,
+                    {"summary": summary, "retain_messages": retain_messages},
+                    self.thread_id,
+                )
+            )
+            if outcome.denied:
+                raise HookError(outcome.deny_reason or "compaction denied by hook")
+            candidate_summary = outcome.data.get("summary")
+            if candidate_summary is None or isinstance(candidate_summary, str):
+                summary = candidate_summary
+            candidate_retain = outcome.data.get("retain_messages")
+            if candidate_retain is None or isinstance(candidate_retain, int):
+                retain_messages = candidate_retain
+        events = self.compact(summary, retain_messages=retain_messages)
+        if self.hooks is not None:
+            await self.hooks.dispatch(
+                HookContext(
+                    HookEvent.POST_COMPACT,
+                    {"summary": self.summaries[-1] if self.summaries else None, "events": events},
+                    self.thread_id,
+                )
+            )
+        return events
+
+    async def aclose(self) -> None:
+        if self.hooks is not None and self._session_started:
+            await self.hooks.dispatch(
+                HookContext(HookEvent.SESSION_END, thread_id=self.thread_id)
+            )
+            self._session_started = False
+
     def debug_context(self) -> ContextDebugSnapshot:
         entries = tuple(
             ContextDebugEntry(
@@ -433,6 +546,7 @@ class Thread:
             summaries=list(self.summaries),
             compaction_threshold_chars=self.compaction_threshold_chars,
             compaction_retain_messages=self.compaction_retain_messages,
+            hooks=self.hooks,
         )
         forked._persist()
         return forked

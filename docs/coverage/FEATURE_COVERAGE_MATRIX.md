@@ -36,8 +36,8 @@ Every row must reach `PASS` in required columns before V1 release.
 | F22 | Agent Skills / SKILL.md | PASS | PASS | PASS | PASS | PASS (pinned GitHub) | PASS | PASS | PASS | PASS | PASS | PASS |
 | F23 | MCP stdio | PASS | PASS | PASS | PASS | PASS (official 1.x/2.x SDKs) | PASS | PASS | PASS | PASS | PASS | PASS |
 | F24 | MCP HTTP | PASS | PASS | PASS | PASS | PASS (official SDK server) | PASS | PASS | PASS | PASS | PASS | PASS |
-| F25 | Plugin system | TODO | TODO | TODO | TODO | external compat | TODO | TODO | TODO | TODO | TODO | TODO |
-| F26 | Hooks | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO |
+| F25 | Plugin system | PASS | PASS | PASS | PASS | PASS (official pinned repo) | PASS | PASS | PASS | PASS | PASS | PASS |
+| F26 | Hooks | PASS | PASS | PASS | PASS | N/A (in-process lifecycle) | PASS | PASS | PASS | PASS | PASS | PASS |
 | F27 | Autonomous multi-agent | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | >=5 | TODO | TODO |
 | F28 | Workflow engine | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | >=5 | TODO | TODO |
 | F29 | Hybrid orchestration | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | >=4 | TODO | TODO |
@@ -46,7 +46,7 @@ Every row must reach `PASS` in required columns before V1 release.
 | F32 | Observability | PASS | PARTIAL | PASS | PASS | TODO | PASS | PASS | PASS | PARTIAL | PASS | PARTIAL |
 | F33 | CLI | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO |
 | F34 | Documentation website | N/A | TODO | TODO | TODO | deployed | N/A | N/A | N/A | N/A | N/A | TODO |
-| F35 | Ecosystem installers | PASS | PARTIAL | PASS | PASS | PASS (pinned GitHub) | PASS | PASS | PASS | PASS | PASS | PARTIAL |
+| F35 | Ecosystem installers | PASS | PASS | PASS | PASS | PASS (pinned GitHub) | PASS | PASS | PASS | PASS | PASS | PASS |
 | F36 | Persona / role | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | >=3 | TODO | TODO |
 | F37 | Config / profiles / secrets | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | >=3 | TODO | TODO |
 | F38 | Retry / timeout / fallback / error model | PASS | PARTIAL | PASS | PASS | TODO | PASS | PASS | PARTIAL | PARTIAL | PASS | PARTIAL |

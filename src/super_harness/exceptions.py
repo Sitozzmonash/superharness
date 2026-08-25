@@ -81,6 +81,10 @@ class PluginError(SuperHarnessError):
     """Raised when plugin installation, loading, or execution fails."""
 
 
+class HookError(SuperHarnessError):
+    """Raised when a lifecycle hook denies or fails closed."""
+
+
 class WorkflowError(SuperHarnessError):
     """Raised when workflow validation or execution fails."""
 
