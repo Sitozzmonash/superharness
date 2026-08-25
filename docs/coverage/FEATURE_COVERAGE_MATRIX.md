@@ -38,7 +38,7 @@ Every row must reach `PASS` in required columns before V1 release.
 | F24 | MCP HTTP | PASS | PASS | PASS | PASS | PASS (official SDK server) | PASS | PASS | PASS | PASS | PASS | PASS |
 | F25 | Plugin system | PASS | PASS | PASS | PASS | PASS (official pinned repo) | PASS | PASS | PASS | PASS | PASS | PASS |
 | F26 | Hooks | PASS | PASS | PASS | PASS | N/A (in-process lifecycle) | PASS | PASS | PASS | PASS | PASS | PASS |
-| F27 | Autonomous multi-agent | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | >=5 | TODO | TODO |
+| F27 | Autonomous multi-agent | PASS | PASS | PASS | PASS | TODO | PASS | PASS | PASS | PASS | PASS | PARTIAL |
 | F28 | Workflow engine | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | >=5 | TODO | TODO |
 | F29 | Hybrid orchestration | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | >=4 | TODO | TODO |
 | F30 | Router | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO |

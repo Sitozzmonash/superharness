@@ -36,3 +36,7 @@ Examples `25`–`27` cover Skill discovery, progressive activation/resources, an
 # Plugin and hook examples
 
 Examples `37`–`39` cover plugin installation/provenance, capability activation, and disable/update/remove lifecycle. Examples `40`–`42` cover lifecycle logging, pre-tool policy denial, and plugin-contributed hook registration.
+
+# Autonomous multi-Agent examples
+
+Examples `43`–`47` cover model-driven research decomposition, a coding/review/test team, parallel critics, child follow-up/resume, and budget/interruption. They use DeepSeek and require `DEEPSEEK_API_KEY`; the deterministic integration suite exercises the same operations without external credentials.

@@ -55,6 +55,17 @@ from super_harness.memory import (
     WorkingMemory,
 )
 from super_harness.models import DeepSeekProvider, OpenAICompatibleProvider
+from super_harness.orchestration import (
+    AgentEvent,
+    AgentFactory,
+    AgentManager,
+    AgentResult,
+    AgentSnapshot,
+    AgentStatus,
+    ContextInheritance,
+    MultiAgentLimits,
+    SpawnRequest,
+)
 from super_harness.persistence import SQLiteThreadStore
 from super_harness.plugins import (
     InstalledPlugin,
@@ -96,6 +107,12 @@ from super_harness.tools import (
 __all__ = [
     "ActivatedSkill",
     "Agent",
+    "AgentEvent",
+    "AgentFactory",
+    "AgentManager",
+    "AgentResult",
+    "AgentSnapshot",
+    "AgentStatus",
     "AgentsMdLoader",
     "ApprovalDecision",
     "ApprovalPolicy",
@@ -103,6 +120,7 @@ __all__ = [
     "ContextAssembler",
     "ContextDebugSnapshot",
     "ContextFragment",
+    "ContextInheritance",
     "ContextKind",
     "ContextSummary",
     "DeepSeekProvider",
@@ -133,6 +151,7 @@ __all__ = [
     "MemoryMatch",
     "MemoryRecord",
     "MemoryTrace",
+    "MultiAgentLimits",
     "OfficialMCPRegistry",
     "OpenAICompatibleProvider",
     "PluginCapabilities",
@@ -153,6 +172,7 @@ __all__ = [
     "SkillInstaller",
     "SkillMetadata",
     "SkillSource",
+    "SpawnRequest",
     "SuperHarnessError",
     "Thread",
     "Tool",

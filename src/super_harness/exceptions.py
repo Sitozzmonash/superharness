@@ -89,5 +89,9 @@ class WorkflowError(SuperHarnessError):
     """Raised when workflow validation or execution fails."""
 
 
+class MultiAgentError(SuperHarnessError):
+    """Raised when autonomous agent orchestration violates its contract or limits."""
+
+
 class CancelledError(SuperHarnessError):
     """Normalized cancellation visible at public framework boundaries."""

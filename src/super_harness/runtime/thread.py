@@ -403,6 +403,10 @@ class Thread:
         if self.store is not None:
             self.store.save(self)
 
+    @property
+    def active_turn_id(self) -> str | None:
+        return self._active_turn_id
+
     def queue_steering(self, turn_id: str, instruction: str) -> None:
         self._steering_by_turn.setdefault(turn_id, []).append(instruction)
 

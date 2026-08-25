@@ -48,3 +48,11 @@ MCPB inspection validates SHA-256, required manifest fields, safe paths, symboli
 Thread startup dispatches session/prompt/turn hooks, each model step dispatches before/after hooks, `ToolExecutor` dispatches pre/post around execution after approval, and async compaction dispatches pre/post. Failure hooks receive the original exception. Subagent event types are defined now and are connected by the Phase 8 manager.
 
 Plugin loading has two boundaries. Manifest load is data-only and validates paths/version requirements. Explicit activation imports Python entry symbols, namespaces Tools, registers hooks with forced `plugin:<name>` attribution, loads MCP config, and rolls back all earlier registrations if a later conflict occurs. Installer updates stage a complete replacement before swapping directories.
+
+# Autonomous orchestration
+
+`AgentManager` keeps mutable task records private and returns immutable snapshots/results/events. Every child owns an independent Agent and Thread created by an application factory. Spawn validates the full limit set before insertion, emits `SUBAGENT_START`, and schedules `_run` as an asyncio Task. Start-hook failure removes the pending record; end-hook failure still notifies waiters.
+
+Selective wait and event streaming use asyncio Conditions, not polling. Thread events are wrapped as ordered `AgentEvent` values, but token deltas are filtered unless `include_child_deltas=True`. Model usage is accumulated from every `model.completed` event. Terminal child output is bounded and includes neutral Usage, artifact/reference fields, and descendant Thread IDs.
+
+Collaboration operations are normal typed Tools registered in each participating Agent's existing registry. This reuses validation, approval, timeout, tool-result correlation, and model continuation. Parent/subtree cancellation walks descendants deepest first. Resume retains the same Thread history; cross-process state recovery is added with the persistence expansion.

@@ -141,3 +141,24 @@ Disable before update or removal. Installation validates in staging and never im
 Register sync or async callbacks by `HookEvent`. Use `HookResult.enrich(...)` only with `allow_modify=True`; eligible pre-action events may return `HookResult.deny(reason)`. Choose `WARN`, `FAIL_OPEN`, or `FAIL_CLOSED` per registration and always set a finite timeout.
 
 Hooks supplement observability and application policy; they do not replace the approval engine or sandbox. `HookTrace` reports source, event, duration, success, warning, and denial.
+
+# Autonomous multi-Agent
+
+Create an `AgentManager` with a root Agent and an `AgentFactory`. The factory receives role, task, instructions, inherited context, timeout, and token budget and must return a separately configured Agent.
+
+```python
+from super_harness import Agent, AgentManager, DeepSeekProvider, SpawnRequest
+
+def factory(request: SpawnRequest) -> Agent:
+    return Agent(DeepSeekProvider(), instructions=request.instructions, context=request.inherited_context)
+
+manager = AgentManager(Agent(DeepSeekProvider()), factory)
+child = await manager.spawn_agent(manager.root_agent_id, "Research the API", role="researcher")
+finished = await manager.wait_all([child.agent_id], timeout=300)
+```
+
+The manager automatically attaches `spawn_agent`, `send_input`, `wait_agent`, `resume_agent`, `interrupt_agent`, and `close_agent` Tools to root and child Agents. A capable model can therefore delegate dynamically. Use `expose_tools=False` for application-only control.
+
+Minimal context inheritance is the default. `SELECTED` requires source labels; `FULL` includes all parent fragments plus a marked conversation snapshot and should be used deliberately. Configure `MultiAgentLimits` for active/total agents, depth, total tokens/time, default child timeout, and maximum result size.
+
+`wait` returns when any selected child is terminal; `wait_all` joins all selected children. `send_input` steers a running child at its next checkpoint or queues follow-up input for `resume_agent`. `cancel(parent_id)` cascades through descendants; `interrupt_agent` affects one child and records a distinct terminal state.

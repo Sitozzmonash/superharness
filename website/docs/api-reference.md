@@ -98,3 +98,14 @@ Protocol, transport, timeout, filtering, registry, and bundle failures raise `MC
 - `InstalledPlugin`, `PluginCapabilities`, `PluginHookSpec`, and `PluginTrace`.
 
 Plugin validation, installation, conflict, and activation failures raise `PluginError`; hook fail-closed and invalid lifecycle actions raise `HookError`.
+
+# Autonomous multi-Agent API
+
+- `AgentManager(root_agent, factory, *, limits=None, hooks=None, include_child_deltas=False, expose_tools=True)`
+- `spawn_agent`, `send_input`, `wait`, `wait_all`, `resume_agent`, `interrupt_agent`, `cancel`, `close_agent`, and `aclose`
+- `list_agents`, `get`, `thread`, `results`, `event_history`, async `events`, and `tokens_used`
+- `MultiAgentLimits`, `ContextInheritance`, and `SpawnRequest`
+- `AgentStatus`, `AgentSnapshot`, `AgentResult`, and `AgentEvent`
+- `collaboration_tools(parent_agent_id) -> tuple[Tool, ...]`
+
+Limit, identity, state, factory, and lifecycle violations raise `MultiAgentError`. Child provider errors become failed `AgentResult` values; caller cancellation remains `asyncio.CancelledError` at the caller boundary and marks affected children cancelled.
