@@ -40,7 +40,7 @@ Every row must reach `PASS` in required columns before V1 release.
 | F26 | Hooks | PASS | PASS | PASS | PASS | N/A (in-process lifecycle) | PASS | PASS | PASS | PASS | PASS | PASS |
 | F27 | Autonomous multi-agent | PASS | PASS | PASS | PASS | TODO | PASS | PASS | PASS | PASS | PASS | PARTIAL |
 | F28 | Workflow engine | PASS | PASS | PASS | PASS | N/A (deterministic in-process) | PASS | PASS | PASS | PASS (5) | PASS | PASS |
-| F29 | Hybrid orchestration | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | >=4 | TODO | TODO |
+| F29 | Hybrid orchestration | PASS | PASS | PASS | PASS | N/A (in-process composition) | PASS | PASS | PASS | PASS (4) | PASS | PASS |
 | F30 | Router | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO |
 | F31 | Persistence / SQLite | PASS | PASS | PASS | PASS | TODO | PASS | PASS | PASS | PARTIAL | PASS | PARTIAL |
 | F32 | Observability | PASS | PARTIAL | PASS | PASS | TODO | PASS | PASS | PASS | PARTIAL | PASS | PARTIAL |

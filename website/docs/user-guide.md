@@ -184,3 +184,19 @@ run = await WorkflowEngine().run(flow)
 For a condition, return a boolean and use route labels `"true"` / `"false"`; for a named router, return `NodeOutput(route="label")`. Several dependency-ready nodes run concurrently and an ordinary multi-input node acts as a join.
 
 Retries require `idempotent=True`. Explicit loops require `loop_until` plus a finite `max_iterations`; graph cycles are always rejected. Configure `JSONWorkflowStore` on the engine to checkpoint stable batches, then call `resume(workflow, store.load(run_id))`. Completed nodes are retained rather than replayed, so handlers should place durable side effects behind completed-node boundaries.
+
+# Hybrid orchestration
+
+Use `agent_node` when a deterministic step should delegate reasoning dynamically. Supply an existing `AgentManager`; the spawned Agent receives its normal collaboration Tools and may create its own specialist children. The node completes only after its Agent subtree is terminal.
+
+```python
+research = agent_node(
+    "research",
+    manager,
+    lambda context: f"Research {context.workflow_input}",
+    role="lead",
+    timeout=300,
+)
+```
+
+Use `subworkflow_node` for reusable deterministic pipelines. Pass a child `WorkflowEngine(store=JSONWorkflowStore(...))` when failure/resume must preserve completed child nodes across the parent retry. Parent cancellation cascades into both node types. Hybrid event forwarding is intentionally metadata-only; inspect the `AgentManager` or child checkpoint for full local details.

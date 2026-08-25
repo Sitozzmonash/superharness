@@ -123,3 +123,12 @@ Limit, identity, state, factory, and lifecycle violations raise `MultiAgentError
 - `RetryPolicy`, `NodeKind`, `NodeStatus`, `WorkflowStatus`, `NodeResult`, and `WorkflowEvent`.
 
 Invalid graphs/checkpoints raise `WorkflowError`. Node exceptions and async timeouts become failed result data. A caller-requested engine cancellation returns an interrupted run; direct cancellation of the caller task still propagates `asyncio.CancelledError`.
+
+# Hybrid orchestration API
+
+- `agent_node(node_id, manager, task, *, role=..., parent_agent_id=..., instructions=..., inheritance=..., selected_sources=..., timeout=..., token_budget=...) -> Node`.
+- `AutonomousAgentNode`: callable handler plus `cancel(parent_run_id)` for explicit bridge control.
+- `subworkflow_node(node_id, workflow, *, engine=None, input_builder=..., state_builder=None) -> Node`.
+- `SubworkflowNode`: callable handler plus `cancel(parent_run_id)`.
+
+An Agent node returns the child response text and writes its Agent ID, Thread ID, and token count under `hybrid.<node_id>.*` state keys. A subworkflow node returns the nested output and records its workflow/run IDs. Both forward JSON-safe correlation metadata through the parent workflow event stream.

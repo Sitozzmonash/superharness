@@ -64,3 +64,9 @@ Collaboration operations are normal typed Tools registered in each participating
 The engine evaluates dependency-ready nodes in batches. Independent nodes become asyncio Tasks behind a concurrency semaphore; a join becomes ready only after all incoming sources reach terminal state and at least one route is active. Inactive conditional branches are marked skipped, allowing the selected branch to rejoin without pretending the unselected handler ran.
 
 Every stable batch is serializable as a versioned `WorkflowRun`. The JSON store writes a temporary file and atomically replaces the checkpoint. Resume keeps completed results/state and resets only unfinished, failed, skipped, or interrupted nodes. Event history uses monotonic per-run sequence numbers and correlates workflow/node lifecycle, route, retry, failure, and interruption.
+
+# Hybrid boundary
+
+`AutonomousAgentNode` delegates to the normal `AgentManager`; it does not simulate a model response or bypass Tool execution. The node waits for its child and all discovered descendants. Active descendants after a bounded wait are cancelled, and any non-completed descendant fails the node. Forwarded observations include IDs and lifecycle types but omit child text/token payload bodies.
+
+`SubworkflowNode` derives `<parent-run>-<node>` as a safe stable child identity. With a child `JSONWorkflowStore`, a repeated parent node resumes that checkpoint and forwards only event sequences newer than the loaded snapshot. Task cancellation propagates through both engines; each engine records its own interruption before the parent node exits.

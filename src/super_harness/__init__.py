@@ -62,6 +62,7 @@ from super_harness.orchestration import (
     AgentResult,
     AgentSnapshot,
     AgentStatus,
+    AutonomousAgentNode,
     ContextInheritance,
     Edge,
     JSONWorkflowStore,
@@ -73,6 +74,7 @@ from super_harness.orchestration import (
     NodeStatus,
     RetryPolicy,
     SpawnRequest,
+    SubworkflowNode,
     Workflow,
     WorkflowContext,
     WorkflowEngine,
@@ -80,6 +82,8 @@ from super_harness.orchestration import (
     WorkflowRun,
     WorkflowState,
     WorkflowStatus,
+    agent_node,
+    subworkflow_node,
 )
 from super_harness.persistence import SQLiteThreadStore
 from super_harness.plugins import (
@@ -132,6 +136,7 @@ __all__ = [
     "ApprovalDecision",
     "ApprovalPolicy",
     "ApprovalRequest",
+    "AutonomousAgentNode",
     "ContextAssembler",
     "ContextDebugSnapshot",
     "ContextFragment",
@@ -196,6 +201,7 @@ __all__ = [
     "SkillMetadata",
     "SkillSource",
     "SpawnRequest",
+    "SubworkflowNode",
     "SuperHarnessError",
     "Thread",
     "Tool",
@@ -217,12 +223,14 @@ __all__ = [
     "ZhipuVisionProvider",
     "ZhipuWebSearchProvider",
     "activate_skill",
+    "agent_node",
     "basic_builtin_tools",
     "import_mcp_servers",
     "inspect_mcpb",
     "install_mcpb",
     "load_plugin",
     "parse_skill",
+    "subworkflow_node",
     "tool",
 ]
 

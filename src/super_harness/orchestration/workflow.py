@@ -29,6 +29,10 @@ def _events() -> list[WorkflowEvent]:
     return []
 
 
+async def _noop_emit(_: str, __: Mapping[str, Any]) -> None:
+    return None
+
+
 class NodeKind(StrEnum):
     FUNCTION = "function"
     TOOL = "tool"
@@ -100,6 +104,7 @@ class WorkflowContext:
     results: Mapping[str, NodeResult]
     attempt: int
     iteration: int
+    emit: Callable[[str, Mapping[str, Any]], Awaitable[None]] = _noop_emit
 
 
 NodeHandler = Callable[[WorkflowContext], object]
@@ -695,6 +700,9 @@ class WorkflowEngine:
         attempt: int,
         iteration: int,
     ) -> WorkflowContext:
+        async def emit(event_type: str, payload: Mapping[str, Any]) -> None:
+            await self._emit(run, event_type, node_id, payload)
+
         return WorkflowContext(
             workflow.workflow_id,
             run.run_id,
@@ -704,6 +712,7 @@ class WorkflowEngine:
             MappingProxyType(dict(run.node_results)),
             attempt,
             iteration,
+            emit,
         )
 
     async def _interrupt(self, run: WorkflowRun) -> WorkflowRun:

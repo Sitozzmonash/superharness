@@ -19,3 +19,5 @@ Autonomous orchestration follows the pinned Codex collaboration operation set an
 The real DeepSeek parent/child tool-chain test is credential gated. Without `DEEPSEEK_API_KEY`, local integration proves the complete model-requested Tool loop with deterministic providers but the matrix retains `Real E2E=TODO`.
 
 The pinned Codex tree does not expose a generic executable DAG engine; its `update_plan` surface is a typed, event-emitting checklist. Super Harness intentionally extends those state/event principles with a provider-neutral Python workflow runtime. Phase 9 `Real E2E` is `N/A`: its product boundaries are the in-process scheduler and local atomic JSON store, both covered by integration tests without mocks or an external service.
+
+Phase 10 composes the Phase 8 Agent lifecycle and Phase 9 workflow runtime without defining a new wire protocol. The autonomous node uses the same model-callable collaboration Tools tested under F27. Hybrid `Real E2E` is `N/A` because composition/cancellation/checkpointing are in-process control boundaries; live model behavior remains accurately represented by F27's credential-gated E2E status.

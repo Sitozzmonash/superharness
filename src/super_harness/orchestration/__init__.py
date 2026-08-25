@@ -11,6 +11,7 @@ from .autonomous import (
     MultiAgentLimits,
     SpawnRequest,
 )
+from .hybrid import AutonomousAgentNode, SubworkflowNode, agent_node, subworkflow_node
 from .workflow import (
     Edge,
     JSONWorkflowStore,
@@ -36,6 +37,7 @@ __all__ = [
     "AgentResult",
     "AgentSnapshot",
     "AgentStatus",
+    "AutonomousAgentNode",
     "ContextInheritance",
     "Edge",
     "JSONWorkflowStore",
@@ -47,6 +49,7 @@ __all__ = [
     "NodeStatus",
     "RetryPolicy",
     "SpawnRequest",
+    "SubworkflowNode",
     "Workflow",
     "WorkflowContext",
     "WorkflowEngine",
@@ -54,4 +57,6 @@ __all__ = [
     "WorkflowRun",
     "WorkflowState",
     "WorkflowStatus",
+    "agent_node",
+    "subworkflow_node",
 ]

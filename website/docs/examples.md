@@ -44,3 +44,7 @@ Examples `43`–`47` cover model-driven research decomposition, a coding/review/
 # Workflow examples
 
 Examples `48`–`52` are credential-free and cover a three-step sequence, concurrent fan-out/join, a boolean conditional, a named router, and retry plus a strictly bounded loop. Each file can run directly with Python after installing the package in editable mode.
+
+# Hybrid examples
+
+Examples `53`–`56` are credential-free and cover an autonomous Agent node, a durable nested workflow, a workflow Agent that autonomously spawns and joins two specialists through collaboration Tools, and parent/child failure-resume from JSON checkpoints.
