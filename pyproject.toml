@@ -16,7 +16,10 @@ classifiers = [
   "Programming Language :: Python :: 3.12",
   "Typing :: Typed",
 ]
-dependencies = ["pydantic>=2.11,<3"]
+dependencies = [
+  "httpx>=0.28,<1",
+  "pydantic>=2.11,<3",
+]
 
 [project.optional-dependencies]
 dev = [
@@ -36,6 +39,10 @@ packages = ["src/super_harness"]
 [tool.pytest.ini_options]
 addopts = "-ra --strict-markers --strict-config"
 testpaths = ["tests"]
+markers = [
+  "integration: exercises a real local process or network boundary",
+  "e2e: exercises a real external provider and may require credentials",
+]
 
 [tool.pyright]
 include = ["src", "tests", "tools"]

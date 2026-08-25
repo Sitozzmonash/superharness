@@ -12,21 +12,21 @@ Every row must reach `PASS` in required columns before V1 release.
 
 | ID | Feature | Codex research | Impl | Unit | Integration | Real E2E | User Guide | Internals | API Ref | >=3 examples | Obs | Status |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
-| F01 | Agent runtime loop | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO |
-| F02 | Thread / Turn | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO |
+| F01 | Agent runtime loop | PASS | PARTIAL | PASS | PASS | TODO | PASS | PASS | PASS | PASS | PASS | PARTIAL |
+| F02 | Thread / Turn | PASS | PARTIAL | PASS | PASS | TODO | PASS | PASS | PASS | PARTIAL | PASS | PARTIAL |
 | F03 | Context assembly | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO |
 | F04 | Compaction | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO |
 | F05 | Interrupt / steer / cancel | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO |
-| F06 | Event streaming | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO |
-| F07 | Model provider abstraction | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO |
-| F08 | DeepSeek provider | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO |
+| F06 | Event streaming | PASS | PARTIAL | PASS | PASS | TODO | PASS | PASS | PASS | PASS | PASS | PARTIAL |
+| F07 | Model provider abstraction | PASS | PASS | PASS | PASS | TODO | PASS | PASS | PASS | PASS | PASS | PARTIAL |
+| F08 | DeepSeek provider | PASS | PASS | PASS | PARTIAL | TODO | PASS | PASS | PASS | PASS | PASS | PARTIAL |
 | F09 | Vision provider / GLM | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO |
-| F10 | OpenAI-compatible provider | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO |
+| F10 | OpenAI-compatible provider | PASS | PASS | PASS | PASS | TODO | PASS | PASS | PASS | PASS | PASS | PARTIAL |
 | F11 | Web search / Zhipu | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO |
 | F12 | External RAG provider | TODO | TODO | TODO | TODO | fixture E2E | TODO | TODO | TODO | TODO | TODO | TODO |
 | F13 | Working memory | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO |
 | F14 | Long-term memory | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO |
-| F15 | Function/tool calling | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO |
+| F15 | Function/tool calling | PASS | PARTIAL | PASS | TODO | TODO | PASS | PASS | PASS | PARTIAL | PASS | PARTIAL |
 | F16 | Built-in shell/file/python tools | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO |
 | F17 | Dynamic/lazy tool registry | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO |
 | F18 | Sandbox local | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO |
@@ -49,7 +49,7 @@ Every row must reach `PASS` in required columns before V1 release.
 | F35 | Ecosystem installers | TODO | TODO | TODO | TODO | external compat | TODO | TODO | TODO | TODO | TODO | TODO |
 | F36 | Persona / role | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | >=3 | TODO | TODO |
 | F37 | Config / profiles / secrets | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | >=3 | TODO | TODO |
-| F38 | Retry / timeout / fallback / error model | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | >=3 | TODO | TODO |
+| F38 | Retry / timeout / fallback / error model | PASS | PARTIAL | PASS | TODO | TODO | PASS | PASS | PARTIAL | TODO | PASS | PARTIAL |
 | F39 | Security / hardening | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | >=3 | TODO | TODO |
 | F40 | MCPB / MCP Registry compatibility | TODO | TODO | TODO | TODO | external compat | TODO | TODO | TODO | >=3 | TODO | TODO |
 
