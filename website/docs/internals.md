@@ -28,3 +28,7 @@ Compaction persists an explicit summary and recent suffix. `TurnHandle` pumps th
 # External knowledge pipeline
 
 `KnowledgeRouter` sits between the runtime and three async protocols: `WebSearchProvider`, `RAGProvider`, and `VisionProvider`. Concrete adapters own provider-specific HTTP shapes and return immutable neutral values. Search and RAG context is tagged `ContextKind.RAG` and rendered at user authority. Optional `KnowledgeTrace` sinks receive operation, provider, success, item count, and redacted metadata; credentials and image bodies are never included.
+
+# Memory pipeline
+
+Thread messages provide immediate conversation memory. `WorkingMemory` provides bounded LRU application state. Long-term memory uses an async `MemoryStore`; the built-in SQLite implementation stores immutable typed records under a normalized content fingerprint. `MemoryManager` invokes a replaceable extractor, upserts candidates, retrieves ranked matches from other threads, emits usage/traces, and converts matches to user-role `ContextKind.MEMORY` fragments.

@@ -24,8 +24,8 @@ Every row must reach `PASS` in required columns before V1 release.
 | F10 | OpenAI-compatible provider | PASS | PASS | PASS | PASS | TODO | PASS | PASS | PASS | PASS | PASS | PARTIAL |
 | F11 | Web search / Zhipu | PASS | PASS | PASS | PASS | TODO | PASS | PASS | PASS | PASS | PASS | PARTIAL |
 | F12 | External RAG provider | PASS | PASS | PASS | PASS | PASS (fixture) | PASS | PASS | PASS | PASS | PASS | PASS |
-| F13 | Working memory | PASS | PARTIAL | PASS | PASS | TODO | PASS | PASS | PASS | PARTIAL | PASS | PARTIAL |
-| F14 | Long-term memory | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO |
+| F13 | Working memory | PASS | PASS | PASS | PASS | TODO | PASS | PASS | PASS | PASS | PASS | PARTIAL |
+| F14 | Long-term memory | PASS | PASS | PASS | PASS | TODO | PASS | PASS | PASS | PASS | PASS | PARTIAL |
 | F15 | Function/tool calling | PASS | PASS | PASS | PASS | TODO | PASS | PASS | PASS | PASS | PASS | PARTIAL |
 | F16 | Built-in shell/file/python tools | PASS | PASS | PASS | PASS | TODO | PASS | PASS | PASS | PARTIAL | PASS | PARTIAL |
 | F17 | Dynamic/lazy tool registry | PASS | PARTIAL | PARTIAL | TODO | TODO | PASS | PASS | PASS | PARTIAL | PARTIAL | PARTIAL |

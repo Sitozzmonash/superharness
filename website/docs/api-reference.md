@@ -54,3 +54,10 @@ Every `Event` has an ID, timezone-aware timestamp, optional correlation IDs, and
 - `KnowledgeRouter.tools() -> tuple[Tool, ...]`
 
 Provider failures raise `SearchError`, `RAGError`, or `VisionError`. Cancellation propagates as `asyncio.CancelledError`.
+
+# Memory API
+
+- `WorkingMemory(max_items=64)`: `set`, `get`, `delete`, `clear`, `snapshot`, `context`.
+- `SQLiteMemoryStore(path)`: async `remember`, `get`, `search`, `forget`, `close`.
+- `MemoryManager(store, extractor=None, trace_sink=None)`: `consolidate` and `retrieve_context`.
+- `MemoryCandidate`, `MemoryRecord`, `MemoryMatch`, `MemoryKind`, and `MemoryTrace` are provider-neutral values.

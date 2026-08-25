@@ -22,6 +22,17 @@ from super_harness.knowledge import (
     ZhipuVisionProvider,
     ZhipuWebSearchProvider,
 )
+from super_harness.memory import (
+    HeuristicMemoryExtractor,
+    MemoryCandidate,
+    MemoryKind,
+    MemoryManager,
+    MemoryMatch,
+    MemoryRecord,
+    MemoryTrace,
+    SQLiteMemoryStore,
+    WorkingMemory,
+)
 from super_harness.models import DeepSeekProvider, OpenAICompatibleProvider
 from super_harness.persistence import SQLiteThreadStore
 from super_harness.runtime.events import Event
@@ -57,12 +68,20 @@ __all__ = [
     "Event",
     "HTTPRAGProvider",
     "HarnessConfig",
+    "HeuristicMemoryExtractor",
     "KnowledgeRouter",
     "KnowledgeTrace",
     "LocalSandbox",
+    "MemoryCandidate",
+    "MemoryKind",
+    "MemoryManager",
+    "MemoryMatch",
+    "MemoryRecord",
+    "MemoryTrace",
     "OpenAICompatibleProvider",
     "ProfileName",
     "RAGDocument",
+    "SQLiteMemoryStore",
     "SQLiteThreadStore",
     "SandboxMode",
     "SearchResponse",
@@ -78,6 +97,7 @@ __all__ = [
     "TurnHandle",
     "TurnStatus",
     "VisionResult",
+    "WorkingMemory",
     "ZhipuVisionProvider",
     "ZhipuWebSearchProvider",
     "basic_builtin_tools",

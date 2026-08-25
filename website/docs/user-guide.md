@@ -77,3 +77,16 @@ fragments = await router.rag_context("What is the release policy?", top_n=3)
 ```
 
 Pass `fragments` to `Agent(..., context=fragments)`, or register `router.tools()` so the model can retrieve on demand. Search/RAG fragments are deliberately user-role external data and cannot override developer or project instructions.
+
+# Memory
+
+Use `WorkingMemory` for bounded thread-local state. `Thread.messages` remains the durable conversation memory when a `SQLiteThreadStore` is configured. For reusable cross-thread facts, use `SQLiteMemoryStore` and `MemoryManager`:
+
+```python
+store = SQLiteMemoryStore("memory.sqlite3")
+manager = MemoryManager(store)
+await manager.consolidate(thread.thread_id, thread.messages)
+fragments = await manager.retrieve_context("release preference", current_thread_id=new_thread.thread_id)
+```
+
+The default extractor only accepts explicit lines beginning with `Remember:` or `Memory:`. Supply a custom `MemoryExtractor` for application-specific or model-based extraction.

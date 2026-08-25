@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 import os
+from pathlib import Path
 
 import pytest
 
-from super_harness import Agent, DeepSeekProvider, tool
-from super_harness.models import MessageRole
+from super_harness import Agent, DeepSeekProvider, MemoryManager, SQLiteMemoryStore, tool
+from super_harness.models import Message, MessageRole
 
 pytestmark = pytest.mark.e2e
 
@@ -16,7 +17,7 @@ def _has_key() -> bool:
 
 @pytest.mark.skipif(not _has_key(), reason="DEEPSEEK_API_KEY is not configured")
 @pytest.mark.asyncio
-async def test_real_deepseek_text_stream_json_and_tool_call() -> None:
+async def test_real_deepseek_text_stream_json_tool_call_and_memory(tmp_path: Path) -> None:
     provider = DeepSeekProvider()
     agent = Agent(provider, instructions="Return concise answers.")
     try:
@@ -51,5 +52,20 @@ async def test_real_deepseek_text_stream_json_and_tool_call() -> None:
         )
         assert tool_result.text.strip()
         assert any(message.role is MessageRole.TOOL for message in tool_thread.messages)
+
+        memory_store = SQLiteMemoryStore(tmp_path / "memory.sqlite3")
+        memory = MemoryManager(memory_store)
+        await memory.consolidate(
+            "source-thread",
+            [Message(MessageRole.USER, "Remember: the verification phrase is jasmine tea")],
+        )
+        fragments = await memory.retrieve_context(
+            "verification phrase jasmine", current_thread_id="target-thread"
+        )
+        memory_answer = await Agent(provider, context=fragments).arun(
+            "Return only the verification phrase from memory."
+        )
+        assert "jasmine tea" in memory_answer.text.casefold()
+        await memory_store.close()
     finally:
         await provider.aclose()
