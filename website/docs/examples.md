@@ -40,3 +40,7 @@ Examples `37`–`39` cover plugin installation/provenance, capability activation
 # Autonomous multi-Agent examples
 
 Examples `43`–`47` cover model-driven research decomposition, a coding/review/test team, parallel critics, child follow-up/resume, and budget/interruption. They use DeepSeek and require `DEEPSEEK_API_KEY`; the deterministic integration suite exercises the same operations without external credentials.
+
+# Workflow examples
+
+Examples `48`–`52` are credential-free and cover a three-step sequence, concurrent fan-out/join, a boolean conditional, a named router, and retry plus a strictly bounded loop. Each file can run directly with Python after installing the package in editable mode.

@@ -162,3 +162,25 @@ The manager automatically attaches `spawn_agent`, `send_input`, `wait_agent`, `r
 Minimal context inheritance is the default. `SELECTED` requires source labels; `FULL` includes all parent fragments plus a marked conversation snapshot and should be used deliberately. Configure `MultiAgentLimits` for active/total agents, depth, total tokens/time, default child timeout, and maximum result size.
 
 `wait` returns when any selected child is terminal; `wait_all` joins all selected children. `send_input` steers a running child at its next checkpoint or queues follow-up input for `resume_agent`. `cancel(parent_id)` cascades through descendants; `interrupt_agent` affects one child and records a distinct terminal state.
+
+# Deterministic workflows
+
+Use a `Workflow` when the application—not a model—must control order and branching. Handlers may be synchronous or async and receive an immutable `WorkflowContext` view.
+
+```python
+from super_harness import Edge, Node, NodeOutput, Workflow, WorkflowEngine
+
+flow = Workflow(
+    "release",
+    [
+        Node("build", lambda context: NodeOutput("artifact", {"built": True})),
+        Node("publish", lambda context: f"published {context.results['build'].value}"),
+    ],
+    [Edge("build", "publish")],
+)
+run = await WorkflowEngine().run(flow)
+```
+
+For a condition, return a boolean and use route labels `"true"` / `"false"`; for a named router, return `NodeOutput(route="label")`. Several dependency-ready nodes run concurrently and an ordinary multi-input node acts as a join.
+
+Retries require `idempotent=True`. Explicit loops require `loop_until` plus a finite `max_iterations`; graph cycles are always rejected. Configure `JSONWorkflowStore` on the engine to checkpoint stable batches, then call `resume(workflow, store.load(run_id))`. Completed nodes are retained rather than replayed, so handlers should place durable side effects behind completed-node boundaries.

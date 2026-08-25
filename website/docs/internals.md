@@ -56,3 +56,11 @@ Plugin loading has two boundaries. Manifest load is data-only and validates path
 Selective wait and event streaming use asyncio Conditions, not polling. Thread events are wrapped as ordered `AgentEvent` values, but token deltas are filtered unless `include_child_deltas=True`. Model usage is accumulated from every `model.completed` event. Terminal child output is bounded and includes neutral Usage, artifact/reference fields, and descendant Thread IDs.
 
 Collaboration operations are normal typed Tools registered in each participating Agent's existing registry. This reuses validation, approval, timeout, tool-result correlation, and model continuation. Parent/subtree cancellation walks descendants deepest first. Resume retains the same Thread history; cross-process state recovery is added with the persistence expansion.
+
+# Deterministic workflows
+
+`Workflow.validate` performs endpoint/identity checks and Kahn DAG validation before any handler runs. Loops are node-local constructs with mandatory finite bounds rather than graph back-edges. Retry budgets are node-local too, and construction rejects more than one attempt unless the node explicitly declares idempotency.
+
+The engine evaluates dependency-ready nodes in batches. Independent nodes become asyncio Tasks behind a concurrency semaphore; a join becomes ready only after all incoming sources reach terminal state and at least one route is active. Inactive conditional branches are marked skipped, allowing the selected branch to rejoin without pretending the unselected handler ran.
+
+Every stable batch is serializable as a versioned `WorkflowRun`. The JSON store writes a temporary file and atomically replaces the checkpoint. Resume keeps completed results/state and resets only unfinished, failed, skipped, or interrupted nodes. Event history uses monotonic per-run sequence numbers and correlates workflow/node lifecycle, route, retry, failure, and interruption.

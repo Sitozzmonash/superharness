@@ -109,3 +109,17 @@ Plugin validation, installation, conflict, and activation failures raise `Plugin
 - `collaboration_tools(parent_agent_id) -> tuple[Tool, ...]`
 
 Limit, identity, state, factory, and lifecycle violations raise `MultiAgentError`. Child provider errors become failed `AgentResult` values; caller cancellation remains `asyncio.CancelledError` at the caller boundary and marks affected children cancelled.
+
+# Workflow API
+
+- `Workflow(workflow_id, nodes, edges=())`: validates unique node IDs, endpoints, and an acyclic graph.
+- `Node(node_id, handler, kind=..., retry=..., timeout=..., idempotent=..., loop_until=..., max_iterations=...)`.
+- `Edge(source, target, route=None, predicate=None)`: ordinary dependency or one conditional selector.
+- `WorkflowEngine(max_concurrency=8, store=None, event_listener=None)`: async `run`, `resume`, and `cancel`.
+- `NodeOutput(value=None, updates={}, route=None)`: atomically publishes state updates and an optional route.
+- `WorkflowContext`: immutable input, state snapshot, result map, attempt, and loop iteration view.
+- `WorkflowRun`: `output`, `to_dict`, `to_json`, `from_dict`, and `from_json`.
+- `JSONWorkflowStore(directory)`: atomic `save(run)` and version-checked `load(run_id)`.
+- `RetryPolicy`, `NodeKind`, `NodeStatus`, `WorkflowStatus`, `NodeResult`, and `WorkflowEvent`.
+
+Invalid graphs/checkpoints raise `WorkflowError`. Node exceptions and async timeouts become failed result data. A caller-requested engine cancellation returns an interrupted run; direct cancellation of the caller task still propagates `asyncio.CancelledError`.

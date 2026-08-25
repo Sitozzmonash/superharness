@@ -17,3 +17,5 @@ The Super Harness TOML overlay adds Python Tool/hook entry points and a framewor
 Autonomous orchestration follows the pinned Codex collaboration operation set and state semantics but is a Python API rather than a wire-level Codex protocol clone. UUIDs replace Codex task paths; the child `AgentFactory` replaces internal model catalogs and executor environments. Full-history inheritance never silently changes provider/model policy because those choices remain explicit in the factory.
 
 The real DeepSeek parent/child tool-chain test is credential gated. Without `DEEPSEEK_API_KEY`, local integration proves the complete model-requested Tool loop with deterministic providers but the matrix retains `Real E2E=TODO`.
+
+The pinned Codex tree does not expose a generic executable DAG engine; its `update_plan` surface is a typed, event-emitting checklist. Super Harness intentionally extends those state/event principles with a provider-neutral Python workflow runtime. Phase 9 `Real E2E` is `N/A`: its product boundaries are the in-process scheduler and local atomic JSON store, both covered by integration tests without mocks or an external service.
