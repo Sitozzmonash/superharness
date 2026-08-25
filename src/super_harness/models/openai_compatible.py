@@ -120,11 +120,50 @@ class OpenAICompatibleProvider:
             result["name"] = message.name
         if message.tool_call_id is not None:
             result["tool_call_id"] = message.tool_call_id
+        if message.tool_calls:
+            result["tool_calls"] = [
+                {
+                    "id": call.call_id,
+                    "type": "function",
+                    "function": {
+                        "name": call.name,
+                        "arguments": call.raw_arguments,
+                    },
+                }
+                for call in message.tool_calls
+            ]
         return result
+
+    @classmethod
+    def _responses_inputs(cls, messages: list[Message]) -> list[dict[str, Any]]:
+        inputs: list[dict[str, Any]] = []
+        for message in messages:
+            if message.role.value == "tool":
+                inputs.append(
+                    {
+                        "type": "function_call_output",
+                        "call_id": message.tool_call_id,
+                        "output": message.content,
+                    }
+                )
+                continue
+            if message.content:
+                inputs.append(cls._message(message))
+            inputs.extend(
+                {
+                    "type": "function_call",
+                    "call_id": call.call_id,
+                    "name": call.name,
+                    "arguments": call.raw_arguments,
+                }
+                for call in message.tool_calls
+            )
+        return inputs
 
     def _payload(self, request: ModelRequest, *, stream: bool) -> dict[str, Any]:
         payload: dict[str, Any] = {"model": self.model, "stream": stream}
-        messages = [self._message(message) for message in request.messages]
+        neutral_messages = list(request.messages)
+        messages = [self._message(message) for message in neutral_messages]
         if self.wire_api is WireAPI.CHAT_COMPLETIONS:
             payload["messages"] = messages
             if request.output_schema is not None:
@@ -137,7 +176,7 @@ class OpenAICompatibleProvider:
                     },
                 }
         else:
-            payload["input"] = messages
+            payload["input"] = self._responses_inputs(neutral_messages)
             if request.output_schema is not None:
                 payload["text"] = {
                     "format": {

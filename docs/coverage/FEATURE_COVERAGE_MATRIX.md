@@ -12,11 +12,11 @@ Every row must reach `PASS` in required columns before V1 release.
 
 | ID | Feature | Codex research | Impl | Unit | Integration | Real E2E | User Guide | Internals | API Ref | >=3 examples | Obs | Status |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
-| F01 | Agent runtime loop | PASS | PARTIAL | PASS | PASS | TODO | PASS | PASS | PASS | PASS | PASS | PARTIAL |
+| F01 | Agent runtime loop | PASS | PASS | PASS | PASS | TODO | PASS | PASS | PASS | PASS | PASS | PARTIAL |
 | F02 | Thread / Turn | PASS | PARTIAL | PASS | PASS | TODO | PASS | PASS | PASS | PARTIAL | PASS | PARTIAL |
 | F03 | Context assembly | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO |
 | F04 | Compaction | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO |
-| F05 | Interrupt / steer / cancel | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO |
+| F05 | Interrupt / steer / cancel | PASS | PARTIAL | PASS | PASS | TODO | PARTIAL | PASS | PARTIAL | PARTIAL | PASS | PARTIAL |
 | F06 | Event streaming | PASS | PARTIAL | PASS | PASS | TODO | PASS | PASS | PASS | PASS | PASS | PARTIAL |
 | F07 | Model provider abstraction | PASS | PASS | PASS | PASS | TODO | PASS | PASS | PASS | PASS | PASS | PARTIAL |
 | F08 | DeepSeek provider | PASS | PASS | PASS | PARTIAL | TODO | PASS | PASS | PASS | PASS | PASS | PARTIAL |
@@ -26,12 +26,12 @@ Every row must reach `PASS` in required columns before V1 release.
 | F12 | External RAG provider | TODO | TODO | TODO | TODO | fixture E2E | TODO | TODO | TODO | TODO | TODO | TODO |
 | F13 | Working memory | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO |
 | F14 | Long-term memory | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO |
-| F15 | Function/tool calling | PASS | PARTIAL | PASS | TODO | TODO | PASS | PASS | PASS | PARTIAL | PASS | PARTIAL |
-| F16 | Built-in shell/file/python tools | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO |
-| F17 | Dynamic/lazy tool registry | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO |
-| F18 | Sandbox local | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO |
+| F15 | Function/tool calling | PASS | PASS | PASS | PASS | TODO | PASS | PASS | PASS | PASS | PASS | PARTIAL |
+| F16 | Built-in shell/file/python tools | PASS | PASS | PASS | PASS | TODO | PASS | PASS | PASS | PARTIAL | PASS | PARTIAL |
+| F17 | Dynamic/lazy tool registry | PASS | PARTIAL | PARTIAL | TODO | TODO | PASS | PASS | PASS | PARTIAL | PARTIAL | PARTIAL |
+| F18 | Sandbox local | PASS | PASS | PASS | PASS | TODO | PASS | PASS | PASS | PARTIAL | PASS | PARTIAL |
 | F19 | Sandbox Docker | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO |
-| F20 | Approval engine | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO |
+| F20 | Approval engine | PASS | PASS | PASS | PASS | TODO | PASS | PASS | PASS | PARTIAL | PASS | PARTIAL |
 | F21 | AGENTS.md | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO |
 | F22 | Agent Skills / SKILL.md | TODO | TODO | TODO | TODO | external compat | TODO | TODO | TODO | TODO | TODO | TODO |
 | F23 | MCP stdio | TODO | TODO | TODO | TODO | external compat | TODO | TODO | TODO | TODO | TODO | TODO |
@@ -43,13 +43,13 @@ Every row must reach `PASS` in required columns before V1 release.
 | F29 | Hybrid orchestration | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | >=4 | TODO | TODO |
 | F30 | Router | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO |
 | F31 | Persistence / SQLite | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO |
-| F32 | Observability | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | PASS | TODO |
+| F32 | Observability | PASS | PARTIAL | PASS | PASS | TODO | PASS | PASS | PASS | PARTIAL | PASS | PARTIAL |
 | F33 | CLI | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO |
 | F34 | Documentation website | N/A | TODO | TODO | TODO | deployed | N/A | N/A | N/A | N/A | N/A | TODO |
 | F35 | Ecosystem installers | TODO | TODO | TODO | TODO | external compat | TODO | TODO | TODO | TODO | TODO | TODO |
 | F36 | Persona / role | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | >=3 | TODO | TODO |
 | F37 | Config / profiles / secrets | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | >=3 | TODO | TODO |
-| F38 | Retry / timeout / fallback / error model | PASS | PARTIAL | PASS | TODO | TODO | PASS | PASS | PARTIAL | TODO | PASS | PARTIAL |
+| F38 | Retry / timeout / fallback / error model | PASS | PARTIAL | PASS | PASS | TODO | PASS | PASS | PARTIAL | PARTIAL | PASS | PARTIAL |
 | F39 | Security / hardening | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | >=3 | TODO | TODO |
 | F40 | MCPB / MCP Registry compatibility | TODO | TODO | TODO | TODO | external compat | TODO | TODO | TODO | >=3 | TODO | TODO |
 

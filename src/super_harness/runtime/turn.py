@@ -40,7 +40,7 @@ class Turn:
         self.started_at = datetime.now(UTC)
 
     def complete(self, response: ModelResponse) -> None:
-        if self.status is not TurnStatus.RUNNING:
+        if self.status not in {TurnStatus.RUNNING, TurnStatus.WAITING_TOOL}:
             raise RuntimeError("only a running turn can complete")
         self.response = response
         self.status = TurnStatus.COMPLETED

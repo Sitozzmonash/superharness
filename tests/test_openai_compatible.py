@@ -15,6 +15,7 @@ from super_harness.models import (
     ModelStreamEvent,
     ModelStreamEventType,
     OpenAICompatibleProvider,
+    ToolCall,
     ToolDefinition,
     WireAPI,
 )
@@ -167,6 +168,50 @@ async def test_responses_payload_and_response_normalization() -> None:
     assert response.text == '{"answer":"sunny"}'
     assert response.output_json == {"answer": "sunny"}
     assert response.usage.input_tokens == 4
+    await client.aclose()
+
+
+@pytest.mark.asyncio
+async def test_tool_history_maps_to_each_wire_format() -> None:
+    captured: list[dict[str, Any]] = []
+
+    async def handler(incoming: httpx.Request) -> httpx.Response:
+        captured.append(json.loads(incoming.content))
+        return httpx.Response(
+            200,
+            json={
+                "id": "done",
+                "status": "completed",
+                "output": [
+                    {"type": "message", "content": [{"type": "output_text", "text": "done"}]}
+                ],
+            },
+        )
+
+    call = ToolCall("call_history", "weather", {"city": "Chengdu"}, '{"city":"Chengdu"}')
+    history = ModelRequest(
+        [
+            Message(MessageRole.USER, "weather"),
+            Message(MessageRole.ASSISTANT, "", tool_calls=(call,)),
+            Message(MessageRole.TOOL, "sunny", name="weather", tool_call_id="call_history"),
+        ]
+    )
+    client = httpx.AsyncClient(transport=httpx.MockTransport(handler))
+    responses = OpenAICompatibleProvider(
+        model="test",
+        base_url="https://example.invalid/v1",
+        api_key="test",
+        wire_api=WireAPI.RESPONSES,
+        client=client,
+    )
+    await responses.complete(history)
+
+    assert [item.get("type", item.get("role")) for item in captured[0]["input"]] == [
+        "user",
+        "function_call",
+        "function_call_output",
+    ]
+    assert captured[0]["input"][-1]["call_id"] == "call_history"
     await client.aclose()
 
 

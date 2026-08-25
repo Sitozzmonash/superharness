@@ -4,8 +4,8 @@ import os
 
 import pytest
 
-from super_harness import Agent, DeepSeekProvider
-from super_harness.models import ToolDefinition
+from super_harness import Agent, DeepSeekProvider, tool
+from super_harness.models import MessageRole
 
 pytestmark = pytest.mark.e2e
 
@@ -39,18 +39,17 @@ async def test_real_deepseek_text_stream_json_and_tool_call() -> None:
         structured = await agent.arun("Return ok=true as JSON.", output_schema=schema)
         assert structured.text.strip().startswith("{")
 
-        tool = ToolDefinition(
-            "weather",
-            "Get current weather",
-            {
-                "type": "object",
-                "properties": {"city": {"type": "string"}},
-                "required": ["city"],
-                "additionalProperties": False,
-            },
+        @tool
+        def weather(city: str) -> dict[str, object]:
+            """Get current weather for a city."""
+
+            return {"city": city, "temperature_c": 25}
+
+        tool_thread = Agent(provider, tools=[weather]).thread()
+        tool_result = await tool_thread.arun(
+            "You must call weather for Chengdu, then report its temperature."
         )
-        call = await agent.arun("Use weather for Chengdu.", tools=[tool])
-        assert call.tool_calls
-        assert call.tool_calls[0].name == "weather"
+        assert tool_result.text.strip()
+        assert any(message.role is MessageRole.TOOL for message in tool_thread.messages)
     finally:
         await provider.aclose()

@@ -25,3 +25,14 @@ Public immutable values are `Message`, `ToolDefinition`, `ToolCall`, `Usage`, `M
 ## Events and errors
 
 Every `Event` has an ID, timezone-aware timestamp, optional correlation IDs, and read-only payload. Provider failures use `ModelError`; public error messages and details exclude credential values.
+
+## Tools
+
+- `@tool(...) -> Tool`: derives arguments and JSON Schema from a typed sync or async callable.
+- `ToolRegistry`: `register`, `unregister`, `get`, `enable`, `disable`, `list`, `search`, and `definitions`.
+- `ToolExecutor.execute(ToolCall) -> ToolResult`: validation, approval, timeout, invocation, normalization, and truncation.
+- `ApprovalPolicy`: `full_access`, `deny_all`, or callback policy.
+- `LocalSandbox(workspace, mode=...)`: checked path resolution and cancellable local subprocesses.
+- Built-ins: `file_read_tool`, `file_write_tool`, `file_search_tool`, `shell_tool`, `python_tool`, and `basic_builtin_tools`.
+
+`ToolResult` exposes call ID, name, bounded output, success, truncation flag, original character count, and normalized error type.

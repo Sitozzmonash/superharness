@@ -6,6 +6,8 @@ from collections.abc import AsyncIterator
 import pytest
 
 from super_harness import Agent
+from super_harness import tool as define_tool
+from super_harness.exceptions import ToolError
 from super_harness.models import (
     MessageRole,
     ModelCapabilities,
@@ -13,6 +15,7 @@ from super_harness.models import (
     ModelResponse,
     ModelStreamEvent,
     ModelStreamEventType,
+    ToolCall,
     Usage,
 )
 from super_harness.runtime import TurnStatus
@@ -144,3 +147,99 @@ async def test_cancellation_marks_turn_cancelled() -> None:
     with pytest.raises(asyncio.CancelledError):
         await task
     assert thread.turns[0].status is TurnStatus.CANCELLED
+
+
+class ToolLoopProvider(RecordingProvider):
+    def __init__(self, *, repeat_call: bool = False) -> None:
+        super().__init__([])
+        self.repeat_call = repeat_call
+
+    async def stream(self, request: ModelRequest) -> AsyncIterator[ModelStreamEvent]:
+        self.requests.append(request)
+        yield ModelStreamEvent(ModelStreamEventType.STARTED)
+        if len(self.requests) == 1 or self.repeat_call:
+            call = ToolCall("call_add", "add", {"left": 20, "right": 22}, '{"left":20,"right":22}')
+            yield ModelStreamEvent(
+                ModelStreamEventType.COMPLETED,
+                response=ModelResponse(tool_calls=(call,)),
+            )
+        else:
+            yield ModelStreamEvent(ModelStreamEventType.TEXT_DELTA, delta="42")
+            yield ModelStreamEvent(ModelStreamEventType.COMPLETED, response=ModelResponse("42"))
+
+
+class ParallelToolProvider(RecordingProvider):
+    async def stream(self, request: ModelRequest) -> AsyncIterator[ModelStreamEvent]:
+        self.requests.append(request)
+        yield ModelStreamEvent(ModelStreamEventType.STARTED)
+        if len(self.requests) == 1:
+            calls = (
+                ToolCall("call_1", "pause", {"value": 1}, '{"value":1}'),
+                ToolCall("call_2", "pause", {"value": 2}, '{"value":2}'),
+            )
+            yield ModelStreamEvent(
+                ModelStreamEventType.COMPLETED,
+                response=ModelResponse(tool_calls=calls),
+            )
+        else:
+            yield ModelStreamEvent(ModelStreamEventType.COMPLETED, response=ModelResponse("done"))
+
+
+@pytest.mark.asyncio
+async def test_agent_executes_tool_loop_and_correlates_events() -> None:
+    @define_tool
+    def add(left: int, right: int) -> int:
+        """Add two integers."""
+
+        return left + right
+
+    provider = ToolLoopProvider()
+    thread = Agent(provider, tools=[add]).thread()
+    events = [event async for event in thread.astream("calculate")]
+
+    assert thread.turns[0].response is not None
+    assert thread.turns[0].response.text == "42"
+    assert [event.type for event in events].count("model.started") == 2
+    assert [event.type for event in events].count("tool.started") == 1
+    tool_completed = next(event for event in events if event.type == "tool.completed")
+    assert tool_completed.tool_call_id == "call_add"
+    assert tool_completed.payload["success"] is True
+    assert [message.role for message in provider.requests[1].messages] == [
+        MessageRole.USER,
+        MessageRole.ASSISTANT,
+        MessageRole.TOOL,
+    ]
+    assert provider.requests[1].messages[-1].content == "42"
+
+
+@pytest.mark.asyncio
+async def test_tool_loop_step_budget_fails_turn() -> None:
+    @define_tool
+    def add(left: int, right: int) -> int:
+        return left + right
+
+    thread = Agent(ToolLoopProvider(repeat_call=True), tools=[add], max_model_steps=2).thread()
+    with pytest.raises(ToolError, match="exceeded maximum"):
+        await thread.arun("loop forever")
+    assert thread.turns[0].status is TurnStatus.FAILED
+
+
+@pytest.mark.asyncio
+async def test_parallel_safe_tools_execute_concurrently() -> None:
+    active = 0
+    max_active = 0
+
+    @define_tool(supports_parallel=True)
+    async def pause(value: int) -> int:
+        nonlocal active, max_active
+        active += 1
+        max_active = max(max_active, active)
+        await asyncio.sleep(0.15)
+        active -= 1
+        return value
+
+    thread = Agent(ParallelToolProvider([]), tools=[pause]).thread()
+    response = await thread.arun("run both")
+
+    assert response.text == "done"
+    assert max_active == 2

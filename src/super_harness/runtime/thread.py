@@ -9,6 +9,7 @@ from datetime import UTC, datetime
 from typing import Any, TypeVar
 from uuid import uuid4
 
+from super_harness.exceptions import ToolError
 from super_harness.models import (
     Message,
     MessageRole,
@@ -18,6 +19,7 @@ from super_harness.models import (
     ModelStreamEventType,
     ToolDefinition,
 )
+from super_harness.tools import ToolExecutor, ToolRegistry, ToolResult
 
 from .events import Event
 from .turn import Turn, TurnStatus
@@ -51,6 +53,9 @@ class Thread:
 
     provider: ModelProvider
     instructions: str | None = None
+    tool_registry: ToolRegistry | None = None
+    tool_executor: ToolExecutor | None = None
+    max_model_steps: int = 8
     thread_id: str = field(default_factory=lambda: str(uuid4()))
     created_at: datetime = field(default_factory=lambda: datetime.now(UTC))
     updated_at: datetime = field(default_factory=lambda: datetime.now(UTC))
@@ -67,7 +72,10 @@ class Thread:
         if self.instructions:
             messages.append(Message(MessageRole.SYSTEM, self.instructions))
         messages.extend(self.messages)
-        return ModelRequest(messages, tools=tools, output_schema=output_schema)
+        definitions = list(tools)
+        if self.tool_registry is not None:
+            definitions.extend(self.tool_registry.definitions())
+        return ModelRequest(messages, tools=definitions, output_schema=output_schema)
 
     async def astream(
         self,
@@ -85,61 +93,128 @@ class Thread:
         turn.start()
         yield Event("turn.started", thread_id=self.thread_id, turn_id=turn.turn_id)
         try:
-            request = self._request(tools=tools, output_schema=output_schema)
-            async for model_event in self.provider.stream(request):
-                if model_event.type is ModelStreamEventType.STARTED:
-                    yield Event(
-                        "model.started",
-                        thread_id=self.thread_id,
-                        turn_id=turn.turn_id,
-                        payload={"provider": self.provider.name},
+            for step in range(1, self.max_model_steps + 1):
+                response: ModelResponse | None = None
+                request = self._request(tools=tools, output_schema=output_schema)
+                async for model_event in self.provider.stream(request):
+                    if model_event.type is ModelStreamEventType.STARTED:
+                        yield Event(
+                            "model.started",
+                            thread_id=self.thread_id,
+                            turn_id=turn.turn_id,
+                            payload={"provider": self.provider.name, "step": step},
+                        )
+                    elif model_event.type is ModelStreamEventType.TEXT_DELTA:
+                        yield Event(
+                            "model.text.delta",
+                            thread_id=self.thread_id,
+                            turn_id=turn.turn_id,
+                            payload={"delta": model_event.delta, "step": step},
+                        )
+                    elif model_event.type is ModelStreamEventType.TOOL_CALL_DELTA:
+                        yield Event(
+                            "model.tool_call.delta",
+                            thread_id=self.thread_id,
+                            turn_id=turn.turn_id,
+                            tool_call_id=model_event.tool_call_id,
+                            payload={
+                                "index": model_event.tool_call_index,
+                                "name": model_event.tool_name,
+                                "delta": model_event.delta,
+                                "step": step,
+                            },
+                        )
+                    elif model_event.type is ModelStreamEventType.COMPLETED:
+                        response = model_event.response
+                        if response is None:
+                            raise RuntimeError("provider completed without a normalized response")
+                        yield Event(
+                            "model.completed",
+                            thread_id=self.thread_id,
+                            turn_id=turn.turn_id,
+                            payload={
+                                "response": response,
+                                "usage": response.usage,
+                                "tool_calls": response.tool_calls,
+                                "step": step,
+                            },
+                        )
+                        break
+                if response is None:
+                    raise RuntimeError("provider stream ended without a completed event")
+                if response.tool_calls and self.tool_executor is not None:
+                    self.messages.append(
+                        Message(
+                            MessageRole.ASSISTANT,
+                            response.text,
+                            tool_calls=response.tool_calls,
+                        )
                     )
-                elif model_event.type is ModelStreamEventType.TEXT_DELTA:
-                    yield Event(
-                        "model.text.delta",
-                        thread_id=self.thread_id,
-                        turn_id=turn.turn_id,
-                        payload={"delta": model_event.delta},
+                    turn.status = TurnStatus.WAITING_TOOL
+                    registry = self.tool_registry
+                    parallel = len(response.tool_calls) > 1 and registry is not None
+                    if parallel and registry is not None:
+                        try:
+                            parallel = all(
+                                registry.get(call.name).metadata.supports_parallel
+                                for call in response.tool_calls
+                            )
+                        except ToolError:
+                            parallel = False
+                    for call in response.tool_calls:
+                        yield Event(
+                            "tool.started",
+                            thread_id=self.thread_id,
+                            turn_id=turn.turn_id,
+                            tool_call_id=call.call_id,
+                            payload={"name": call.name, "arguments": call.arguments},
+                        )
+                    results: list[ToolResult]
+                    if parallel:
+                        results = await asyncio.gather(
+                            *(self.tool_executor.execute(call) for call in response.tool_calls)
+                        )
+                    else:
+                        results = []
+                        for call in response.tool_calls:
+                            results.append(await self.tool_executor.execute(call))
+                    for call, result in zip(response.tool_calls, results, strict=True):
+                        self.messages.append(
+                            Message(
+                                MessageRole.TOOL,
+                                result.output,
+                                name=result.name,
+                                tool_call_id=result.call_id,
+                            )
+                        )
+                        yield Event(
+                            "tool.completed",
+                            thread_id=self.thread_id,
+                            turn_id=turn.turn_id,
+                            tool_call_id=call.call_id,
+                            payload={"result": result, "success": result.success},
+                        )
+                    turn.status = TurnStatus.RUNNING
+                    continue
+                turn.complete(response)
+                if response.text or response.tool_calls:
+                    self.messages.append(
+                        Message(
+                            MessageRole.ASSISTANT,
+                            response.text,
+                            tool_calls=response.tool_calls,
+                        )
                     )
-                elif model_event.type is ModelStreamEventType.TOOL_CALL_DELTA:
-                    yield Event(
-                        "model.tool_call.delta",
-                        thread_id=self.thread_id,
-                        turn_id=turn.turn_id,
-                        tool_call_id=model_event.tool_call_id,
-                        payload={
-                            "index": model_event.tool_call_index,
-                            "name": model_event.tool_name,
-                            "delta": model_event.delta,
-                        },
-                    )
-                elif model_event.type is ModelStreamEventType.COMPLETED:
-                    response = model_event.response
-                    if response is None:
-                        raise RuntimeError("provider completed without a normalized response")
-                    turn.complete(response)
-                    if response.text:
-                        self.messages.append(Message(MessageRole.ASSISTANT, response.text))
-                    self.updated_at = datetime.now(UTC)
-                    yield Event(
-                        "model.completed",
-                        thread_id=self.thread_id,
-                        turn_id=turn.turn_id,
-                        payload={
-                            "response": response,
-                            "usage": response.usage,
-                            "tool_calls": response.tool_calls,
-                        },
-                    )
-                    yield Event(
-                        "turn.completed",
-                        thread_id=self.thread_id,
-                        turn_id=turn.turn_id,
-                        payload={"response": response},
-                    )
-                    break
-            if turn.status is TurnStatus.RUNNING:
-                raise RuntimeError("provider stream ended without a completed event")
+                self.updated_at = datetime.now(UTC)
+                yield Event(
+                    "turn.completed",
+                    thread_id=self.thread_id,
+                    turn_id=turn.turn_id,
+                    payload={"response": response},
+                )
+                break
+            if turn.status in {TurnStatus.RUNNING, TurnStatus.WAITING_TOOL}:
+                raise ToolError(f"tool loop exceeded maximum of {self.max_model_steps} model steps")
         except asyncio.CancelledError:
             turn.cancel()
             self.updated_at = datetime.now(UTC)
