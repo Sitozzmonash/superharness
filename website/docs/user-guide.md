@@ -221,3 +221,29 @@ For model cost, pass an application-maintained `CostEstimator` price table; resu
 # Security boundaries
 
 Restricted `LocalSandbox` modes enforce paths and deny shell/Python execution, but they are not OS/network isolation. Run untrusted processes in a container or VM. Plugin installation is data-only, while explicit plugin activation executes Python in-process and must be limited to trusted reviewed sources. Keep external MCP tools behind allowlists, approval, finite timeouts, and HTTPS credentials. See the Phase 11 security review for the complete residual-risk list.
+
+# Command-line interface
+
+Run `super-harness doctor` for offline diagnostics or add `--json` before the command for stable
+machine-readable output. Project-local state is stored under `.super-harness`; add `--global`
+before the command to use the user installation root.
+
+```bash
+super-harness doctor
+super-harness skill add ./my-skill
+super-harness skill list
+super-harness mcp add filesystem --stdio -- python server.py
+super-harness mcp add remote --url https://example.com/mcp
+super-harness mcp import ./mcp.json
+super-harness mcp add ./server.mcpb --sha256 <digest>
+super-harness mcp search filesystem
+super-harness plugin add ./my-plugin
+super-harness thread inspect <thread-id>
+super-harness provider test --provider deepseek
+```
+
+`skill` and `plugin` also provide `info`, `update`, and `remove`; MCP provides `list`, `inspect`,
+and `remove`. Plugin management never activates Python. Inspect output omits Thread content by
+default and MCP output exposes only environment/header key names. `thread resume` requires an
+explicit prompt and provider selection. OpenAI-compatible provider commands require `--base-url`,
+`--model`, and `--api-key-env`; the secret is read from that variable, never from an argument.

@@ -68,7 +68,7 @@ Provider failures raise `SearchError`, `RAGError`, or `VisionError`. Cancellatio
 - `activate_skill(metadata) -> ActivatedSkill`
 - `SkillCatalog.discover(...)`, `list`, `get`, and `activate`
 - `ActivatedSkill.read_resource(relative_path) -> bytes`
-- `SkillInstaller(destination).install(source)` and `remove(name)`
+- `SkillInstaller(destination)`: `install`, `update`, `remove`, `list`, and `info`.
 
 Validation and installation failures raise `SkillError`.
 
@@ -144,3 +144,11 @@ An Agent node returns the child response text and writes its Agent ID, Thread ID
 - `OpenTelemetryExporter(service_name="super-harness", tracer=None)`: exports completed spans; lazy import requires `super-harness[otel]` only when no tracer is injected.
 
 Pass `observer=observability` to `Agent`, `HTTPRAGProvider`, `ZhipuWebSearchProvider`, `ZhipuVisionProvider`, or `MCPClient`. Pass `event_listener=observability.observe` to `AgentManager` and `WorkflowEngine`.
+
+# CLI API
+
+- `super_harness.cli.main(argv=None) -> int`: execute explicit `argv`; no arguments retain the
+  version-only Python compatibility call. The installed script uses `cli_entrypoint()`.
+- `CLIPaths.resolve(cwd, global_scope=False)`: compute scoped state without exposing secrets.
+- `MCPConfigStore`: atomic `list`, `get`, `add`, `import_file`, and `remove` operations.
+- Exit `0` means completion; normalized failures return `2` and write redacted stderr.

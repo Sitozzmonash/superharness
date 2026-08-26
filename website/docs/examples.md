@@ -52,3 +52,8 @@ Examples `53`–`56` are credential-free and cover an autonomous Agent node, a d
 # Observability and hardening examples
 
 Examples `57`–`59` cover human/JSONL output, trace-tree and metric inspection, and optional OTEL export. Examples `60`–`62` cover recursive secret masking, restricted local sandbox denial, user-role external data, and malicious Tool-name rejection. All six are credential-free.
+
+# CLI examples
+
+Examples `63`–`65` are credential-free and cover JSON doctor diagnostics, the local Skill CLI
+lifecycle, and provider-free durable Thread inspection.

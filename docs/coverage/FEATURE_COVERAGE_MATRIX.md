@@ -44,7 +44,7 @@ Every row must reach `PASS` in required columns before V1 release.
 | F30 | Router | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO |
 | F31 | Persistence / SQLite | PASS | PASS | PASS | PASS | TODO | PASS | PASS | PASS | PARTIAL | PASS | PARTIAL |
 | F32 | Observability | PASS | PASS | PASS | PASS | N/A (observer/export API) | PASS | PASS | PASS | PASS (6) | PASS | PASS |
-| F33 | CLI | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO |
+| F33 | CLI | PASS | PASS | PASS | PASS | N/A (local management UX) | PASS | PASS | PASS | PASS (3) | PASS | PASS |
 | F34 | Documentation website | N/A | TODO | TODO | TODO | deployed | N/A | N/A | N/A | N/A | N/A | TODO |
 | F35 | Ecosystem installers | PASS | PASS | PASS | PASS | PASS (pinned GitHub) | PASS | PASS | PASS | PASS | PASS | PASS |
 | F36 | Persona / role | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | >=3 | TODO | TODO |

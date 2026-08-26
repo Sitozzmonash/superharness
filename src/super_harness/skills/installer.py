@@ -9,7 +9,9 @@ import tempfile
 from dataclasses import asdict, dataclass
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import Any, cast
 from urllib.parse import urlparse
+from uuid import uuid4
 
 from super_harness.exceptions import SkillError
 
@@ -113,6 +115,68 @@ class SkillInstaller:
         if not target.is_dir():
             raise SkillError(f"skill {name!r} is not installed")
         shutil.rmtree(target)
+
+    def info(self, name: str) -> tuple[SkillMetadata, SkillSource]:
+        target = self._target(name)
+        if not target.is_dir():
+            raise SkillError(f"skill {name!r} is not installed")
+        metadata = parse_skill(target, source="installed")
+        try:
+            decoded: object = json.loads(
+                (target / ".super-harness-source.json").read_text(encoding="utf-8")
+            )
+            if not isinstance(decoded, dict):
+                raise ValueError
+            values = cast(dict[str, Any], decoded)
+            source = SkillSource(
+                str(values["source_type"]),
+                str(values["location"]),
+                str(values["revision"]) if values.get("revision") else None,
+                str(values["installed_at"]),
+            )
+        except (OSError, KeyError, TypeError, ValueError, json.JSONDecodeError) as exc:
+            raise SkillError("skill source metadata is missing or invalid") from exc
+        return metadata, source
+
+    def list(self) -> tuple[SkillMetadata, ...]:
+        result: list[SkillMetadata] = []
+        for path in sorted(self.destination.iterdir()):
+            if path.is_dir() and not path.name.startswith("."):
+                result.append(parse_skill(path, source="installed"))
+        return tuple(result)
+
+    def update(self, name: str) -> SkillMetadata:
+        _, source = self.info(name)
+        target = self._target(name)
+        staging_root = self.destination / f".{name}-update-{uuid4().hex}"
+        backup = self.destination / f".{name}-backup-{uuid4().hex}"
+        staging_installer = SkillInstaller(staging_root)
+        try:
+            updated = staging_installer.install(source.location)
+            if updated.name != name:
+                raise SkillError("updated skill name differs from installed skill")
+            staged = staging_root / name
+            target.rename(backup)
+            try:
+                staged.rename(target)
+            except BaseException:
+                backup.rename(target)
+                raise
+            shutil.rmtree(backup)
+            return parse_skill(target, source="installed")
+        finally:
+            if staging_root.exists():
+                shutil.rmtree(staging_root)
+            if backup.exists() and not target.exists():
+                backup.rename(target)
+
+    def _target(self, name: str) -> Path:
+        target = (self.destination / name).resolve()
+        try:
+            target.relative_to(self.destination.resolve())
+        except ValueError as exc:
+            raise SkillError("skill name escapes installation root") from exc
+        return target
 
 
 def _now() -> str:

@@ -25,3 +25,10 @@ Phase 10 composes the Phase 8 Agent lifecycle and Phase 9 workflow runtime witho
 Phase 11 follows the pinned Codex separation between trace-safe metadata, richer local logs, validated metrics, optional exporters, and redacted secrets. It intentionally does not clone Codex account/session fields, Statsig defaults, or Rust tracing targets. OTEL network/provider setup remains application-owned; the framework boundary is tested through an injected standards-shaped tracer, so F32 `Real E2E` is `N/A`.
 
 Security hardening remains `PARTIAL` overall: local path policy is not a Docker/VM sandbox, and explicitly enabled plugin Python runs in-process. These limitations are deployment controls, not silently represented as strong isolation.
+
+Phase 12 follows pinned Codex's separation between structured diagnostics, explicit ecosystem
+lifecycle operations, and durable resume. It intentionally uses Python/SQLite/filesystem state
+rather than cloning Codex app-server or marketplace protocols. CLI Real E2E is `N/A` because the
+CLI boundary is the local installed process and filesystem, both exercised by integration and
+wheel smoke tests; external provider and live Registry evidence remains attributed to their own
+feature rows.

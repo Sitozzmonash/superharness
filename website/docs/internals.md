@@ -78,3 +78,14 @@ The observation path is downstream of immutable lifecycle events. It never contr
 Default filtering removes prompt/model/request/response/tool argument/result bodies and token deltas. The redactor then masks configured exact values, sensitive keys, common assignments, bearer/JWT/OpenAI/GitHub-shaped tokens, wrappers, and exception messages. Traversal is cycle aware and bounded by depth/items/string length.
 
 Trace parents follow thread→turn→model/tool, workflow→node, and Agent parent→child where live correlation exists. Search/RAG/Vision/MCP use unique operation IDs. Metrics remain local dependency-free samples; optional OTEL span export delegates provider/network configuration to the application.
+
+# CLI state and routing
+
+`cli.py` owns argument parsing, safe rendering, provider construction, and command routing.
+`cli_state.py` resolves project/user roots and atomically persists common `mcpServers` JSON.
+Skill and Plugin commands delegate to their validated installers; MCPB and Registry commands
+delegate to their isolated adapters; Thread commands delegate to `SQLiteThreadStore` and `Agent`.
+
+Human and JSON renderers consume the same recursively redacted values. Plugin lifecycle commands
+stop before capability activation, while provider-free Thread inspection stays separate from
+credentialed resume.

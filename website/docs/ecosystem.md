@@ -22,3 +22,11 @@ Both stdio and Streamable HTTP use the official Python SDK. Common `mcpServers` 
 Super Harness plugins use `.super-harness/plugin.toml`; `.codex-plugin/plugin.json` is imported best-effort. Every relative capability path must begin with `./` and remain under the plugin root. Local and pinned HTTPS Git/GitHub sources are supported with source metadata and explicit enable.
 
 Python tool packages may also expose conventional entry points in future releases, but Phase 7 does not auto-discover or execute installed package entry points. Plugin Python is imported only for explicitly enabled manifest entries.
+
+## CLI installation flows
+
+Phase 12 exposes the validated installers through `super-harness skill`, `super-harness mcp`, and
+`super-harness plugin`. Local project scope is the default and `--global` selects user scope.
+MCP supports direct stdio/HTTP definitions, common JSON import, integrity-checked MCPB packages,
+and optional Official Registry search/install metadata. Registry discovery does not imply trust.
+Plugin management is data-only; activation remains an explicit Python API trust boundary.

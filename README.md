@@ -2,13 +2,13 @@
 
 Super Harness is a Python-native, Codex-inspired, provider-agnostic agent runtime.
 
-Development is complete through Phase 11 of the 14-phase roadmap. The repository includes the
+Development is complete through Phase 12 of the 14-phase roadmap. The repository includes the
 async Agent/Thread/Turn runtime, provider-neutral model and tool layers, durable context and
 SQLite Threads, external search/RAG/vision adapters, cross-thread long-term memory, Agent Skills,
 MCP stdio/Streamable HTTP, plugins/hooks, autonomous multi-Agent orchestration, and a deterministic
 workflow engine with routing, retry/loop guards, JSON checkpoints, resume, autonomous Agent nodes,
 durable nested subworkflows, structured logs, trace trees, metrics/cost estimates, optional OTEL,
-and bounded secret redaction.
+bounded secret redaction, and a complete diagnostics/ecosystem CLI.
 Credential-gated live provider tests remain explicitly pending when their environment variables
 are absent.
 
@@ -22,6 +22,10 @@ python -m pyright --pythonpath .venv/Scripts/python.exe
 python -m pytest
 python tools/check_secrets.py
 ```
+
+Run `super-harness doctor` for local diagnostics and `super-harness --help` for Skill,
+MCP/MCPB/Registry, plugin, durable Thread, and provider commands. Project scope is the default;
+place `--global` before the command for user scope.
 
 Build the documentation website:
 
