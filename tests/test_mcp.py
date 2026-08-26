@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import hashlib
+import io
 import json
 import os
 import socket
@@ -20,7 +21,9 @@ from super_harness import (
     MCPClient,
     MCPServerConfig,
     MCPTransport,
+    Observability,
     OfficialMCPRegistry,
+    StructuredLogger,
     import_mcp_servers,
     inspect_mcpb,
     install_mcpb,
@@ -73,6 +76,8 @@ def mcp_http_server(mcp_script: Path) -> Iterator[str]:
 @pytest.mark.integration
 @pytest.mark.asyncio
 async def test_real_stdio_mcp_tools_resources_prompts_and_adapter(mcp_script: Path) -> None:
+    telemetry = io.StringIO()
+    observer = Observability(logger=StructuredLogger(console=None, jsonl=telemetry))
     config = MCPServerConfig(
         "local",
         MCPTransport.STDIO,
@@ -81,7 +86,7 @@ async def test_real_stdio_mcp_tools_resources_prompts_and_adapter(mcp_script: Pa
         include_tools=("add",),
         timeout=10,
     )
-    async with MCPClient(config) as client:
+    async with MCPClient(config, observer=observer) as client:
         tools = await client.list_tools()
         result = await client.call_tool("add", {"left": 20, "right": 22})
         resources = await client.list_resources()
@@ -98,6 +103,8 @@ async def test_real_stdio_mcp_tools_resources_prompts_and_adapter(mcp_script: Pa
     assert cast(Any, prompts[0]).name == "summarize"
     assert "Summarize MCP" in json.dumps(prompt)
     assert adapted[0].qualified_name == "local.add"
+    observed = {json.loads(line)["event"] for line in telemetry.getvalue().splitlines()}
+    assert observed >= {"mcp.connected", "mcp.call.started", "mcp.call.completed"}
     assert cast(dict[str, Any], adapted_result)["structuredContent"] == {"result": 3}
 
 

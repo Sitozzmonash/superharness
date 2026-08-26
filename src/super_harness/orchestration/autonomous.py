@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 import asyncio
-from collections.abc import AsyncIterator, Callable, Mapping, Sequence
+import inspect
+from collections.abc import AsyncIterator, Awaitable, Callable, Mapping, Sequence
 from contextlib import suppress
 from dataclasses import asdict, dataclass, field, replace
 from datetime import UTC, datetime
@@ -79,6 +80,7 @@ class SpawnRequest:
 
 
 AgentFactory = Callable[[SpawnRequest], Agent]
+AgentEventListener = Callable[["AgentEvent"], object]
 
 
 @dataclass(frozen=True, slots=True)
@@ -188,12 +190,14 @@ class AgentManager:
         *,
         limits: MultiAgentLimits | None = None,
         hooks: HookRegistry | None = None,
+        event_listener: AgentEventListener | None = None,
         include_child_deltas: bool = False,
         expose_tools: bool = True,
     ) -> None:
         self.factory = factory
         self.limits = limits or MultiAgentLimits()
         self.hooks = hooks
+        self.event_listener = event_listener
         self.include_child_deltas = include_child_deltas
         self.expose_tools = expose_tools
         self.created_at = datetime.now(UTC)
@@ -647,6 +651,10 @@ class AgentManager:
             payload=payload or {},
         )
         self._events.append(event)
+        if self.event_listener is not None:
+            outcome = self.event_listener(event)
+            if inspect.isawaitable(outcome):
+                await cast(Awaitable[object], outcome)
         async with self._event_condition:
             self._event_condition.notify_all()
 

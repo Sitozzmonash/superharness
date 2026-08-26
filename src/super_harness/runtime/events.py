@@ -6,7 +6,7 @@ from collections.abc import Mapping
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from types import MappingProxyType
-from typing import Any
+from typing import Any, Protocol
 from uuid import uuid4
 
 
@@ -20,6 +20,12 @@ def _utc_now() -> datetime:
 
 def _empty_payload() -> Mapping[str, Any]:
     return {}
+
+
+class EventObserver(Protocol):
+    """Minimal async/sync-compatible observation boundary."""
+
+    def observe(self, event: object) -> object: ...
 
 
 @dataclass(frozen=True, slots=True)

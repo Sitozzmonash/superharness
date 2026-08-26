@@ -200,3 +200,24 @@ research = agent_node(
 ```
 
 Use `subworkflow_node` for reusable deterministic pipelines. Pass a child `WorkflowEngine(store=JSONWorkflowStore(...))` when failure/resume must preserve completed child nodes across the parent retry. Parent cancellation cascades into both node types. Hybrid event forwarding is intentionally metadata-only; inspect the `AgentManager` or child checkpoint for full local details.
+
+# Observability
+
+Create one observer and inject it at each boundary you want to correlate:
+
+```python
+from super_harness import Agent, Observability, StructuredLogger
+
+observer = Observability(logger=StructuredLogger(jsonl="events.jsonl"))
+agent = Agent(provider, observer=observer)
+response = await agent.arun("Run the task")
+print(observer.metrics.snapshot())
+```
+
+The default human logger writes to stderr; JSONL is optional. Prompt/model/tool content and text deltas are omitted by default. Add known application secrets through `SecretRedactor(secrets=[...])`. Enabling `include_content=True` is an explicit data-governance decision, not a debugging default.
+
+For model cost, pass an application-maintained `CostEstimator` price table; results are estimates, not invoices. Install `super-harness[otel]` and configure the process OpenTelemetry provider before using `OpenTelemetryExporter()` without an injected tracer. Always call `await observer.aclose()` to flush owned outputs/exporters.
+
+# Security boundaries
+
+Restricted `LocalSandbox` modes enforce paths and deny shell/Python execution, but they are not OS/network isolation. Run untrusted processes in a container or VM. Plugin installation is data-only, while explicit plugin activation executes Python in-process and must be limited to trusted reviewed sources. Keep external MCP tools behind allowlists, approval, finite timeouts, and HTTPS credentials. See the Phase 11 security review for the complete residual-risk list.

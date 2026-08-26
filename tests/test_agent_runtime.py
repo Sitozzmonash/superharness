@@ -109,7 +109,7 @@ async def test_provider_failure_marks_turn_failed() -> None:
     with pytest.raises(ValueError, match="provider broke"):
         async for event in thread.astream("hi"):
             events.append(event.type)
-    assert events == ["turn.started", "model.started", "turn.failed"]
+    assert events == ["turn.started", "model.started", "model.failed", "turn.failed"]
     assert thread.turns[0].status is TurnStatus.FAILED
     assert thread.turns[0].error == "provider broke"
 

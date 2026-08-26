@@ -4,10 +4,12 @@ from __future__ import annotations
 
 import asyncio
 import copy
-from collections.abc import AsyncIterator, Iterator, Mapping, Sequence
+import inspect
+from collections.abc import AsyncGenerator, AsyncIterator, Awaitable, Iterator, Mapping, Sequence
+from contextlib import aclosing
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
-from typing import TYPE_CHECKING, Any, TypeVar
+from typing import TYPE_CHECKING, Any, TypeVar, cast
 from uuid import uuid4
 
 from super_harness.context import (
@@ -33,7 +35,7 @@ from super_harness.models import (
 )
 from super_harness.tools import ToolExecutor, ToolRegistry, ToolResult
 
-from .events import Event
+from .events import Event, EventObserver
 from .turn import Turn, TurnStatus
 
 if TYPE_CHECKING:
@@ -102,6 +104,7 @@ class Thread:
     compaction_threshold_chars: int = 100_000
     compaction_retain_messages: int = 8
     hooks: HookRegistry | None = None
+    observer: EventObserver | None = None
     _session_started: bool = field(default=False, repr=False)
     _interrupt_turn_ids: set[str] = field(default_factory=_interrupts, repr=False)
     _steering_by_turn: dict[str, list[str]] = field(default_factory=_steering, repr=False)
@@ -143,6 +146,27 @@ class Thread:
         tools: Sequence[ToolDefinition] = (),
         output_schema: Mapping[str, Any] | None = None,
     ) -> AsyncIterator[Event]:
+        async with aclosing(
+            self._astream_unobserved(
+                input,
+                tools=tools,
+                output_schema=output_schema,
+            )
+        ) as operation:
+            async for event in operation:
+                if self.observer is not None:
+                    outcome = self.observer.observe(event)
+                    if inspect.isawaitable(outcome):
+                        await cast(Awaitable[object], outcome)
+                yield event
+
+    async def _astream_unobserved(
+        self,
+        input: str,
+        *,
+        tools: Sequence[ToolDefinition] = (),
+        output_schema: Mapping[str, Any] | None = None,
+    ) -> AsyncGenerator[Event, None]:
         if self.archived:
             raise RuntimeError("cannot run an archived thread")
         if self._active_turn_id is not None:
@@ -220,50 +244,75 @@ class Thread:
                     candidate_request = before_model.data.get("request")
                     if isinstance(candidate_request, ModelRequest):
                         request = candidate_request
-                async for model_event in self.provider.stream(request):
-                    if model_event.type is ModelStreamEventType.STARTED:
-                        yield Event(
-                            "model.started",
-                            thread_id=self.thread_id,
-                            turn_id=turn.turn_id,
-                            payload={"provider": self.provider.name, "step": step},
-                        )
-                    elif model_event.type is ModelStreamEventType.TEXT_DELTA:
-                        yield Event(
-                            "model.text.delta",
-                            thread_id=self.thread_id,
-                            turn_id=turn.turn_id,
-                            payload={"delta": model_event.delta, "step": step},
-                        )
-                    elif model_event.type is ModelStreamEventType.TOOL_CALL_DELTA:
-                        yield Event(
-                            "model.tool_call.delta",
-                            thread_id=self.thread_id,
-                            turn_id=turn.turn_id,
-                            tool_call_id=model_event.tool_call_id,
-                            payload={
-                                "index": model_event.tool_call_index,
-                                "name": model_event.tool_name,
-                                "delta": model_event.delta,
-                                "step": step,
-                            },
-                        )
-                    elif model_event.type is ModelStreamEventType.COMPLETED:
-                        response = model_event.response
-                        if response is None:
-                            raise RuntimeError("provider completed without a normalized response")
-                        yield Event(
-                            "model.completed",
-                            thread_id=self.thread_id,
-                            turn_id=turn.turn_id,
-                            payload={
-                                "response": response,
-                                "usage": response.usage,
-                                "tool_calls": response.tool_calls,
-                                "step": step,
-                            },
-                        )
-                        break
+                try:
+                    async for model_event in self.provider.stream(request):
+                        if model_event.type is ModelStreamEventType.STARTED:
+                            yield Event(
+                                "model.started",
+                                thread_id=self.thread_id,
+                                turn_id=turn.turn_id,
+                                payload={
+                                    "provider": self.provider.name,
+                                    "model": getattr(self.provider, "model", None),
+                                    "step": step,
+                                },
+                            )
+                        elif model_event.type is ModelStreamEventType.TEXT_DELTA:
+                            yield Event(
+                                "model.text.delta",
+                                thread_id=self.thread_id,
+                                turn_id=turn.turn_id,
+                                payload={"delta": model_event.delta, "step": step},
+                            )
+                        elif model_event.type is ModelStreamEventType.TOOL_CALL_DELTA:
+                            yield Event(
+                                "model.tool_call.delta",
+                                thread_id=self.thread_id,
+                                turn_id=turn.turn_id,
+                                tool_call_id=model_event.tool_call_id,
+                                payload={
+                                    "index": model_event.tool_call_index,
+                                    "name": model_event.tool_name,
+                                    "delta": model_event.delta,
+                                    "step": step,
+                                },
+                            )
+                        elif model_event.type is ModelStreamEventType.COMPLETED:
+                            response = model_event.response
+                            if response is None:
+                                raise RuntimeError(
+                                    "provider completed without a normalized response"
+                                )
+                            yield Event(
+                                "model.completed",
+                                thread_id=self.thread_id,
+                                turn_id=turn.turn_id,
+                                payload={
+                                    "response": response,
+                                    "usage": response.usage,
+                                    "tool_calls": response.tool_calls,
+                                    "provider": self.provider.name,
+                                    "model": getattr(self.provider, "model", None),
+                                    "step": step,
+                                },
+                            )
+                            break
+                except asyncio.CancelledError:
+                    raise
+                except Exception as exc:
+                    yield Event(
+                        "model.failed",
+                        thread_id=self.thread_id,
+                        turn_id=turn.turn_id,
+                        payload={
+                            "provider": self.provider.name,
+                            "model": getattr(self.provider, "model", None),
+                            "step": step,
+                            "error_class": type(exc).__name__,
+                            "message": str(exc),
+                        },
+                    )
+                    raise
                 if response is None:
                     raise RuntimeError("provider stream ended without a completed event")
                 if self.hooks is not None:
@@ -322,7 +371,7 @@ class Thread:
                         )
                         self._persist()
                         yield Event(
-                            "tool.completed",
+                            "tool.completed" if result.success else "tool.failed",
                             thread_id=self.thread_id,
                             turn_id=turn.turn_id,
                             tool_call_id=call.call_id,
@@ -551,6 +600,7 @@ class Thread:
             compaction_threshold_chars=self.compaction_threshold_chars,
             compaction_retain_messages=self.compaction_retain_messages,
             hooks=self.hooks,
+            observer=self.observer,
         )
         forked._persist()
         return forked

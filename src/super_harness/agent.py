@@ -10,7 +10,7 @@ from super_harness.context import AgentsMdLoader, ContextAssembler, ContextFragm
 from super_harness.hooks import HookRegistry
 from super_harness.models import ModelProvider, ModelResponse, ToolDefinition
 from super_harness.persistence import SQLiteThreadStore
-from super_harness.runtime.events import Event
+from super_harness.runtime.events import Event, EventObserver
 from super_harness.runtime.thread import Thread
 from super_harness.runtime.turn import TurnStatus
 from super_harness.tools import ApprovalPolicy, Tool, ToolExecutor, ToolRegistry
@@ -27,6 +27,7 @@ class Agent:
         tools: Iterable[Tool] = (),
         approval: ApprovalPolicy | None = None,
         hooks: HookRegistry | None = None,
+        observer: EventObserver | None = None,
         max_model_steps: int = 8,
         context: Iterable[ContextFragment] = (),
         cwd: str | None = None,
@@ -40,6 +41,7 @@ class Agent:
         self.instructions = instructions
         self.tool_registry = ToolRegistry(tools)
         self.hooks = hooks
+        self.observer = observer
         self.tool_executor = (
             ToolExecutor(self.tool_registry, approval=approval, hooks=hooks)
             if self.tool_registry.list()
@@ -64,6 +66,7 @@ class Agent:
             store=self.store,
             compaction_threshold_chars=self.compaction_threshold_chars,
             hooks=self.hooks,
+            observer=self.observer,
         )
         if self.store is not None:
             self.store.save(thread)
@@ -92,6 +95,7 @@ class Agent:
             summaries=list(snapshot.summaries),
             compaction_threshold_chars=self.compaction_threshold_chars,
             hooks=self.hooks,
+            observer=self.observer,
         )
         for turn in thread.turns:
             if turn.status.value in {"pending", "running", "waiting_tool"}:

@@ -43,14 +43,14 @@ Every row must reach `PASS` in required columns before V1 release.
 | F29 | Hybrid orchestration | PASS | PASS | PASS | PASS | N/A (in-process composition) | PASS | PASS | PASS | PASS (4) | PASS | PASS |
 | F30 | Router | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO |
 | F31 | Persistence / SQLite | PASS | PASS | PASS | PASS | TODO | PASS | PASS | PASS | PARTIAL | PASS | PARTIAL |
-| F32 | Observability | PASS | PARTIAL | PASS | PASS | TODO | PASS | PASS | PASS | PARTIAL | PASS | PARTIAL |
+| F32 | Observability | PASS | PASS | PASS | PASS | N/A (observer/export API) | PASS | PASS | PASS | PASS (6) | PASS | PASS |
 | F33 | CLI | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO |
 | F34 | Documentation website | N/A | TODO | TODO | TODO | deployed | N/A | N/A | N/A | N/A | N/A | TODO |
 | F35 | Ecosystem installers | PASS | PASS | PASS | PASS | PASS (pinned GitHub) | PASS | PASS | PASS | PASS | PASS | PASS |
 | F36 | Persona / role | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | >=3 | TODO | TODO |
 | F37 | Config / profiles / secrets | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | >=3 | TODO | TODO |
 | F38 | Retry / timeout / fallback / error model | PASS | PARTIAL | PASS | PASS | TODO | PASS | PASS | PARTIAL | PARTIAL | PASS | PARTIAL |
-| F39 | Security / hardening | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | >=3 | TODO | TODO |
+| F39 | Security / hardening | PASS | PARTIAL | PASS | PASS | N/A (local controls) | PASS | PASS | PASS | PASS (3) | PASS | PARTIAL |
 | F40 | MCPB / MCP Registry compatibility | PASS | PASS | PASS | PASS | PASS (live Registry) | PASS | PASS | PASS | PASS | PASS | PASS |
 
 ## Required matrix discipline

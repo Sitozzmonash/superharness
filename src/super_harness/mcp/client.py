@@ -3,9 +3,12 @@
 from __future__ import annotations
 
 import asyncio
+import inspect
+import time
 from collections.abc import Awaitable
 from contextlib import AsyncExitStack
 from typing import Any, TypeVar, cast
+from uuid import uuid4
 
 import httpx2
 from mcp import StdioServerParameters
@@ -14,6 +17,7 @@ from mcp.client.streamable_http import streamable_http_client
 from pydantic import BaseModel, ConfigDict, create_model
 
 from super_harness.exceptions import MCPError
+from super_harness.runtime.events import Event, EventObserver
 from super_harness.tools import Tool, ToolMetadata
 
 from .config import MCPServerConfig, MCPTransport
@@ -24,8 +28,14 @@ _MAX_ITEMS = 1_000
 
 
 class MCPClient:
-    def __init__(self, config: MCPServerConfig) -> None:
+    def __init__(
+        self,
+        config: MCPServerConfig,
+        *,
+        observer: EventObserver | None = None,
+    ) -> None:
         self.config = config
+        self.observer = observer
         self._stack: AsyncExitStack | None = None
         self._client: Client | None = None
 
@@ -53,6 +63,16 @@ class MCPClient:
             client = Client(cast(Any, target), read_timeout_seconds=self.config.timeout)
             self._client = await stack.enter_async_context(client)
             self._stack = stack
+            await self._observe(
+                Event(
+                    "mcp.connected",
+                    payload={
+                        "server": self.config.name,
+                        "transport": self.config.transport.value,
+                        "protocol_version": client.protocol_version,
+                    },
+                )
+            )
             return self
         except asyncio.CancelledError:
             await stack.aclose()
@@ -181,14 +201,67 @@ class MCPClient:
             raise MCPError(f"MCP tool {name!r} is disabled by filter")
 
     async def _run(self, operation: Awaitable[T], label: str) -> T:
+        started = time.monotonic()
+        operation_id = uuid4().hex
+        await self._observe(
+            Event(
+                "mcp.call.started",
+                payload={
+                    "server": self.config.name,
+                    "operation": label,
+                    "operation_id": operation_id,
+                },
+            )
+        )
         try:
-            return await asyncio.wait_for(operation, self.config.timeout)
+            result = await asyncio.wait_for(operation, self.config.timeout)
+            await self._observe(
+                Event(
+                    "mcp.call.completed",
+                    payload={
+                        "server": self.config.name,
+                        "operation": label,
+                        "operation_id": operation_id,
+                        "duration_ms": (time.monotonic() - started) * 1000,
+                    },
+                )
+            )
+            return result
         except asyncio.CancelledError:
             raise
         except TimeoutError as exc:
+            await self._failed(label, operation_id, started, exc)
             raise MCPError(f"MCP {label} timed out") from exc
         except Exception as exc:
+            await self._failed(label, operation_id, started, exc)
             raise MCPError(f"MCP {label} failed") from exc
+
+    async def _failed(
+        self,
+        label: str,
+        operation_id: str,
+        started: float,
+        error: Exception,
+    ) -> None:
+        await self._observe(
+            Event(
+                "mcp.call.failed",
+                payload={
+                    "server": self.config.name,
+                    "operation": label,
+                    "operation_id": operation_id,
+                    "duration_ms": (time.monotonic() - started) * 1000,
+                    "error_class": type(error).__name__,
+                },
+            )
+        )
+
+    async def _observe(self, event: Event) -> None:
+        if self.observer is None:
+            return
+        outcome = self.observer.observe(event)
+        if inspect.isawaitable(outcome):
+            await cast(Awaitable[object], outcome)
 
 
 def _arguments_model(name: str, schema: dict[str, Any]) -> type[BaseModel]:

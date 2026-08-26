@@ -132,3 +132,15 @@ Invalid graphs/checkpoints raise `WorkflowError`. Node exceptions and async time
 - `SubworkflowNode`: callable handler plus `cancel(parent_run_id)`.
 
 An Agent node returns the child response text and writes its Agent ID, Thread ID, and token count under `hybrid.<node_id>.*` state keys. A subworkflow node returns the nested output and records its workflow/run IDs. Both forward JSON-safe correlation metadata through the parent workflow event stream.
+
+# Observability API
+
+- `Observability(logger=None, tracer=None, metrics=None, redactor=None, exporters=(), include_deltas=False, include_content=False, strict_export=False)` and async `observe(event)` / `aclose()`.
+- `StructuredLogger(console=sys.stderr, jsonl=None)`: thread-safe `log`, `close`, and context-manager support.
+- `SecretRedactor(secrets=(), secret_keys=(), custom=(), max_depth=8, max_items=128, max_string_chars=20000)`.
+- `TraceRecorder.observe`, `spans(trace_id=None)`, and `tree(trace_id)`; values use `TraceSpan` and `SpanStatus`.
+- `MetricsRegistry`: `counter`, `gauge`, `gauge_add`, `histogram`, `observe`, and `snapshot`.
+- `CostEstimator({model: ModelPrice(...)})` and `MetricsSnapshot`.
+- `OpenTelemetryExporter(service_name="super-harness", tracer=None)`: exports completed spans; lazy import requires `super-harness[otel]` only when no tracer is injected.
+
+Pass `observer=observability` to `Agent`, `HTTPRAGProvider`, `ZhipuWebSearchProvider`, `ZhipuVisionProvider`, or `MCPClient`. Pass `event_listener=observability.observe` to `AgentManager` and `WorkflowEngine`.

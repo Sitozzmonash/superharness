@@ -48,3 +48,7 @@ Examples `48`–`52` are credential-free and cover a three-step sequence, concur
 # Hybrid examples
 
 Examples `53`–`56` are credential-free and cover an autonomous Agent node, a durable nested workflow, a workflow Agent that autonomously spawns and joins two specialists through collaboration Tools, and parent/child failure-resume from JSON checkpoints.
+
+# Observability and hardening examples
+
+Examples `57`–`59` cover human/JSONL output, trace-tree and metric inspection, and optional OTEL export. Examples `60`–`62` cover recursive secret masking, restricted local sandbox denial, user-role external data, and malicious Tool-name rejection. All six are credential-free.

@@ -4,15 +4,19 @@ from __future__ import annotations
 
 import asyncio
 import base64
+import inspect
 import mimetypes
 import os
+import time
 from collections.abc import Awaitable, Callable, Mapping
 from pathlib import Path
 from typing import Any, Protocol, cast
+from uuid import uuid4
 
 import httpx
 
 from super_harness.exceptions import RAGError, SearchError, VisionError
+from super_harness.runtime.events import Event, EventObserver
 
 from .types import KnowledgeTrace, RAGDocument, SearchResponse, SearchResult, VisionResult
 
@@ -37,6 +41,14 @@ async def _emit(sink: TraceSink | None, event: KnowledgeTrace) -> None:
     result = sink(event)
     if isinstance(result, Awaitable):
         await result
+
+
+async def _observe(observer: EventObserver | None, event: Event) -> None:
+    if observer is None:
+        return
+    result = observer.observe(event)
+    if inspect.isawaitable(result):
+        await cast(Awaitable[object], result)
 
 
 async def _post_with_retry(
@@ -85,6 +97,7 @@ class ZhipuWebSearchProvider:
         retries: int = 2,
         client: httpx.AsyncClient | None = None,
         trace_sink: TraceSink | None = None,
+        observer: EventObserver | None = None,
     ) -> None:
         self._api_key = api_key or os.environ.get("ZHIPU_SEARCH_API_KEY")
         self.endpoint = endpoint
@@ -92,6 +105,7 @@ class ZhipuWebSearchProvider:
         self.retries = retries
         self._client = client
         self.trace_sink = trace_sink
+        self.observer = observer
 
     async def search(self, query: str, *, top_n: int = 5) -> SearchResponse:
         if not query.strip() or top_n < 1:
@@ -100,6 +114,15 @@ class ZhipuWebSearchProvider:
             raise SearchError("ZHIPU_SEARCH_API_KEY is required")
         owned = self._client is None
         client = self._client or httpx.AsyncClient(timeout=self.timeout)
+        started = time.monotonic()
+        operation_id = uuid4().hex
+        await _observe(
+            self.observer,
+            Event(
+                "search.started",
+                payload={"provider": "zhipu", "operation_id": operation_id},
+            ),
+        )
         try:
             payload = await _post_with_retry(
                 client,
@@ -131,9 +154,33 @@ class ZhipuWebSearchProvider:
                 )
             response = SearchResponse(query, tuple(results), "zhipu")
             await _emit(self.trace_sink, KnowledgeTrace("search", "zhipu", True, len(results)))
+            await _observe(
+                self.observer,
+                Event(
+                    "search.completed",
+                    payload={
+                        "provider": "zhipu",
+                        "operation_id": operation_id,
+                        "item_count": len(results),
+                        "duration_ms": (time.monotonic() - started) * 1000,
+                    },
+                ),
+            )
             return response
-        except SearchError:
+        except SearchError as exc:
             await _emit(self.trace_sink, KnowledgeTrace("search", "zhipu", False))
+            await _observe(
+                self.observer,
+                Event(
+                    "search.failed",
+                    payload={
+                        "provider": "zhipu",
+                        "operation_id": operation_id,
+                        "duration_ms": (time.monotonic() - started) * 1000,
+                        "error_class": type(exc).__name__,
+                    },
+                ),
+            )
             raise
         finally:
             if owned:
@@ -153,6 +200,7 @@ class HTTPRAGProvider:
         retries: int = 1,
         client: httpx.AsyncClient | None = None,
         trace_sink: TraceSink | None = None,
+        observer: EventObserver | None = None,
     ) -> None:
         self.base_url = (base_url or os.environ.get("RAG_BASE_URL", "")).rstrip("/")
         self._api_key = api_key or os.environ.get("RAG_API_KEY")
@@ -161,6 +209,7 @@ class HTTPRAGProvider:
         self.retries = retries
         self._client = client
         self.trace_sink = trace_sink
+        self.observer = observer
 
     async def retrieve(self, query: str, *, top_n: int = 3) -> tuple[RAGDocument, ...]:
         if not self.base_url:
@@ -170,6 +219,15 @@ class HTTPRAGProvider:
         headers = {"Authorization": f"Bearer {self._api_key}"} if self._api_key else {}
         owned = self._client is None
         client = self._client or httpx.AsyncClient(timeout=self.timeout)
+        started = time.monotonic()
+        operation_id = uuid4().hex
+        await _observe(
+            self.observer,
+            Event(
+                "rag.started",
+                payload={"provider": "http-rag", "operation_id": operation_id},
+            ),
+        )
         try:
             payload = await _post_with_retry(
                 client,
@@ -205,9 +263,33 @@ class HTTPRAGProvider:
                     raise RAGError("RAG result item has invalid shape")
             result = tuple(documents)
             await _emit(self.trace_sink, KnowledgeTrace("retrieve", "http-rag", True, len(result)))
+            await _observe(
+                self.observer,
+                Event(
+                    "rag.completed",
+                    payload={
+                        "provider": "http-rag",
+                        "operation_id": operation_id,
+                        "item_count": len(result),
+                        "duration_ms": (time.monotonic() - started) * 1000,
+                    },
+                ),
+            )
             return result
-        except RAGError:
+        except RAGError as exc:
             await _emit(self.trace_sink, KnowledgeTrace("retrieve", "http-rag", False))
+            await _observe(
+                self.observer,
+                Event(
+                    "rag.failed",
+                    payload={
+                        "provider": "http-rag",
+                        "operation_id": operation_id,
+                        "duration_ms": (time.monotonic() - started) * 1000,
+                        "error_class": type(exc).__name__,
+                    },
+                ),
+            )
             raise
         finally:
             if owned:
@@ -228,6 +310,7 @@ class ZhipuVisionProvider:
         max_image_bytes: int = 10_000_000,
         client: httpx.AsyncClient | None = None,
         trace_sink: TraceSink | None = None,
+        observer: EventObserver | None = None,
     ) -> None:
         self._api_key = api_key or os.environ.get("ZHIPU_VISION_API_KEY")
         self.endpoint = endpoint
@@ -237,6 +320,7 @@ class ZhipuVisionProvider:
         self.max_image_bytes = max_image_bytes
         self._client = client
         self.trace_sink = trace_sink
+        self.observer = observer
 
     async def analyze(self, image: str | Path, prompt: str) -> VisionResult:
         if not self._api_key:
@@ -246,6 +330,19 @@ class ZhipuVisionProvider:
         image_url = await self._image_url(image)
         owned = self._client is None
         client = self._client or httpx.AsyncClient(timeout=self.timeout)
+        started = time.monotonic()
+        operation_id = uuid4().hex
+        await _observe(
+            self.observer,
+            Event(
+                "vision.started",
+                payload={
+                    "provider": "zhipu",
+                    "model": self.model,
+                    "operation_id": operation_id,
+                },
+            ),
+        )
         try:
             payload = await _post_with_retry(
                 client,
@@ -275,11 +372,37 @@ class ZhipuVisionProvider:
             await _emit(
                 self.trace_sink, KnowledgeTrace("vision", "zhipu", True, 1, {"model": self.model})
             )
+            await _observe(
+                self.observer,
+                Event(
+                    "vision.completed",
+                    payload={
+                        "provider": "zhipu",
+                        "model": self.model,
+                        "operation_id": operation_id,
+                        "item_count": 1,
+                        "duration_ms": (time.monotonic() - started) * 1000,
+                    },
+                ),
+            )
             return VisionResult(text, self.model, "zhipu")
-        except VisionError:
+        except VisionError as exc:
             await _emit(
                 self.trace_sink,
                 KnowledgeTrace("vision", "zhipu", False, metadata={"model": self.model}),
+            )
+            await _observe(
+                self.observer,
+                Event(
+                    "vision.failed",
+                    payload={
+                        "provider": "zhipu",
+                        "model": self.model,
+                        "operation_id": operation_id,
+                        "duration_ms": (time.monotonic() - started) * 1000,
+                        "error_class": type(exc).__name__,
+                    },
+                ),
             )
             raise
         finally:

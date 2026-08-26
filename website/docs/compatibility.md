@@ -21,3 +21,7 @@ The real DeepSeek parent/child tool-chain test is credential gated. Without `DEE
 The pinned Codex tree does not expose a generic executable DAG engine; its `update_plan` surface is a typed, event-emitting checklist. Super Harness intentionally extends those state/event principles with a provider-neutral Python workflow runtime. Phase 9 `Real E2E` is `N/A`: its product boundaries are the in-process scheduler and local atomic JSON store, both covered by integration tests without mocks or an external service.
 
 Phase 10 composes the Phase 8 Agent lifecycle and Phase 9 workflow runtime without defining a new wire protocol. The autonomous node uses the same model-callable collaboration Tools tested under F27. Hybrid `Real E2E` is `N/A` because composition/cancellation/checkpointing are in-process control boundaries; live model behavior remains accurately represented by F27's credential-gated E2E status.
+
+Phase 11 follows the pinned Codex separation between trace-safe metadata, richer local logs, validated metrics, optional exporters, and redacted secrets. It intentionally does not clone Codex account/session fields, Statsig defaults, or Rust tracing targets. OTEL network/provider setup remains application-owned; the framework boundary is tested through an injected standards-shaped tracer, so F32 `Real E2E` is `N/A`.
+
+Security hardening remains `PARTIAL` overall: local path policy is not a Docker/VM sandbox, and explicitly enabled plugin Python runs in-process. These limitations are deployment controls, not silently represented as strong isolation.

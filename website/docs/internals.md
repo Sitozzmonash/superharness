@@ -70,3 +70,11 @@ Every stable batch is serializable as a versioned `WorkflowRun`. The JSON store 
 `AutonomousAgentNode` delegates to the normal `AgentManager`; it does not simulate a model response or bypass Tool execution. The node waits for its child and all discovered descendants. Active descendants after a bounded wait are cancelled, and any non-completed descendant fails the node. Forwarded observations include IDs and lifecycle types but omit child text/token payload bodies.
 
 `SubworkflowNode` derives `<parent-run>-<node>` as a safe stable child identity. With a child `JSONWorkflowStore`, a repeated parent node resumes that checkpoint and forwards only event sequences newer than the loaded snapshot. Task cancellation propagates through both engines; each engine records its own interruption before the parent node exits.
+
+# Observability and redaction
+
+The observation path is downstream of immutable lifecycle events. It never controls scheduling or provider responses. One event is normalized, content-filtered, recursively redacted, correlated into a span, counted, logged, and optionally exported. Export errors are collected and fail open unless `strict_export=True`.
+
+Default filtering removes prompt/model/request/response/tool argument/result bodies and token deltas. The redactor then masks configured exact values, sensitive keys, common assignments, bearer/JWT/OpenAI/GitHub-shaped tokens, wrappers, and exception messages. Traversal is cycle aware and bounded by depth/items/string length.
+
+Trace parents follow thread→turn→model/tool, workflow→node, and Agent parent→child where live correlation exists. Search/RAG/Vision/MCP use unique operation IDs. Metrics remain local dependency-free samples; optional OTEL span export delegates provider/network configuration to the application.
