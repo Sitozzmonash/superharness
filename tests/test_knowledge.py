@@ -198,7 +198,16 @@ async def test_simple_rag_response_and_typed_malformed_error() -> None:
 
 
 @pytest.mark.asyncio
-async def test_provider_errors_timeout_retry_and_cancellation() -> None:
+async def test_provider_errors_timeout_retry_and_cancellation(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    # This assertion is about a provider constructed WITHOUT a credential. The
+    # adapter falls back to the ZHIPU_VISION_API_KEY env var when api_key is
+    # falsy, so isolate it from any live key present in the environment.
+    monkeypatch.delenv("ZHIPU_VISION_API_KEY", raising=False)
+    with pytest.raises(VisionError, match="required"):
+        await ZhipuVisionProvider(api_key="").analyze("https://example.test/a.png", "look")
+
     attempts = 0
 
     async def transient(request: httpx.Request) -> httpx.Response:
@@ -229,9 +238,6 @@ async def test_provider_errors_timeout_retry_and_cancellation() -> None:
             await task
     finally:
         await client.aclose()
-
-    with pytest.raises(VisionError, match="required"):
-        await ZhipuVisionProvider(api_key="").analyze("https://example.test/a.png", "look")
 
 
 @pytest.mark.integration

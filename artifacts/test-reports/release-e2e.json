@@ -1,34 +1,37 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-08-26T04:00:00Z",
+  "generated_at": "2026-08-27T12:00:00Z",
   "release_candidate": "0.0.1.dev0",
   "release_ready": false,
   "local_gates": {
-    "pytest": {"status": "pass", "passed": 156, "skipped": 9},
+    "pytest": {"status": "pass", "passed": 160, "skipped": 5},
+    "pytest_py311": {"status": "pass", "passed": 156, "skipped": 9},
     "ruff_format": {"status": "pass"},
     "ruff_lint": {"status": "pass"},
     "pyright_strict": {"status": "pass", "errors": 0, "warnings": 0},
     "secret_scan": {"status": "pass"},
-    "docs_production_build": {"status": "pass"},
+    "docs_production_build": {"status": "pass", "locales": ["zh-CN", "en"]},
     "sdist_wheel_build": {"status": "pass"},
     "wheel_install_smoke": {"status": "pass", "version": "0.0.1.dev0"},
     "phase_13_focused": {"status": "pass", "passed": 21, "skipped": 1},
     "phase_13_examples": {"status": "pass", "count": 26}
   },
   "external_gates": {
-    "deepseek": {"status": "skipped", "reason": "DEEPSEEK_API_KEY absent"},
-    "zhipu_search": {"status": "skipped", "reason": "ZHIPU_SEARCH_API_KEY absent"},
-    "zhipu_vision": {"status": "skipped", "reason": "ZHIPU_VISION_API_KEY absent"},
+    "deepseek": {"status": "pass", "model": "deepseek-v4-flash", "evidence": "test_real_deepseek_text_stream_json_tool_call_and_memory"},
+    "zhipu_search": {"status": "pass", "model": "zhipu-web-search", "evidence": "test_real_zhipu_search_returns_fresh_sourced_result"},
+    "zhipu_vision": {"status": "pass", "model": "glm-4v-flash", "evidence": "test_real_zhipu_vision_local_and_url"},
     "external_compatibility": {
-      "status": "skipped",
-      "reason": "SUPER_HARNESS_EXTERNAL_COMPAT is not enabled"
+      "status": "pass",
+      "count": 8,
+      "evidence": "MCP 1.x protocol, Registry search, pinned GitHub skill, official Codex plugin repo, stdio+Streamable HTTP",
+      "note": "requires SUPER_HARNESS_EXTERNAL_COMPAT=1 and network"
     },
     "docker": {
       "status": "skipped",
       "client": "29.2.1",
-      "reason": "Docker daemon unavailable and alpine:3.20 not locally inspectable"
+      "reason": "Docker daemon unavailable and alpine:3.20 not locally inspectable; set SUPER_HARNESS_DOCKER_E2E=1 with a running daemon"
     },
     "github_pages": {"status": "pending", "reason": "candidate not yet pushed"}
   },
-  "decision": "Do not create a V1 tag until every external gate has real passing evidence."
+  "decision": "Do not create a V1 tag until Docker real-run and GitHub Pages deployment have passing evidence."
 }

@@ -191,7 +191,18 @@ def main(argv: Sequence[str] | None = None) -> int:
     if argv is None:
         print(f"super-harness {__version__}")
         return 0
+    argv = list(argv)
+    # Python 3.11 argparse does not consume a trailing positional command list
+    # after a `--` separator inside a subparser (it works on 3.12+). Extract the
+    # `-- <command>...` tail explicitly so behaviour is identical across versions.
+    server_command: Sequence[str] | None = None
+    if "--" in argv:
+        split = argv.index("--")
+        server_command = tuple(argv[split + 1 :])
+        argv = argv[:split]
     args = build_parser().parse_args(argv)
+    if server_command is not None and args.command == "mcp" and args.action == "add":
+        args.server_command = list(server_command)
     output = Output(json_mode=bool(args.json))
     if args.command is None:
         output.emit({"name": "super-harness", "version": __version__})

@@ -1,73 +1,73 @@
 ---
-title: Examples
+title: 示例
 ---
 
-Phase 1 includes three runnable DeepSeek examples under the repository `examples/` tree:
+阶段 1 在仓库的 `examples/` 目录下包含三个可运行的 DeepSeek 示例：
 
-- `01_basic_agent`: minimal synchronous run.
-- `02_streaming`: async correlated event consumption.
-- `03_structured_and_tools`: strict JSON schema and normalized tool calls.
+- `01_basic_agent`：最小化的同步运行。
+- `02_streaming`：异步关联事件消费。
+- `03_structured_and_tools`：严格的 JSON schema 与规范化的工具调用。
 
-All require `DEEPSEEK_API_KEY`. Example source is compiled in CI; external requests are covered by the credential-gated real E2E suite.
+所有示例都需要 `DEEPSEEK_API_KEY`。示例源码在 CI 中编译；外部请求由受凭据门槛保护的真实端到端测试套件覆盖。
 
-Phase 2 adds:
+阶段 2 新增：
 
-- `04_custom_tool_loop`: complete DeepSeek function-call loop.
-- `05_approval_and_registry`: callback denial before a side effect.
-- `06_builtin_tools`: local file and Python process tools in a temporary workspace.
+- `04_custom_tool_loop`：完整的 DeepSeek 函数调用循环。
+- `05_approval_and_registry`：在产生副作用之前进行回调拒绝。
+- `06_builtin_tools`：在临时工作区中使用的本地文件与 Python 进程工具。
 
-Only the DeepSeek example needs a credential; the approval and built-in examples run locally.
+只有 DeepSeek 示例需要凭据；审批与内置工具示例均在本地运行。
 
-Phase 3 adds three credential-free examples:
+阶段 3 新增三个无需凭据的示例：
 
-- `07_durable_thread`: close/reopen SQLite, resume, and fork.
-- `08_agents_context_debug`: hierarchical AGENTS discovery and redacted provenance.
-- `09_compaction_and_control`: history compaction and TurnHandle interruption.
-# Search, RAG, and vision examples
+- `07_durable_thread`：关闭/重新打开 SQLite、恢复并分叉。
+- `08_agents_context_debug`：分层 AGENTS 发现与脱敏出处信息。
+- `09_compaction_and_control`：历史压缩与 TurnHandle 中断。
+# 搜索、RAG 与视觉示例
 
-Examples `10`–`12` cover direct search, context injection, and tool exposure. Examples `13`–`15` cover direct RAG, RAG context, and RAG tools. Examples `16`–`18` cover local image, remote image, and vision tool use. Credentialed examples read only the documented environment variables.
+示例 `10`–`12` 涵盖直接搜索、上下文注入与工具暴露。示例 `13`–`15` 涵盖直接 RAG、RAG 上下文与 RAG 工具。示例 `16`–`18` 涵盖本地图像、远程图像与视觉工具使用。需要凭据的示例只读取文档中说明的环境变量。
 
-Examples `19`–`21` cover working-memory state, LRU behavior, and Agent context. Examples `22`–`24` cover durable storage, cross-thread retrieval, and extraction/consolidation.
+示例 `19`–`21` 涵盖工作记忆状态、LRU 行为与 Agent 上下文。示例 `22`–`24` 涵盖持久化存储、跨线程检索与提取/合并。
 
-# Skills and MCP examples
+# 技能与 MCP 示例
 
-Examples `25`–`27` cover Skill discovery, progressive activation/resources, and installation. Examples `28`–`30` cover stdio tool discovery/calls/resources. Examples `31`–`33` cover Streamable HTTP negotiation, calls, and prompts. Examples `34`–`36` cover common config import, safe MCPB installation, and Official Registry search.
+示例 `25`–`27` 涵盖技能发现、渐进式激活/资源与安装。示例 `28`–`30` 涵盖 stdio 工具发现/调用/资源。示例 `31`–`33` 涵盖 Streamable HTTP 协商、调用与提示词。示例 `34`–`36` 涵盖通用配置导入、安全的 MCPB 安装与官方注册表搜索。
 
-# Plugin and hook examples
+# 插件与钩子示例
 
-Examples `37`–`39` cover plugin installation/provenance, capability activation, and disable/update/remove lifecycle. Examples `40`–`42` cover lifecycle logging, pre-tool policy denial, and plugin-contributed hook registration.
+示例 `37`–`39` 涵盖插件安装/出处、能力激活以及禁用/更新/移除生命周期。示例 `40`–`42` 涵盖生命周期日志记录、工具前策略拒绝与插件贡献的钩子注册。
 
-# Autonomous multi-Agent examples
+# 自主多 Agent 示例
 
-Examples `43`–`47` cover model-driven research decomposition, a coding/review/test team, parallel critics, child follow-up/resume, and budget/interruption. They use DeepSeek and require `DEEPSEEK_API_KEY`; the deterministic integration suite exercises the same operations without external credentials.
+示例 `43`–`47` 涵盖模型驱动的研究分解、编码/审查/测试团队、并行评审者、子任务跟进/恢复以及预算/中断。它们使用 DeepSeek 并要求 `DEEPSEEK_API_KEY`；确定性集成套件在无需外部凭据的情况下执行相同的操作。
 
-# Workflow examples
+# 工作流示例
 
-Examples `48`–`52` are credential-free and cover a three-step sequence, concurrent fan-out/join, a boolean conditional, a named router, and retry plus a strictly bounded loop. Each file can run directly with Python after installing the package in editable mode.
+示例 `48`–`52` 无需凭据，涵盖三步顺序执行、并发扇出/汇聚、布尔条件判断、命名路由器以及带重试的严格有界循环。在以可编辑模式安装包之后，每个文件都可以直接用 Python 运行。
 
-# Hybrid examples
+# 混合示例
 
-Examples `53`–`56` are credential-free and cover an autonomous Agent node, a durable nested workflow, a workflow Agent that autonomously spawns and joins two specialists through collaboration Tools, and parent/child failure-resume from JSON checkpoints.
+示例 `53`–`56` 无需凭据，涵盖自主 Agent 节点、持久化的嵌套工作流、通过协作工具自主生成并汇合两个专家的工作流 Agent，以及从 JSON 检查点进行父子失败恢复。
 
-# Observability and hardening examples
+# 可观测性与加固示例
 
-Examples `57`–`59` cover human/JSONL output, trace-tree and metric inspection, and optional OTEL export. Examples `60`–`62` cover recursive secret masking, restricted local sandbox denial, user-role external data, and malicious Tool-name rejection. All six are credential-free.
+示例 `57`–`59` 涵盖人类可读/JSONL 输出、追踪树与指标检查以及可选的 OTEL 导出。示例 `60`–`62` 涵盖递归密钥脱敏、受限本地沙箱拒绝、用户角色外部数据与恶意工具名拒绝。全部六个示例均无需凭据。
 
-# CLI examples
+# CLI 示例
 
-Examples `63`–`65` are credential-free and cover JSON doctor diagnostics, the local Skill CLI
-lifecycle, and provider-free durable Thread inspection.
+示例 `63`–`65` 无需凭据，涵盖 JSON 医生诊断、本地技能 CLI
+生命周期以及无提供商环境下持久化线程的检查。
 
-# Release-gate examples
+# 发布门槛示例
 
-Examples `66`–`68` cover dynamic registration, metadata-only lazy discovery, and namespaced lazy
-loading. Examples `69`–`71` cover secure Docker argv, allowlisted environment forwarding, and a
-conditional real run that never pulls an image. Examples `72`–`74` cover priority, async context,
-defaults, and observation. Examples `75`–`77` cover identity, scopes, and named role templates.
-Examples `78`–`80` cover profiles, precedence, and masked secret providers. Examples `81`–`83`
-cover ordered fallback, safe stream switching, and timeout normalization.
+示例 `66`–`68` 涵盖动态注册、仅元数据的惰性发现与命名空间惰性
+加载。示例 `69`–`71` 涵盖安全的 Docker argv、白名单环境变量转发以及
+从不拉取镜像的条件性真实运行。示例 `72`–`74` 涵盖优先级、异步上下文、
+默认值与观测。示例 `75`–`77` 涵盖身份、作用域与命名角色模板。
+示例 `78`–`80` 涵盖配置文件、优先级与脱敏密钥提供器。示例 `81`–`83`
+涵盖有序回退、安全流切换与超时归一化。
 
-Examples `84`–`91` close earlier local documentation gaps with custom/retained compaction,
-file-search and process built-ins, allow/deny approval, and AGENTS override/repository-boundary
-discovery. All Phase 13 examples are credential-free; example 71 prints an explicit skip when the
-Docker runtime or pre-existing `alpine:3.20` image is absent.
+示例 `84`–`91` 通过自定义/保留压缩、文件搜索与进程内建工具、
+允许/拒绝审批以及 AGENTS 覆盖/仓库边界发现，填补了早期本地文档的空白。
+阶段 13 的所有示例均无需凭据；当 Docker 运行时或预先存在的 `alpine:3.20`
+镜像缺失时，示例 71 会打印一条显式的跳过信息。

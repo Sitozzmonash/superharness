@@ -14,6 +14,7 @@ import httpx2
 from mcp import StdioServerParameters
 from mcp.client.client import Client
 from mcp.client.streamable_http import streamable_http_client
+from mcp.shared.exceptions import MCPError as MCP_SDK_ERROR
 from pydantic import BaseModel, ConfigDict, create_model
 
 from super_harness.exceptions import MCPError
@@ -21,6 +22,13 @@ from super_harness.runtime.events import Event, EventObserver
 from super_harness.tools import Tool, ToolMetadata
 
 from .config import MCPServerConfig, MCPTransport
+
+
+def _is_sdk_timeout(exc: MCP_SDK_ERROR) -> bool:
+    """Detect SDK read-timeout errors that should surface as ``timed out``."""
+    msg = str(exc).casefold()
+    return "timed out" in msg or "read timeout" in msg
+
 
 T = TypeVar("T")
 _MAX_PAGES = 20
@@ -61,6 +69,9 @@ class MCPClient:
                 )
                 target = streamable_http_client(cast(str, self.config.url), http_client=http)
             client = Client(cast(Any, target), read_timeout_seconds=self.config.timeout)
+            # Enter the SDK context directly (no asyncio.wait_for wrapper): wrapping
+            # its anyio-based async context manager in a separate asyncio task corrupts
+            # anyio's cancel scope on Python 3.11.
             self._client = await stack.enter_async_context(client)
             self._stack = stack
             await self._observe(
@@ -214,7 +225,14 @@ class MCPClient:
             )
         )
         try:
-            result = await asyncio.wait_for(operation, self.config.timeout)
+            # The SDK Client is created with read_timeout_seconds=self.config.timeout,
+            # so it enforces the operation timeout itself. We must NOT re-wrap the
+            # operation in asyncio.wait_for: on Python 3.11 that wraps an anyio-based
+            # SDK coroutine in a separate asyncio task, and cancelling/awaiting it
+            # corrupts anyio's cancel scope ("exit cancel scope in a different task").
+            # The SDK timeout surfaces as an mcp.shared.exceptions.MCPError, which we
+            # normalize below into a typed "timed out" MCPError.
+            result = await operation
             await self._observe(
                 Event(
                     "mcp.call.completed",
@@ -232,6 +250,11 @@ class MCPClient:
         except TimeoutError as exc:
             await self._failed(label, operation_id, started, exc)
             raise MCPError(f"MCP {label} timed out") from exc
+        except MCP_SDK_ERROR as exc:
+            await self._failed(label, operation_id, started, exc)
+            if _is_sdk_timeout(exc):
+                raise MCPError(f"MCP {label} timed out") from exc
+            raise MCPError(f"MCP {label} failed") from exc
         except Exception as exc:
             await self._failed(label, operation_id, started, exc)
             raise MCPError(f"MCP {label} failed") from exc

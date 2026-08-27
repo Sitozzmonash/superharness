@@ -22,8 +22,12 @@ const config = {
     },
   },
   i18n: {
-    defaultLocale: "en",
-    locales: ["en"],
+    defaultLocale: "zh-CN",
+    locales: ["zh-CN", "en"],
+    localeConfigs: {
+      "zh-CN": { label: "简体中文", htmlLang: "zh-CN" },
+      en: { label: "English", htmlLang: "en" },
+    },
   },
   presets: [
     [
@@ -46,13 +50,14 @@ const config = {
       title: "Super Harness",
       items: [
         { to: "/get-started", label: "Get Started", position: "left" },
-        { to: "/user-guide", label: "User Guide", position: "left" },
-        { to: "/internals", label: "Internals", position: "left" },
+        { type: "doc", docId: "guide/guide-part1-start", label: "User Guide", position: "left" },
+        { type: "doc", docId: "internals/internals-architecture", label: "Internals", position: "left" },
         { to: "/examples", label: "Examples", position: "left" },
         { to: "/api-reference", label: "API", position: "left" },
         { to: "/ecosystem", label: "Ecosystem", position: "left" },
         { to: "/compatibility", label: "Testing", position: "left" },
         { to: "/troubleshooting", label: "Troubleshooting", position: "left" },
+        { type: "localeDropdown", position: "right" },
       ],
     },
     footer: {

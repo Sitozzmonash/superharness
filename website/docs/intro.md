@@ -4,22 +4,17 @@ title: Super Harness
 slug: /
 ---
 
-Super Harness is a Python-native, Codex-inspired, provider-agnostic Agent Runtime for coding,
-research, enterprise knowledge, multimodal, automation, and multi-agent applications.
+Super Harness 是一个 Python 原生、受 Codex 启发、与提供商无关的 Agent 运行时，适用于编码、研究、企业知识、多模态、自动化以及多 Agent 应用。
 
-:::info Development status
+:::info 开发状态
 
-Development is complete through Phase 13 of the 14-phase route as a release candidate.
-External-provider E2Es remain credential gated and are never reported as passing when their
-credential is absent; V1 is intentionally untagged until every release gate has evidence.
+开发已完成 14 阶段路线图中的第 13 阶段，并以候选发布版的形式交付。
+外部提供商的端到端测试仍受凭据门槛限制，并且在缺少相应凭据时绝不会被报告为通过；在每一个发布门槛都具备证据之前，V1 有意保持不发布标记。
 
 :::
 
-The project keeps OpenAI optional, provides China-ready provider abstractions, treats RAG as an
-external retrieval-service contract, and supports autonomous, deterministic, and hybrid orchestration.
+该项目将 OpenAI 设为可选，提供面向中国市场的提供商抽象，将 RAG 视为外部检索服务契约，并支持自主、确定性与混合式编排。
 
-## Documentation deployment
+## 文档部署
 
-The public site is built and deployed from `website/` by GitHub Actions. Deployment happens only
-after the production documentation build succeeds; the release-status page distinguishes local
-validation from externally verified release evidence.
+公共站点由 GitHub Actions 从 `website/` 构建并部署。只有在生产环境文档构建成功之后才会进行部署；发布状态页面会区分本地验证与外部已验证的发布证据。
