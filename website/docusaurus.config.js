@@ -8,10 +8,13 @@ const config = {
   title: "Super Harness",
   tagline: "A Python-native, provider-agnostic agent runtime",
   favicon: "img/favicon.svg",
-  url: process.env.DOCS_URL || "https://super-harness.github.io",
-  baseUrl: process.env.DOCS_BASE_URL || "/super-harness/",
-  organizationName: process.env.GITHUB_ORG || "super-harness",
-  projectName: process.env.GITHUB_REPO || "super-harness",
+  // GitHub Pages project sites are served below `/<repository>/`.
+  // These defaults match the public Sitozzmonash/superharness repository;
+  // environment variables retain support for forks and custom deployments.
+  url: process.env.DOCS_URL || "https://sitozzmonash.github.io",
+  baseUrl: process.env.DOCS_BASE_URL || "/superharness/",
+  organizationName: process.env.GITHUB_ORG || "Sitozzmonash",
+  projectName: process.env.GITHUB_REPO || "superharness",
   onBrokenLinks: "throw",
   markdown: {
     hooks: {
