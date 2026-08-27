@@ -3,19 +3,9 @@
 from __future__ import annotations
 
 import inspect
-from collections.abc import Callable
-from html import escape
 from pathlib import Path
-from typing import cast
 
 import super_harness
-
-
-def _signature(value: object) -> str:
-    try:
-        return str(inspect.signature(cast(Callable[..., object], value)))
-    except (TypeError, ValueError):
-        return ""
 
 
 def render() -> str:
@@ -32,10 +22,8 @@ def render() -> str:
     for name in sorted(super_harness.__all__):
         value = getattr(super_harness, name)
         kind = "class" if inspect.isclass(value) else "function" if callable(value) else "value"
-        signature = escape(_signature(value)) if callable(value) else ""
-        summary = escape((inspect.getdoc(value) or "No public docstring.").splitlines()[0])
-        signature_line = f"- Signature: `{name}{signature}`" if signature else "- Signature: n/a"
-        lines.extend((f"## `{name}`", "", f"- Kind: `{kind}`", signature_line, f"- {summary}", ""))
+        module = getattr(value, "__module__", "builtins")
+        lines.extend((f"## `{name}`", "", f"- Kind: `{kind}`", f"- Module: `{module}`", ""))
     return "\n".join(lines)
 
 

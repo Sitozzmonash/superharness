@@ -9,857 +9,714 @@ This inventory is generated from the package's explicit `__all__` surface.
 ## `ActivatedSkill`
 
 - Kind: `class`
-- Signature: `ActivatedSkill(metadata: &#x27;SkillMetadata&#x27;, instructions: &#x27;str&#x27;) -&gt; None`
-- ActivatedSkill(metadata: &#x27;SkillMetadata&#x27;, instructions: &#x27;str&#x27;)
+- Module: `super_harness.skills.models`
 
 ## `Agent`
 
 - Kind: `class`
-- Signature: `Agent(provider: &#x27;ModelProvider&#x27;, *, instructions: &#x27;str | None&#x27; = None, tools: &#x27;Iterable[Tool]&#x27; = (), approval: &#x27;ApprovalPolicy | None&#x27; = None, hooks: &#x27;HookRegistry | None&#x27; = None, observer: &#x27;EventObserver | None&#x27; = None, max_model_steps: &#x27;int&#x27; = 8, context: &#x27;Iterable[ContextFragment]&#x27; = (), cwd: &#x27;str | None&#x27; = None, agents_loader: &#x27;AgentsMdLoader | None&#x27; = None, store: &#x27;SQLiteThreadStore | None&#x27; = None, compaction_threshold_chars: &#x27;int&#x27; = 100000, persona: &#x27;Persona | None&#x27; = None) -&gt; &#x27;None&#x27;`
-- A configured agent that creates independent conversational Threads.
+- Module: `super_harness.agent`
 
 ## `AgentEvent`
 
 - Kind: `class`
-- Signature: `AgentEvent(sequence: &#x27;int&#x27;, type: &#x27;str&#x27;, agent_id: &#x27;str&#x27;, parent_agent_id: &#x27;str | None&#x27; = None, timestamp: &#x27;datetime&#x27; = &lt;factory&gt;, payload: &#x27;Mapping[str, Any]&#x27; = &lt;factory&gt;) -&gt; None`
-- AgentEvent(sequence: &#x27;int&#x27;, type: &#x27;str&#x27;, agent_id: &#x27;str&#x27;, parent_agent_id: &#x27;str | None&#x27; = None, timestamp: &#x27;datetime&#x27; = &lt;factory&gt;, payload: &#x27;Mapping[str, Any]&#x27; = &lt;factory&gt;)
+- Module: `super_harness.orchestration.autonomous`
 
 ## `AgentFactory`
 
 - Kind: `function`
-- Signature: `AgentFactory(*args, **kwargs)`
-- No public docstring.
+- Module: `collections.abc`
 
 ## `AgentManager`
 
 - Kind: `class`
-- Signature: `AgentManager(root_agent: &#x27;Agent&#x27;, factory: &#x27;AgentFactory&#x27;, *, limits: &#x27;MultiAgentLimits | None&#x27; = None, hooks: &#x27;HookRegistry | None&#x27; = None, event_listener: &#x27;AgentEventListener | None&#x27; = None, include_child_deltas: &#x27;bool&#x27; = False, expose_tools: &#x27;bool&#x27; = True) -&gt; &#x27;None&#x27;`
-- Manage a bounded concurrent tree of independently configured Agents.
+- Module: `super_harness.orchestration.autonomous`
 
 ## `AgentResult`
 
 - Kind: `class`
-- Signature: `AgentResult(agent_id: &#x27;str&#x27;, status: &#x27;AgentStatus&#x27;, text: &#x27;str&#x27; = &#x27;&#x27;, artifacts: &#x27;tuple[str, ...]&#x27; = (), references: &#x27;tuple[str, ...]&#x27; = (), error: &#x27;str | None&#x27; = None, usage: &#x27;Usage&#x27; = &lt;factory&gt;, child_trace_ids: &#x27;tuple[str, ...]&#x27; = ()) -&gt; None`
-- AgentResult(agent_id: &#x27;str&#x27;, status: &#x27;AgentStatus&#x27;, text: &#x27;str&#x27; = &#x27;&#x27;, artifacts: &#x27;tuple[str, ...]&#x27; = (), references: &#x27;tuple[str, ...]&#x27; = (), error: &#x27;str | None&#x27; = None, usage: &#x27;Usage&#x27; = &lt;factory&gt;, child_trace_ids: &#x27;tuple[str, ...]&#x27; = ())
+- Module: `super_harness.orchestration.autonomous`
 
 ## `AgentSnapshot`
 
 - Kind: `class`
-- Signature: `AgentSnapshot(agent_id: &#x27;str&#x27;, parent_agent_id: &#x27;str | None&#x27;, root_thread_id: &#x27;str&#x27;, thread_id: &#x27;str&#x27;, role: &#x27;str&#x27;, task: &#x27;str&#x27;, status: &#x27;AgentStatus&#x27;, depth: &#x27;int&#x27;, provider: &#x27;str&#x27;, timeout: &#x27;float&#x27;, token_budget: &#x27;int | None&#x27;, created_at: &#x27;datetime&#x27;, completed_at: &#x27;datetime | None&#x27;, child_agent_ids: &#x27;tuple[str, ...]&#x27;, queued_messages: &#x27;tuple[str, ...]&#x27;, result: &#x27;AgentResult | None&#x27;, turn_count: &#x27;int&#x27;) -&gt; None`
-- AgentSnapshot(agent_id: &#x27;str&#x27;, parent_agent_id: &#x27;str | None&#x27;, root_thread_id: &#x27;str&#x27;, thread_id: &#x27;str&#x27;, role: &#x27;str&#x27;, task: &#x27;str&#x27;, status: &#x27;AgentStatus&#x27;, depth: &#x27;int&#x27;, provider: &#x27;str&#x27;, timeout: &#x27;float&#x27;, token_budget: &#x27;int | None&#x27;, created_at: &#x27;datetime&#x27;, completed_at: &#x27;datetime | None&#x27;, child_agent_ids: &#x27;tuple[str, ...]&#x27;, queued_messages: &#x27;tuple[str, ...]&#x27;, result: &#x27;AgentResult | None&#x27;, turn_count: &#x27;int&#x27;)
+- Module: `super_harness.orchestration.autonomous`
 
 ## `AgentStatus`
 
 - Kind: `class`
-- Signature: `AgentStatus(*values)`
-- Enum where members are also (and must be) strings
+- Module: `super_harness.orchestration.autonomous`
 
 ## `AgentsMdLoader`
 
 - Kind: `class`
-- Signature: `AgentsMdLoader(root_markers: &#x27;tuple[str, ...]&#x27; = (&#x27;.git&#x27;,), max_bytes: &#x27;int&#x27; = 32768, filenames: &#x27;tuple[str, ...]&#x27; = (&#x27;AGENTS.override.md&#x27;, &#x27;AGENTS.md&#x27;)) -&gt; None`
-- AgentsMdLoader(root_markers: &#x27;tuple[str, ...]&#x27; = (&#x27;.git&#x27;,), max_bytes: &#x27;int&#x27; = 32768, filenames: &#x27;tuple[str, ...]&#x27; = (&#x27;AGENTS.override.md&#x27;, &#x27;AGENTS.md&#x27;))
+- Module: `super_harness.context.agents_md`
 
 ## `ApprovalConfig`
 
 - Kind: `class`
-- Signature: `ApprovalConfig(*, mode: str = &#x27;full_access&#x27;) -&gt; None`
-- Approval engine defaults.
+- Module: `super_harness.config.models`
 
 ## `ApprovalDecision`
 
 - Kind: `class`
-- Signature: `ApprovalDecision(*values)`
-- Enum where members are also (and must be) strings
+- Module: `super_harness.tools.approval`
 
 ## `ApprovalPolicy`
 
 - Kind: `class`
-- Signature: `ApprovalPolicy(*, default: &#x27;ApprovalDecision&#x27; = &lt;ApprovalDecision.ALLOW: &#x27;allow&#x27;&gt;, callback: &#x27;ApprovalCallback | None&#x27; = None) -&gt; &#x27;None&#x27;`
-- No public docstring.
+- Module: `super_harness.tools.approval`
 
 ## `ApprovalRequest`
 
 - Kind: `class`
-- Signature: `ApprovalRequest(tool: &#x27;Tool&#x27;, arguments: &#x27;Mapping[str, Any]&#x27;, call_id: &#x27;str&#x27;) -&gt; None`
-- ApprovalRequest(tool: &#x27;Tool&#x27;, arguments: &#x27;Mapping[str, Any]&#x27;, call_id: &#x27;str&#x27;)
+- Module: `super_harness.tools.approval`
 
 ## `AutonomousAgentNode`
 
 - Kind: `class`
-- Signature: `AutonomousAgentNode(manager: &#x27;AgentManager&#x27;, task: &#x27;PromptBuilder&#x27;, role: &#x27;str&#x27; = &#x27;worker&#x27;, parent_agent_id: &#x27;str | None&#x27; = None, instructions: &#x27;str | None&#x27; = None, inheritance: &#x27;ContextInheritance&#x27; = &lt;ContextInheritance.MINIMAL: &#x27;minimal&#x27;&gt;, selected_sources: &#x27;tuple[str, ...]&#x27; = (), timeout: &#x27;float | None&#x27; = None, token_budget: &#x27;int | None&#x27; = None) -&gt; None`
-- Workflow handler that runs one autonomous Agent subtree.
+- Module: `super_harness.orchestration.hybrid`
 
 ## `CompositeSecretProvider`
 
 - Kind: `class`
-- Signature: `CompositeSecretProvider(providers: &#x27;Sequence[SecretProvider]&#x27;) -&gt; None`
-- CompositeSecretProvider(providers: &#x27;Sequence[SecretProvider]&#x27;)
+- Module: `super_harness.config.secrets`
 
 ## `ConfigResolver`
 
 - Kind: `class`
-- Signature: `ConfigResolver(*, user_config: &#x27;str | Path | None&#x27; = None) -&gt; &#x27;None&#x27;`
-- Resolve defaults &lt; user &lt; project &lt; environment &lt; runtime.
+- Module: `super_harness.config.resolution`
 
 ## `ContextAssembler`
 
 - Kind: `class`
-- Signature: `ContextAssembler(max_chars: &#x27;int&#x27; = 100000, fragments: &#x27;list[ContextFragment]&#x27; = &lt;factory&gt;) -&gt; None`
-- ContextAssembler(max_chars: &#x27;int&#x27; = 100000, fragments: &#x27;list[ContextFragment]&#x27; = &lt;factory&gt;)
+- Module: `super_harness.context.fragments`
 
 ## `ContextDebugSnapshot`
 
 - Kind: `class`
-- Signature: `ContextDebugSnapshot(thread_id: &#x27;str&#x27;, entries: &#x27;tuple[ContextDebugEntry, ...]&#x27;, history_messages: &#x27;int&#x27;, estimated_characters: &#x27;int&#x27;) -&gt; None`
-- ContextDebugSnapshot(thread_id: &#x27;str&#x27;, entries: &#x27;tuple[ContextDebugEntry, ...]&#x27;, history_messages: &#x27;int&#x27;, estimated_characters: &#x27;int&#x27;)
+- Module: `super_harness.context.fragments`
 
 ## `ContextFragment`
 
 - Kind: `class`
-- Signature: `ContextFragment(kind: &#x27;ContextKind&#x27;, content: &#x27;str&#x27;, source: &#x27;str&#x27;, role: &#x27;MessageRole&#x27; = &lt;MessageRole.USER: &#x27;user&#x27;&gt;, priority: &#x27;int | None&#x27; = None, metadata: &#x27;Mapping[str, Any]&#x27; = &lt;factory&gt;) -&gt; None`
-- ContextFragment(kind: &#x27;ContextKind&#x27;, content: &#x27;str&#x27;, source: &#x27;str&#x27;, role: &#x27;MessageRole&#x27; = &lt;MessageRole.USER: &#x27;user&#x27;&gt;, priority: &#x27;int | None&#x27; = None, metadata: &#x27;Mapping[str, Any]&#x27; = &lt;factory&gt;)
+- Module: `super_harness.context.fragments`
 
 ## `ContextInheritance`
 
 - Kind: `class`
-- Signature: `ContextInheritance(*values)`
-- Enum where members are also (and must be) strings
+- Module: `super_harness.orchestration.autonomous`
 
 ## `ContextKind`
 
 - Kind: `class`
-- Signature: `ContextKind(*values)`
-- Enum where members are also (and must be) strings
+- Module: `super_harness.context.fragments`
 
 ## `ContextSummary`
 
 - Kind: `class`
-- Signature: `ContextSummary(content: &#x27;str&#x27;, summarized_messages: &#x27;int&#x27;, summary_id: &#x27;str&#x27; = &lt;factory&gt;, created_at: &#x27;datetime&#x27; = &lt;factory&gt;) -&gt; None`
-- ContextSummary(content: &#x27;str&#x27;, summarized_messages: &#x27;int&#x27;, summary_id: &#x27;str&#x27; = &lt;factory&gt;, created_at: &#x27;datetime&#x27; = &lt;factory&gt;)
+- Module: `super_harness.context.compaction`
 
 ## `CostEstimator`
 
 - Kind: `class`
-- Signature: `CostEstimator(prices: &#x27;Mapping[str, ModelPrice] | None&#x27; = None) -&gt; &#x27;None&#x27;`
-- Estimate model usage cost from an explicit, application-owned price table.
+- Module: `super_harness.observability.metrics`
 
 ## `DeepSeekProvider`
 
 - Kind: `class`
-- Signature: `DeepSeekProvider(*, model: &#x27;str&#x27; = &#x27;deepseek-v4-flash&#x27;, api_key: &#x27;str | None&#x27; = None, base_url: &#x27;str&#x27; = &#x27;https://api.deepseek.com&#x27;, wire_api: &#x27;WireAPI&#x27; = &lt;WireAPI.CHAT_COMPLETIONS: &#x27;chat_completions&#x27;&gt;, timeout: &#x27;float&#x27; = 60.0, max_retries: &#x27;int&#x27; = 2, stream_max_retries: &#x27;int&#x27; = 1, client: &#x27;httpx.AsyncClient | None&#x27; = None) -&gt; &#x27;None&#x27;`
-- DeepSeek&#x27;s OpenAI-compatible text model service.
+- Module: `super_harness.models.deepseek`
 
 ## `DockerSandbox`
 
 - Kind: `class`
-- Signature: `DockerSandbox(workspace: &#x27;Path&#x27;, image: &#x27;str&#x27;, mode: &#x27;SandboxMode&#x27; = &lt;SandboxMode.WORKSPACE_WRITE: &#x27;workspace_write&#x27;&gt;, network: &#x27;str&#x27; = &#x27;none&#x27;, environment_allowlist: &#x27;tuple[str, ...]&#x27; = (), read_only_mounts: &#x27;Mapping[Path, str]&#x27; = &lt;factory&gt;, cpus: &#x27;float&#x27; = 1.0, memory: &#x27;str&#x27; = &#x27;512m&#x27;, pids_limit: &#x27;int&#x27; = 128, timeout: &#x27;float&#x27; = 60.0, docker_executable: &#x27;str&#x27; = &#x27;docker&#x27;) -&gt; None`
-- Bounded Docker CLI backend with secure isolation defaults.
+- Module: `super_harness.tools.sandbox`
 
 ## `Edge`
 
 - Kind: `class`
-- Signature: `Edge(source: &#x27;str&#x27;, target: &#x27;str&#x27;, route: &#x27;str | None&#x27; = None, predicate: &#x27;EdgePredicate | None&#x27; = None) -&gt; None`
-- Edge(source: &#x27;str&#x27;, target: &#x27;str&#x27;, route: &#x27;str | None&#x27; = None, predicate: &#x27;EdgePredicate | None&#x27; = None)
+- Module: `super_harness.orchestration.workflow`
 
 ## `EnvironmentSecretProvider`
 
 - Kind: `class`
-- Signature: `EnvironmentSecretProvider(environment: &#x27;Mapping[str, str] | None&#x27; = None) -&gt; None`
-- EnvironmentSecretProvider(environment: &#x27;Mapping[str, str] | None&#x27; = None)
+- Module: `super_harness.config.secrets`
 
 ## `Event`
 
 - Kind: `class`
-- Signature: `Event(type: &#x27;str&#x27;, event_id: &#x27;str&#x27; = &lt;factory&gt;, timestamp: &#x27;datetime&#x27; = &lt;factory&gt;, thread_id: &#x27;str | None&#x27; = None, turn_id: &#x27;str | None&#x27; = None, agent_id: &#x27;str | None&#x27; = None, parent_agent_id: &#x27;str | None&#x27; = None, workflow_run_id: &#x27;str | None&#x27; = None, node_id: &#x27;str | None&#x27; = None, tool_call_id: &#x27;str | None&#x27; = None, trace_id: &#x27;str | None&#x27; = None, span_id: &#x27;str | None&#x27; = None, payload: &#x27;Mapping[str, Any]&#x27; = &lt;factory&gt;) -&gt; None`
-- Immutable observation emitted by the runtime.
+- Module: `super_harness.runtime.events`
 
 ## `FallbackPolicy`
 
 - Kind: `class`
-- Signature: `FallbackPolicy(timeout: &#x27;float&#x27; = 60.0, retry_if: &#x27;RetryPredicate&#x27; = &lt;function _retryable_error at 0x0000022D58F6F600&gt;) -&gt; None`
-- FallbackPolicy(timeout: &#x27;float&#x27; = 60.0, retry_if: &#x27;RetryPredicate&#x27; = &lt;function _retryable_error at 0x0000022D58F6F600&gt;)
+- Module: `super_harness.models.fallback`
 
 ## `FallbackProvider`
 
 - Kind: `class`
-- Signature: `FallbackProvider(providers: &#x27;Sequence[ModelProvider]&#x27;, *, policy: &#x27;FallbackPolicy | None&#x27; = None, observer: &#x27;EventObserver | None&#x27; = None) -&gt; &#x27;None&#x27;`
-- Try configured providers in order without silent switching.
+- Module: `super_harness.models.fallback`
 
 ## `HTTPRAGProvider`
 
 - Kind: `class`
-- Signature: `HTTPRAGProvider(base_url: &#x27;str | None&#x27; = None, *, api_key: &#x27;str | None&#x27; = None, retrieve_path: &#x27;str&#x27; = &#x27;/retrieve&#x27;, timeout: &#x27;float&#x27; = 10.0, retries: &#x27;int&#x27; = 1, client: &#x27;httpx.AsyncClient | None&#x27; = None, trace_sink: &#x27;TraceSink | None&#x27; = None, observer: &#x27;EventObserver | None&#x27; = None) -&gt; &#x27;None&#x27;`
-- Adapter for the frozen POST /retrieve RAG contract.
+- Module: `super_harness.knowledge.providers`
 
 ## `HarnessConfig`
 
 - Kind: `class`
-- Signature: `HarnessConfig(*, profile: super_harness.config.models.ProfileName = &lt;ProfileName.CHINA: &#x27;china&#x27;&gt;, model: super_harness.config.models.ModelConfig = &lt;factory&gt;, vision: super_harness.config.models.VisionConfig = &lt;factory&gt;, web_search: super_harness.config.models.WebSearchConfig = &lt;factory&gt;, sandbox: super_harness.config.models.SandboxConfig = &lt;factory&gt;, approval: super_harness.config.models.ApprovalConfig = &lt;factory&gt;, multi_agent: super_harness.config.models.MultiAgentConfig = &lt;factory&gt;, persistence: super_harness.config.models.PersistenceConfig = &lt;factory&gt;) -&gt; None`
-- Validated target for defaults, files, environment, and runtime overrides.
+- Module: `super_harness.config.models`
 
 ## `HeuristicMemoryExtractor`
 
 - Kind: `class`
-- Signature: `HeuristicMemoryExtractor()`
-- Conservative credential-free extractor for explicit memory statements.
+- Module: `super_harness.memory.pipeline`
 
 ## `HookContext`
 
 - Kind: `class`
-- Signature: `HookContext(event: &#x27;HookEvent&#x27;, data: &#x27;Mapping[str, Any]&#x27; = &lt;factory&gt;, thread_id: &#x27;str | None&#x27; = None, turn_id: &#x27;str | None&#x27; = None, source: &#x27;str&#x27; = &#x27;runtime&#x27;) -&gt; None`
-- HookContext(event: &#x27;HookEvent&#x27;, data: &#x27;Mapping[str, Any]&#x27; = &lt;factory&gt;, thread_id: &#x27;str | None&#x27; = None, turn_id: &#x27;str | None&#x27; = None, source: &#x27;str&#x27; = &#x27;runtime&#x27;)
+- Module: `super_harness.hooks.models`
 
 ## `HookEvent`
 
 - Kind: `class`
-- Signature: `HookEvent(*values)`
-- Enum where members are also (and must be) strings
+- Module: `super_harness.hooks.models`
 
 ## `HookFailurePolicy`
 
 - Kind: `class`
-- Signature: `HookFailurePolicy(*values)`
-- Enum where members are also (and must be) strings
+- Module: `super_harness.hooks.models`
 
 ## `HookOutcome`
 
 - Kind: `class`
-- Signature: `HookOutcome(data: &#x27;Mapping[str, Any]&#x27;, traces: &#x27;tuple[HookTrace, ...]&#x27; = (), denied: &#x27;bool&#x27; = False, deny_reason: &#x27;str | None&#x27; = None) -&gt; None`
-- HookOutcome(data: &#x27;Mapping[str, Any]&#x27;, traces: &#x27;tuple[HookTrace, ...]&#x27; = (), denied: &#x27;bool&#x27; = False, deny_reason: &#x27;str | None&#x27; = None)
+- Module: `super_harness.hooks.models`
 
 ## `HookRegistration`
 
 - Kind: `class`
-- Signature: `HookRegistration(event: &#x27;HookEvent&#x27;, handler: &#x27;HookCallable&#x27;, name: &#x27;str&#x27;, source: &#x27;str&#x27; = &#x27;runtime&#x27;, priority: &#x27;int&#x27; = 100, timeout: &#x27;float&#x27; = 10.0, failure_policy: &#x27;HookFailurePolicy&#x27; = &lt;HookFailurePolicy.WARN: &#x27;warn&#x27;&gt;, allow_modify: &#x27;bool&#x27; = False) -&gt; None`
-- HookRegistration(event: &#x27;HookEvent&#x27;, handler: &#x27;HookCallable&#x27;, name: &#x27;str&#x27;, source: &#x27;str&#x27; = &#x27;runtime&#x27;, priority: &#x27;int&#x27; = 100, timeout: &#x27;float&#x27; = 10.0, failure_policy: &#x27;HookFailurePolicy&#x27; = &lt;HookFailurePolicy.WARN: &#x27;warn&#x27;&gt;, allow_modify: &#x27;bool&#x27; = False)
+- Module: `super_harness.hooks.registry`
 
 ## `HookRegistry`
 
 - Kind: `class`
-- Signature: `HookRegistry(*, trace_sink: &#x27;HookTraceSink | None&#x27; = None) -&gt; &#x27;None&#x27;`
-- No public docstring.
+- Module: `super_harness.hooks.registry`
 
 ## `HookResult`
 
 - Kind: `class`
-- Signature: `HookResult(updates: &#x27;Mapping[str, Any]&#x27; = &lt;factory&gt;, deny_reason: &#x27;str | None&#x27; = None) -&gt; None`
-- HookResult(updates: &#x27;Mapping[str, Any]&#x27; = &lt;factory&gt;, deny_reason: &#x27;str | None&#x27; = None)
+- Module: `super_harness.hooks.models`
 
 ## `HookTrace`
 
 - Kind: `class`
-- Signature: `HookTrace(event: &#x27;HookEvent&#x27;, hook: &#x27;str&#x27;, source: &#x27;str&#x27;, success: &#x27;bool&#x27;, duration_ms: &#x27;float&#x27;, denied: &#x27;bool&#x27; = False, warning: &#x27;str | None&#x27; = None) -&gt; None`
-- HookTrace(event: &#x27;HookEvent&#x27;, hook: &#x27;str&#x27;, source: &#x27;str&#x27;, success: &#x27;bool&#x27;, duration_ms: &#x27;float&#x27;, denied: &#x27;bool&#x27; = False, warning: &#x27;str | None&#x27; = None)
+- Module: `super_harness.hooks.models`
 
 ## `InstalledPlugin`
 
 - Kind: `class`
-- Signature: `InstalledPlugin(manifest: &#x27;PluginManifest&#x27;, enabled: &#x27;bool&#x27;, source: &#x27;Mapping[str, Any]&#x27;) -&gt; None`
-- InstalledPlugin(manifest: &#x27;PluginManifest&#x27;, enabled: &#x27;bool&#x27;, source: &#x27;Mapping[str, Any]&#x27;)
+- Module: `super_harness.plugins.models`
 
 ## `JSONWorkflowStore`
 
 - Kind: `class`
-- Signature: `JSONWorkflowStore(directory: &#x27;str | Path&#x27;) -&gt; &#x27;None&#x27;`
-- Atomic JSON checkpoint storage keyed by workflow run ID.
+- Module: `super_harness.orchestration.workflow`
 
 ## `KnowledgeRouter`
 
 - Kind: `class`
-- Signature: `KnowledgeRouter(*, search: &#x27;WebSearchProvider | None&#x27; = None, rag: &#x27;RAGProvider | None&#x27; = None, vision: &#x27;VisionProvider | None&#x27; = None) -&gt; &#x27;None&#x27;`
-- No public docstring.
+- Module: `super_harness.knowledge.routing`
 
 ## `KnowledgeTrace`
 
 - Kind: `class`
-- Signature: `KnowledgeTrace(operation: &#x27;str&#x27;, provider: &#x27;str&#x27;, success: &#x27;bool&#x27;, item_count: &#x27;int&#x27; = 0, metadata: &#x27;Mapping[str, Any]&#x27; = &lt;factory&gt;) -&gt; None`
-- KnowledgeTrace(operation: &#x27;str&#x27;, provider: &#x27;str&#x27;, success: &#x27;bool&#x27;, item_count: &#x27;int&#x27; = 0, metadata: &#x27;Mapping[str, Any]&#x27; = &lt;factory&gt;)
+- Module: `super_harness.knowledge.types`
 
 ## `LazyTool`
 
 - Kind: `class`
-- Signature: `LazyTool(name: &#x27;str&#x27;, description: &#x27;str&#x27;, namespace: &#x27;str | None&#x27; = None, source: &#x27;str&#x27; = &#x27;runtime&#x27;) -&gt; None`
-- LazyTool(name: &#x27;str&#x27;, description: &#x27;str&#x27;, namespace: &#x27;str | None&#x27; = None, source: &#x27;str&#x27; = &#x27;runtime&#x27;)
+- Module: `super_harness.tools.registry`
 
 ## `LazyToolLoader`
 
 - Kind: `function`
-- Signature: `LazyToolLoader(*args, **kwargs)`
-- No public docstring.
+- Module: `collections.abc`
 
 ## `LocalSandbox`
 
 - Kind: `class`
-- Signature: `LocalSandbox(workspace: &#x27;Path&#x27;, mode: &#x27;SandboxMode&#x27; = &lt;SandboxMode.FULL_ACCESS: &#x27;full_access&#x27;&gt;, environment_allowlist: &#x27;tuple[str, ...]&#x27; = &lt;factory&gt;) -&gt; None`
-- A path-constrained local runner, not a strong security boundary.
+- Module: `super_harness.tools.sandbox`
 
 ## `MASK`
 
 - Kind: `value`
-- Signature: n/a
-- str(object=&#x27;&#x27;) -&gt; str
+- Module: `builtins`
 
 ## `MCPBundle`
 
 - Kind: `class`
-- Signature: `MCPBundle(name: &#x27;str&#x27;, version: &#x27;str&#x27;, manifest_version: &#x27;str&#x27;, description: &#x27;str&#x27;, config: &#x27;MCPServerConfig&#x27;) -&gt; None`
-- MCPBundle(name: &#x27;str&#x27;, version: &#x27;str&#x27;, manifest_version: &#x27;str&#x27;, description: &#x27;str&#x27;, config: &#x27;MCPServerConfig&#x27;)
+- Module: `super_harness.mcp.mcpb`
 
 ## `MCPClient`
 
 - Kind: `class`
-- Signature: `MCPClient(config: &#x27;MCPServerConfig&#x27;, *, observer: &#x27;EventObserver | None&#x27; = None) -&gt; &#x27;None&#x27;`
-- No public docstring.
+- Module: `super_harness.mcp.client`
 
 ## `MCPRegistry`
 
 - Kind: `class`
-- Signature: `MCPRegistry(*args, **kwargs)`
-- Base class for protocol classes.
+- Module: `super_harness.mcp.registry`
 
 ## `MCPServerConfig`
 
 - Kind: `class`
-- Signature: `MCPServerConfig(name: &#x27;str&#x27;, transport: &#x27;MCPTransport&#x27;, command: &#x27;str | None&#x27; = None, args: &#x27;tuple[str, ...]&#x27; = (), env: &#x27;Mapping[str, str]&#x27; = &lt;factory&gt;, cwd: &#x27;Path | None&#x27; = None, url: &#x27;str | None&#x27; = None, headers: &#x27;Mapping[str, str]&#x27; = &lt;factory&gt;, timeout: &#x27;float&#x27; = 30.0, enabled: &#x27;bool&#x27; = True, include_tools: &#x27;tuple[str, ...]&#x27; = (), exclude_tools: &#x27;tuple[str, ...]&#x27; = ()) -&gt; None`
-- MCPServerConfig(name: &#x27;str&#x27;, transport: &#x27;MCPTransport&#x27;, command: &#x27;str | None&#x27; = None, args: &#x27;tuple[str, ...]&#x27; = (), env: &#x27;Mapping[str, str]&#x27; = &lt;factory&gt;, cwd: &#x27;Path | None&#x27; = None, url: &#x27;str | None&#x27; = None, headers: &#x27;Mapping[str, str]&#x27; = &lt;factory&gt;, timeout: &#x27;float&#x27; = 30.0, enabled: &#x27;bool&#x27; = True, include_tools: &#x27;tuple[str, ...]&#x27; = (), exclude_tools: &#x27;tuple[str, ...]&#x27; = ())
+- Module: `super_harness.mcp.config`
 
 ## `MCPTransport`
 
 - Kind: `class`
-- Signature: `MCPTransport(*values)`
-- Enum where members are also (and must be) strings
+- Module: `super_harness.mcp.config`
 
 ## `MappingSecretProvider`
 
 - Kind: `class`
-- Signature: `MappingSecretProvider(values: &#x27;Mapping[str, str]&#x27;) -&gt; None`
-- MappingSecretProvider(values: &#x27;Mapping[str, str]&#x27;)
+- Module: `super_harness.config.secrets`
 
 ## `MemoryCandidate`
 
 - Kind: `class`
-- Signature: `MemoryCandidate(content: &#x27;str&#x27;, kind: &#x27;MemoryKind&#x27; = &lt;MemoryKind.NOTE: &#x27;note&#x27;&gt;, tags: &#x27;tuple[str, ...]&#x27; = (), importance: &#x27;float&#x27; = 0.5, metadata: &#x27;Mapping[str, Any]&#x27; = &lt;factory&gt;) -&gt; None`
-- MemoryCandidate(content: &#x27;str&#x27;, kind: &#x27;MemoryKind&#x27; = &lt;MemoryKind.NOTE: &#x27;note&#x27;&gt;, tags: &#x27;tuple[str, ...]&#x27; = (), importance: &#x27;float&#x27; = 0.5, metadata: &#x27;Mapping[str, Any]&#x27; = &lt;factory&gt;)
+- Module: `super_harness.memory.types`
 
 ## `MemoryKind`
 
 - Kind: `class`
-- Signature: `MemoryKind(*values)`
-- Enum where members are also (and must be) strings
+- Module: `super_harness.memory.types`
 
 ## `MemoryManager`
 
 - Kind: `class`
-- Signature: `MemoryManager(store: &#x27;MemoryStore&#x27;, extractor: &#x27;MemoryExtractor | None&#x27; = None, *, trace_sink: &#x27;MemoryTraceSink | None&#x27; = None) -&gt; &#x27;None&#x27;`
-- No public docstring.
+- Module: `super_harness.memory.pipeline`
 
 ## `MemoryMatch`
 
 - Kind: `class`
-- Signature: `MemoryMatch(record: &#x27;MemoryRecord&#x27;, score: &#x27;float&#x27;) -&gt; None`
-- MemoryMatch(record: &#x27;MemoryRecord&#x27;, score: &#x27;float&#x27;)
+- Module: `super_harness.memory.types`
 
 ## `MemoryRecord`
 
 - Kind: `class`
-- Signature: `MemoryRecord(content: &#x27;str&#x27;, kind: &#x27;MemoryKind&#x27; = &lt;MemoryKind.NOTE: &#x27;note&#x27;&gt;, source_thread_id: &#x27;str | None&#x27; = None, tags: &#x27;tuple[str, ...]&#x27; = (), importance: &#x27;float&#x27; = 0.5, metadata: &#x27;Mapping[str, Any]&#x27; = &lt;factory&gt;, memory_id: &#x27;str&#x27; = &lt;factory&gt;, created_at: &#x27;datetime&#x27; = &lt;factory&gt;, updated_at: &#x27;datetime&#x27; = &lt;factory&gt;, usage_count: &#x27;int&#x27; = 0, last_accessed_at: &#x27;datetime | None&#x27; = None) -&gt; None`
-- MemoryRecord(content: &#x27;str&#x27;, kind: &#x27;MemoryKind&#x27; = &lt;MemoryKind.NOTE: &#x27;note&#x27;&gt;, source_thread_id: &#x27;str | None&#x27; = None, tags: &#x27;tuple[str, ...]&#x27; = (), importance: &#x27;float&#x27; = 0.5, metadata: &#x27;Mapping[str, Any]&#x27; = &lt;factory&gt;, memory_id: &#x27;str&#x27; = &lt;factory&gt;, created_at: &#x27;datetime&#x27; = &lt;factory&gt;, updated_at: &#x27;datetime&#x27; = &lt;factory&gt;, usage_count: &#x27;int&#x27; = 0, last_accessed_at: &#x27;datetime | None&#x27; = None)
+- Module: `super_harness.memory.types`
 
 ## `MemoryTrace`
 
 - Kind: `class`
-- Signature: `MemoryTrace(operation: &#x27;str&#x27;, success: &#x27;bool&#x27;, item_count: &#x27;int&#x27; = 0, thread_id: &#x27;str | None&#x27; = None) -&gt; None`
-- MemoryTrace(operation: &#x27;str&#x27;, success: &#x27;bool&#x27;, item_count: &#x27;int&#x27; = 0, thread_id: &#x27;str | None&#x27; = None)
+- Module: `super_harness.memory.types`
 
 ## `MetricsRegistry`
 
 - Kind: `class`
-- Signature: `MetricsRegistry(*, costs: &#x27;CostEstimator | None&#x27; = None) -&gt; &#x27;None&#x27;`
-- Counters, gauges, raw histogram observations, and estimated model cost.
+- Module: `super_harness.observability.metrics`
 
 ## `MetricsSnapshot`
 
 - Kind: `class`
-- Signature: `MetricsSnapshot(counters: &#x27;Mapping[str, float]&#x27;, gauges: &#x27;Mapping[str, float]&#x27;, histograms: &#x27;Mapping[str, tuple[float, ...]]&#x27;, estimated_cost_usd: &#x27;float&#x27;) -&gt; None`
-- MetricsSnapshot(counters: &#x27;Mapping[str, float]&#x27;, gauges: &#x27;Mapping[str, float]&#x27;, histograms: &#x27;Mapping[str, tuple[float, ...]]&#x27;, estimated_cost_usd: &#x27;float&#x27;)
+- Module: `super_harness.observability.models`
 
 ## `ModelConfig`
 
 - Kind: `class`
-- Signature: `ModelConfig(*, provider: str = &#x27;deepseek&#x27;, model: str = &#x27;deepseek-v4-flash&#x27;) -&gt; None`
-- Main text-model selection.
+- Module: `super_harness.config.models`
 
 ## `ModelPrice`
 
 - Kind: `class`
-- Signature: `ModelPrice(input_per_million: &#x27;float&#x27;, output_per_million: &#x27;float&#x27;, cached_input_per_million: &#x27;float | None&#x27; = None) -&gt; None`
-- USD price per one million input and output tokens.
+- Module: `super_harness.observability.metrics`
 
 ## `MultiAgentConfig`
 
 - Kind: `class`
-- Signature: `MultiAgentConfig(*, max_agents: Annotated[int, Ge(ge=1), Le(le=64)] = 6, max_depth: Annotated[int, Ge(ge=0), Le(le=16)] = 2) -&gt; None`
-- !!! abstract &quot;Usage Documentation&quot;
+- Module: `super_harness.config.models`
 
 ## `MultiAgentLimits`
 
 - Kind: `class`
-- Signature: `MultiAgentLimits(max_active_agents: &#x27;int&#x27; = 4, max_total_agents: &#x27;int&#x27; = 16, max_depth: &#x27;int&#x27; = 3, total_token_budget: &#x27;int&#x27; = 100000, total_timeout: &#x27;float&#x27; = 3600.0, default_agent_timeout: &#x27;float&#x27; = 300.0, max_result_chars: &#x27;int&#x27; = 20000) -&gt; None`
-- MultiAgentLimits(max_active_agents: &#x27;int&#x27; = 4, max_total_agents: &#x27;int&#x27; = 16, max_depth: &#x27;int&#x27; = 3, total_token_budget: &#x27;int&#x27; = 100000, total_timeout: &#x27;float&#x27; = 3600.0, default_agent_timeout: &#x27;float&#x27; = 300.0, max_result_chars: &#x27;int&#x27; = 20000)
+- Module: `super_harness.orchestration.autonomous`
 
 ## `Node`
 
 - Kind: `class`
-- Signature: `Node(node_id: &#x27;str&#x27;, handler: &#x27;NodeHandler&#x27;, kind: &#x27;NodeKind&#x27; = &lt;NodeKind.FUNCTION: &#x27;function&#x27;&gt;, retry: &#x27;RetryPolicy&#x27; = &lt;factory&gt;, timeout: &#x27;float | None&#x27; = None, idempotent: &#x27;bool&#x27; = False, loop_until: &#x27;LoopPredicate | None&#x27; = None, max_iterations: &#x27;int&#x27; = 1) -&gt; None`
-- Node(node_id: &#x27;str&#x27;, handler: &#x27;NodeHandler&#x27;, kind: &#x27;NodeKind&#x27; = &lt;NodeKind.FUNCTION: &#x27;function&#x27;&gt;, retry: &#x27;RetryPolicy&#x27; = &lt;factory&gt;, timeout: &#x27;float | None&#x27; = None, idempotent: &#x27;bool&#x27; = False, loop_until: &#x27;LoopPredicate | None&#x27; = None, max_iterations: &#x27;int&#x27; = 1)
+- Module: `super_harness.orchestration.workflow`
 
 ## `NodeKind`
 
 - Kind: `class`
-- Signature: `NodeKind(*values)`
-- Enum where members are also (and must be) strings
+- Module: `super_harness.orchestration.workflow`
 
 ## `NodeOutput`
 
 - Kind: `class`
-- Signature: `NodeOutput(value: &#x27;Any&#x27; = None, updates: &#x27;Mapping[str, Any]&#x27; = &lt;factory&gt;, route: &#x27;str | None&#x27; = None) -&gt; None`
-- Optional structured output with atomic state updates and a route label.
+- Module: `super_harness.orchestration.workflow`
 
 ## `NodeResult`
 
 - Kind: `class`
-- Signature: `NodeResult(node_id: &#x27;str&#x27;, status: &#x27;NodeStatus&#x27; = &lt;NodeStatus.PENDING: &#x27;pending&#x27;&gt;, value: &#x27;Any&#x27; = None, route: &#x27;str | None&#x27; = None, attempts: &#x27;int&#x27; = 0, iterations: &#x27;int&#x27; = 0, error: &#x27;str | None&#x27; = None, started_at: &#x27;datetime | None&#x27; = None, completed_at: &#x27;datetime | None&#x27; = None) -&gt; None`
-- NodeResult(node_id: &#x27;str&#x27;, status: &#x27;NodeStatus&#x27; = &lt;NodeStatus.PENDING: &#x27;pending&#x27;&gt;, value: &#x27;Any&#x27; = None, route: &#x27;str | None&#x27; = None, attempts: &#x27;int&#x27; = 0, iterations: &#x27;int&#x27; = 0, error: &#x27;str | None&#x27; = None, started_at: &#x27;datetime | None&#x27; = None, completed_at: &#x27;datetime | None&#x27; = None)
+- Module: `super_harness.orchestration.workflow`
 
 ## `NodeStatus`
 
 - Kind: `class`
-- Signature: `NodeStatus(*values)`
-- Enum where members are also (and must be) strings
+- Module: `super_harness.orchestration.workflow`
 
 ## `Observability`
 
 - Kind: `class`
-- Signature: `Observability(*, logger: &#x27;StructuredLogger | None&#x27; = None, tracer: &#x27;TraceRecorder | None&#x27; = None, metrics: &#x27;MetricsRegistry | None&#x27; = None, redactor: &#x27;SecretRedactor | None&#x27; = None, exporters: &#x27;Sequence[TelemetryExporter]&#x27; = (), include_deltas: &#x27;bool&#x27; = False, include_content: &#x27;bool&#x27; = False, strict_export: &#x27;bool&#x27; = False) -&gt; &#x27;None&#x27;`
-- Consume runtime events without changing their execution semantics.
+- Module: `super_harness.observability.observer`
 
 ## `OfficialMCPRegistry`
 
 - Kind: `class`
-- Signature: `OfficialMCPRegistry(base_url: &#x27;str&#x27; = &#x27;https://registry.modelcontextprotocol.io&#x27;, *, timeout: &#x27;float&#x27; = 20.0, client: &#x27;httpx.AsyncClient | None&#x27; = None) -&gt; &#x27;None&#x27;`
-- No public docstring.
+- Module: `super_harness.mcp.registry`
 
 ## `OpenAICompatibleProvider`
 
 - Kind: `class`
-- Signature: `OpenAICompatibleProvider(*, model: &#x27;str&#x27;, base_url: &#x27;str&#x27;, api_key: &#x27;str | None&#x27; = None, api_key_env: &#x27;str | None&#x27; = None, wire_api: &#x27;WireAPI&#x27; = &lt;WireAPI.CHAT_COMPLETIONS: &#x27;chat_completions&#x27;&gt;, timeout: &#x27;float&#x27; = 60.0, max_retries: &#x27;int&#x27; = 2, stream_max_retries: &#x27;int&#x27; = 1, client: &#x27;httpx.AsyncClient | None&#x27; = None, name: &#x27;str&#x27; = &#x27;openai_compatible&#x27;, capabilities: &#x27;ModelCapabilities | None&#x27; = None) -&gt; &#x27;None&#x27;`
-- Provider-neutral adapter for OpenAI-compatible HTTP APIs.
+- Module: `super_harness.models.openai_compatible`
 
 ## `OpenTelemetryExporter`
 
 - Kind: `class`
-- Signature: `OpenTelemetryExporter(service_name: &#x27;str&#x27; = &#x27;super-harness&#x27;, *, tracer: &#x27;Any | None&#x27; = None) -&gt; &#x27;None&#x27;`
-- Export completed framework spans through an injected or lazily loaded OTEL tracer.
+- Module: `super_harness.observability.otel`
 
 ## `PersistenceConfig`
 
 - Kind: `class`
-- Signature: `PersistenceConfig(*, backend: str = &#x27;sqlite&#x27;, path: str = &#x27;.super-harness/state.db&#x27;) -&gt; None`
-- !!! abstract &quot;Usage Documentation&quot;
+- Module: `super_harness.config.models`
 
 ## `Persona`
 
 - Kind: `class`
-- Signature: `Persona(name: &#x27;str&#x27;, role: &#x27;str&#x27;, goal: &#x27;str&#x27;, instructions: &#x27;str&#x27; = &#x27;&#x27;, constraints: &#x27;tuple[str, ...]&#x27; = (), model_override: &#x27;str | None&#x27; = None, tool_scopes: &#x27;tuple[str, ...]&#x27; = (&#x27;*&#x27;,), skill_scopes: &#x27;tuple[str, ...]&#x27; = (&#x27;*&#x27;,), memory_scope: &#x27;str&#x27; = &#x27;thread&#x27;, subagent_roles: &#x27;Mapping[str, Persona]&#x27; = &lt;factory&gt;) -&gt; None`
-- Instruction/configuration layer for one Agent identity.
+- Module: `super_harness.persona`
 
 ## `PluginCapabilities`
 
 - Kind: `class`
-- Signature: `PluginCapabilities(plugin: &#x27;str&#x27;, skills: &#x27;tuple[Path, ...]&#x27; = (), tools: &#x27;tuple[Tool, ...]&#x27; = (), mcp_servers: &#x27;tuple[MCPServerConfig, ...]&#x27; = (), hooks: &#x27;tuple[str, ...]&#x27; = (), assets: &#x27;tuple[Path, ...]&#x27; = (), personas: &#x27;tuple[Path, ...]&#x27; = (), commands: &#x27;tuple[Path, ...]&#x27; = ()) -&gt; None`
-- PluginCapabilities(plugin: &#x27;str&#x27;, skills: &#x27;tuple[Path, ...]&#x27; = (), tools: &#x27;tuple[Tool, ...]&#x27; = (), mcp_servers: &#x27;tuple[MCPServerConfig, ...]&#x27; = (), hooks: &#x27;tuple[str, ...]&#x27; = (), assets: &#x27;tuple[Path, ...]&#x27; = (), personas: &#x27;tuple[Path, ...]&#x27; = (), commands: &#x27;tuple[Path, ...]&#x27; = ())
+- Module: `super_harness.plugins.models`
 
 ## `PluginHookSpec`
 
 - Kind: `class`
-- Signature: `PluginHookSpec(event: &#x27;HookEvent&#x27;, entry: &#x27;str&#x27;, name: &#x27;str | None&#x27; = None, priority: &#x27;int&#x27; = 100, timeout: &#x27;float&#x27; = 10.0, failure_policy: &#x27;HookFailurePolicy&#x27; = &lt;HookFailurePolicy.WARN: &#x27;warn&#x27;&gt;, allow_modify: &#x27;bool&#x27; = False) -&gt; None`
-- PluginHookSpec(event: &#x27;HookEvent&#x27;, entry: &#x27;str&#x27;, name: &#x27;str | None&#x27; = None, priority: &#x27;int&#x27; = 100, timeout: &#x27;float&#x27; = 10.0, failure_policy: &#x27;HookFailurePolicy&#x27; = &lt;HookFailurePolicy.WARN: &#x27;warn&#x27;&gt;, allow_modify: &#x27;bool&#x27; = False)
+- Module: `super_harness.plugins.models`
 
 ## `PluginInstaller`
 
 - Kind: `class`
-- Signature: `PluginInstaller(destination: &#x27;str | Path&#x27;) -&gt; &#x27;None&#x27;`
-- No public docstring.
+- Module: `super_harness.plugins.installer`
 
 ## `PluginManager`
 
 - Kind: `class`
-- Signature: `PluginManager(installer: &#x27;PluginInstaller&#x27;, *, tools: &#x27;ToolRegistry | None&#x27; = None, hooks: &#x27;HookRegistry | None&#x27; = None, trace_sink: &#x27;Callable[[PluginTrace], None] | None&#x27; = None) -&gt; &#x27;None&#x27;`
-- No public docstring.
+- Module: `super_harness.plugins.manager`
 
 ## `PluginManifest`
 
 - Kind: `class`
-- Signature: `PluginManifest(name: &#x27;str&#x27;, version: &#x27;str&#x27;, description: &#x27;str&#x27;, root: &#x27;Path&#x27;, format: &#x27;str&#x27;, requires_super_harness: &#x27;str&#x27; = &#x27;&#x27;, skill_roots: &#x27;tuple[Path, ...]&#x27; = (), tool_entries: &#x27;tuple[str, ...]&#x27; = (), mcp_path: &#x27;Path | None&#x27; = None, inline_mcp: &#x27;Mapping[str, Any] | None&#x27; = None, hook_specs: &#x27;tuple[PluginHookSpec, ...]&#x27; = (), assets: &#x27;tuple[Path, ...]&#x27; = (), personas: &#x27;tuple[Path, ...]&#x27; = (), commands: &#x27;tuple[Path, ...]&#x27; = (), config_schema: &#x27;Path | None&#x27; = None, config_defaults: &#x27;Path | None&#x27; = None, warnings: &#x27;tuple[str, ...]&#x27; = (), extra: &#x27;Mapping[str, Any]&#x27; = &lt;factory&gt;) -&gt; None`
-- PluginManifest(name: &#x27;str&#x27;, version: &#x27;str&#x27;, description: &#x27;str&#x27;, root: &#x27;Path&#x27;, format: &#x27;str&#x27;, requires_super_harness: &#x27;str&#x27; = &#x27;&#x27;, skill_roots: &#x27;tuple[Path, ...]&#x27; = (), tool_entries: &#x27;tuple[str, ...]&#x27; = (), mcp_path: &#x27;Path | None&#x27; = None, inline_mcp: &#x27;Mapping[str, Any] | None&#x27; = None, hook_specs: &#x27;tuple[PluginHookSpec, ...]&#x27; = (), assets: &#x27;tuple[Path, ...]&#x27; = (), personas: &#x27;tuple[Path, ...]&#x27; = (), commands: &#x27;tuple[Path, ...]&#x27; = (), config_schema: &#x27;Path | None&#x27; = None, config_defaults: &#x27;Path | None&#x27; = None, warnings: &#x27;tuple[str, ...]&#x27; = (), extra: &#x27;Mapping[str, Any]&#x27; = &lt;factory&gt;)
+- Module: `super_harness.plugins.models`
 
 ## `PluginTrace`
 
 - Kind: `class`
-- Signature: `PluginTrace(operation: &#x27;str&#x27;, plugin: &#x27;str&#x27;, success: &#x27;bool&#x27;, capabilities: &#x27;tuple[str, ...]&#x27; = (), warning: &#x27;str | None&#x27; = None) -&gt; None`
-- PluginTrace(operation: &#x27;str&#x27;, plugin: &#x27;str&#x27;, success: &#x27;bool&#x27;, capabilities: &#x27;tuple[str, ...]&#x27; = (), warning: &#x27;str | None&#x27; = None)
+- Module: `super_harness.plugins.models`
 
 ## `ProfileName`
 
 - Kind: `class`
-- Signature: `ProfileName(*values)`
-- Built-in configuration composition profiles.
+- Module: `super_harness.config.models`
 
 ## `RAGDocument`
 
 - Kind: `class`
-- Signature: `RAGDocument(text: &#x27;str&#x27;, score: &#x27;float | None&#x27; = None, source: &#x27;str | None&#x27; = None, metadata: &#x27;Mapping[str, Any]&#x27; = &lt;factory&gt;) -&gt; None`
-- RAGDocument(text: &#x27;str&#x27;, score: &#x27;float | None&#x27; = None, source: &#x27;str | None&#x27; = None, metadata: &#x27;Mapping[str, Any]&#x27; = &lt;factory&gt;)
+- Module: `super_harness.knowledge.types`
 
 ## `ResolvedConfig`
 
 - Kind: `class`
-- Signature: `ResolvedConfig(config: &#x27;HarnessConfig&#x27;, sources: &#x27;tuple[Path, ...]&#x27;, environment_keys: &#x27;tuple[str, ...]&#x27;, dotenv: &#x27;Path | None&#x27; = None) -&gt; None`
-- ResolvedConfig(config: &#x27;HarnessConfig&#x27;, sources: &#x27;tuple[Path, ...]&#x27;, environment_keys: &#x27;tuple[str, ...]&#x27;, dotenv: &#x27;Path | None&#x27; = None)
+- Module: `super_harness.config.resolution`
 
 ## `RetryPolicy`
 
 - Kind: `class`
-- Signature: `RetryPolicy(max_attempts: &#x27;int&#x27; = 1, backoff_seconds: &#x27;float&#x27; = 0.0, multiplier: &#x27;float&#x27; = 2.0, max_backoff_seconds: &#x27;float&#x27; = 60.0) -&gt; None`
-- Retry settings for an idempotent node invocation.
+- Module: `super_harness.orchestration.workflow`
 
 ## `Route`
 
 - Kind: `class`
-- Signature: `Route(name: &#x27;str&#x27;, target: &#x27;str&#x27;, predicate: &#x27;RoutePredicate[T]&#x27;, priority: &#x27;int&#x27; = 100, metadata: &#x27;Mapping[str, Any]&#x27; = &lt;factory&gt;) -&gt; None`
-- Route(name: &#x27;str&#x27;, target: &#x27;str&#x27;, predicate: &#x27;RoutePredicate[T]&#x27;, priority: &#x27;int&#x27; = 100, metadata: &#x27;Mapping[str, Any]&#x27; = &lt;factory&gt;)
+- Module: `super_harness.orchestration.router`
 
 ## `RouteDecision`
 
 - Kind: `class`
-- Signature: `RouteDecision(route: &#x27;str&#x27;, target: &#x27;str&#x27;, matched: &#x27;bool&#x27;, reason: &#x27;str&#x27;, timestamp: &#x27;datetime&#x27; = &lt;factory&gt;, metadata: &#x27;Mapping[str, Any]&#x27; = &lt;factory&gt;) -&gt; None`
-- RouteDecision(route: &#x27;str&#x27;, target: &#x27;str&#x27;, matched: &#x27;bool&#x27;, reason: &#x27;str&#x27;, timestamp: &#x27;datetime&#x27; = &lt;factory&gt;, metadata: &#x27;Mapping[str, Any]&#x27; = &lt;factory&gt;)
+- Module: `super_harness.orchestration.router`
 
 ## `Router`
 
 - Kind: `class`
-- Signature: `Router(routes: &#x27;Sequence[Route[T]]&#x27;, *, default: &#x27;str | None&#x27; = None, observer: &#x27;EventObserver | None&#x27; = None) -&gt; &#x27;None&#x27;`
-- Abstract base class for generic types.
+- Module: `super_harness.orchestration.router`
 
 ## `SQLiteMemoryStore`
 
 - Kind: `class`
-- Signature: `SQLiteMemoryStore(path: &#x27;str | Path&#x27;) -&gt; &#x27;None&#x27;`
-- No public docstring.
+- Module: `super_harness.memory.store`
 
 ## `SQLiteThreadStore`
 
 - Kind: `class`
-- Signature: `SQLiteThreadStore(path: &#x27;str | Path&#x27;) -&gt; &#x27;None&#x27;`
-- Transactional snapshot store for provider-neutral Thread state.
+- Module: `super_harness.persistence.sqlite`
 
 ## `SandboxMode`
 
 - Kind: `class`
-- Signature: `SandboxMode(*values)`
-- Enum where members are also (and must be) strings
+- Module: `super_harness.tools.sandbox`
 
 ## `SearchResponse`
 
 - Kind: `class`
-- Signature: `SearchResponse(query: &#x27;str&#x27;, results: &#x27;tuple[SearchResult, ...]&#x27;, provider: &#x27;str&#x27;) -&gt; None`
-- SearchResponse(query: &#x27;str&#x27;, results: &#x27;tuple[SearchResult, ...]&#x27;, provider: &#x27;str&#x27;)
+- Module: `super_harness.knowledge.types`
 
 ## `SearchResult`
 
 - Kind: `class`
-- Signature: `SearchResult(title: &#x27;str&#x27;, url: &#x27;str&#x27;, snippet: &#x27;str&#x27;, published_at: &#x27;str | None&#x27; = None, metadata: &#x27;Mapping[str, Any]&#x27; = &lt;factory&gt;) -&gt; None`
-- SearchResult(title: &#x27;str&#x27;, url: &#x27;str&#x27;, snippet: &#x27;str&#x27;, published_at: &#x27;str | None&#x27; = None, metadata: &#x27;Mapping[str, Any]&#x27; = &lt;factory&gt;)
+- Module: `super_harness.knowledge.types`
 
 ## `SecretProvider`
 
 - Kind: `class`
-- Signature: `SecretProvider(*args, **kwargs)`
-- Resolve one named secret without exposing it through diagnostics.
+- Module: `super_harness.config.secrets`
 
 ## `SecretRedactor`
 
 - Kind: `class`
-- Signature: `SecretRedactor(*, secrets: &#x27;Sequence[str]&#x27; = (), secret_keys: &#x27;Sequence[str]&#x27; = (), custom: &#x27;Sequence[CustomRedactor]&#x27; = (), max_depth: &#x27;int&#x27; = 8, max_items: &#x27;int&#x27; = 128, max_string_chars: &#x27;int&#x27; = 20000) -&gt; &#x27;None&#x27;`
-- Redact known patterns, configured values, secret keys, and custom values.
+- Module: `super_harness.observability.redaction`
 
 ## `SecretValue`
 
 - Kind: `class`
-- Signature: `SecretValue(_value: &#x27;str&#x27;) -&gt; None`
-- A value whose string and repr forms never reveal the secret.
+- Module: `super_harness.config.secrets`
 
 ## `SkillCatalog`
 
 - Kind: `class`
-- Signature: `SkillCatalog(skills: &#x27;dict[str, SkillMetadata]&#x27; = &lt;factory&gt;, collisions: &#x27;dict[str, list[Path]]&#x27; = &lt;factory&gt;, errors: &#x27;list[SkillError]&#x27; = &lt;factory&gt;) -&gt; None`
-- SkillCatalog(skills: &#x27;dict[str, SkillMetadata]&#x27; = &lt;factory&gt;, collisions: &#x27;dict[str, list[Path]]&#x27; = &lt;factory&gt;, errors: &#x27;list[SkillError]&#x27; = &lt;factory&gt;)
+- Module: `super_harness.skills.catalog`
 
 ## `SkillInstaller`
 
 - Kind: `class`
-- Signature: `SkillInstaller(destination: &#x27;str | Path&#x27;) -&gt; &#x27;None&#x27;`
-- No public docstring.
+- Module: `super_harness.skills.installer`
 
 ## `SkillMetadata`
 
 - Kind: `class`
-- Signature: `SkillMetadata(name: &#x27;str&#x27;, description: &#x27;str&#x27;, path: &#x27;Path&#x27;, source: &#x27;str&#x27; = &#x27;runtime&#x27;, extra: &#x27;Mapping[str, Any]&#x27; = &lt;factory&gt;) -&gt; None`
-- SkillMetadata(name: &#x27;str&#x27;, description: &#x27;str&#x27;, path: &#x27;Path&#x27;, source: &#x27;str&#x27; = &#x27;runtime&#x27;, extra: &#x27;Mapping[str, Any]&#x27; = &lt;factory&gt;)
+- Module: `super_harness.skills.models`
 
 ## `SkillSource`
 
 - Kind: `class`
-- Signature: `SkillSource(source_type: &#x27;str&#x27;, location: &#x27;str&#x27;, revision: &#x27;str | None&#x27;, installed_at: &#x27;str&#x27;) -&gt; None`
-- SkillSource(source_type: &#x27;str&#x27;, location: &#x27;str&#x27;, revision: &#x27;str | None&#x27;, installed_at: &#x27;str&#x27;)
+- Module: `super_harness.skills.installer`
 
 ## `SpanStatus`
 
 - Kind: `class`
-- Signature: `SpanStatus(*values)`
-- Enum where members are also (and must be) strings
+- Module: `super_harness.observability.models`
 
 ## `SpawnRequest`
 
 - Kind: `class`
-- Signature: `SpawnRequest(task: &#x27;str&#x27;, role: &#x27;str&#x27;, parent_agent_id: &#x27;str&#x27;, depth: &#x27;int&#x27;, root_thread_id: &#x27;str&#x27;, instructions: &#x27;str | None&#x27; = None, inherited_context: &#x27;tuple[ContextFragment, ...]&#x27; = (), timeout: &#x27;float&#x27; = 300.0, token_budget: &#x27;int | None&#x27; = None) -&gt; None`
-- SpawnRequest(task: &#x27;str&#x27;, role: &#x27;str&#x27;, parent_agent_id: &#x27;str&#x27;, depth: &#x27;int&#x27;, root_thread_id: &#x27;str&#x27;, instructions: &#x27;str | None&#x27; = None, inherited_context: &#x27;tuple[ContextFragment, ...]&#x27; = (), timeout: &#x27;float&#x27; = 300.0, token_budget: &#x27;int | None&#x27; = None)
+- Module: `super_harness.orchestration.autonomous`
 
 ## `StructuredLogRecord`
 
 - Kind: `class`
-- Signature: `StructuredLogRecord(level: &#x27;str&#x27;, event: &#x27;str&#x27;, timestamp: &#x27;datetime&#x27; = &lt;factory&gt;, trace_id: &#x27;str | None&#x27; = None, span_id: &#x27;str | None&#x27; = None, thread_id: &#x27;str | None&#x27; = None, turn_id: &#x27;str | None&#x27; = None, agent_id: &#x27;str | None&#x27; = None, workflow_run_id: &#x27;str | None&#x27; = None, node_id: &#x27;str | None&#x27; = None, tool_call_id: &#x27;str | None&#x27; = None, duration_ms: &#x27;float | None&#x27; = None, provider: &#x27;str | None&#x27; = None, model: &#x27;str | None&#x27; = None, tool: &#x27;str | None&#x27; = None, status: &#x27;str | None&#x27; = None, error_class: &#x27;str | None&#x27; = None, details: &#x27;Mapping[str, Any]&#x27; = &lt;factory&gt;) -&gt; None`
-- StructuredLogRecord(level: &#x27;str&#x27;, event: &#x27;str&#x27;, timestamp: &#x27;datetime&#x27; = &lt;factory&gt;, trace_id: &#x27;str | None&#x27; = None, span_id: &#x27;str | None&#x27; = None, thread_id: &#x27;str | None&#x27; = None, turn_id: &#x27;str | None&#x27; = None, agent_id: &#x27;str | None&#x27; = None, workflow_run_id: &#x27;str | None&#x27; = None, node_id: &#x27;str | None&#x27; = None, tool_call_id: &#x27;str | None&#x27; = None, duration_ms: &#x27;float | None&#x27; = None, provider: &#x27;str | None&#x27; = None, model: &#x27;str | None&#x27; = None, tool: &#x27;str | None&#x27; = None, status: &#x27;str | None&#x27; = None, error_class: &#x27;str | None&#x27; = None, details: &#x27;Mapping[str, Any]&#x27; = &lt;factory&gt;)
+- Module: `super_harness.observability.models`
 
 ## `StructuredLogger`
 
 - Kind: `class`
-- Signature: `StructuredLogger(*, console: &#x27;TextIO | None&#x27; = &lt;_io.TextIOWrapper name=&#x27;&lt;stderr&gt;&#x27; mode=&#x27;w&#x27; encoding=&#x27;gbk&#x27;&gt;, jsonl: &#x27;str | Path | TextIO | None&#x27; = None) -&gt; &#x27;None&#x27;`
-- Thread-safe structured logger with independently optional outputs.
+- Module: `super_harness.observability.logging`
 
 ## `SubworkflowNode`
 
 - Kind: `class`
-- Signature: `SubworkflowNode(workflow: &#x27;Workflow&#x27;, engine: &#x27;WorkflowEngine&#x27;, input_builder: &#x27;InputBuilder&#x27; = &lt;function _input at 0x0000022D5B32BF60&gt;, state_builder: &#x27;StateBuilder | None&#x27; = None) -&gt; None`
-- Workflow handler that executes or resumes a nested workflow.
+- Module: `super_harness.orchestration.hybrid`
 
 ## `SuperHarnessError`
 
 - Kind: `class`
-- Signature: `SuperHarnessError(message: &#x27;str&#x27;, *, correlation_id: &#x27;str | None&#x27; = None, details: &#x27;Mapping[str, Any] | None&#x27; = None) -&gt; &#x27;None&#x27;`
-- Base class for public framework errors.
+- Module: `super_harness.exceptions`
 
 ## `TelemetryExporter`
 
 - Kind: `class`
-- Signature: `TelemetryExporter(*args, **kwargs)`
-- Base class for protocol classes.
+- Module: `super_harness.observability.observer`
 
 ## `Thread`
 
 - Kind: `class`
-- Signature: `Thread(provider: &#x27;ModelProvider&#x27;, instructions: &#x27;str | None&#x27; = None, tool_registry: &#x27;ToolRegistry | None&#x27; = None, tool_executor: &#x27;ToolExecutor | None&#x27; = None, max_model_steps: &#x27;int&#x27; = 8, context: &#x27;ContextAssembler&#x27; = &lt;factory&gt;, store: &#x27;SQLiteThreadStore | None&#x27; = None, archived: &#x27;bool&#x27; = False, parent_thread_id: &#x27;str | None&#x27; = None, metadata: &#x27;dict[str, Any]&#x27; = &lt;factory&gt;, summaries: &#x27;list[ContextSummary]&#x27; = &lt;factory&gt;, compaction_threshold_chars: &#x27;int&#x27; = 100000, compaction_retain_messages: &#x27;int&#x27; = 8, hooks: &#x27;HookRegistry | None&#x27; = None, observer: &#x27;EventObserver | None&#x27; = None, _session_started: &#x27;bool&#x27; = False, _interrupt_turn_ids: &#x27;set[str]&#x27; = &lt;factory&gt;, _steering_by_turn: &#x27;dict[str, list[str]]&#x27; = &lt;factory&gt;, _active_turn_id: &#x27;str | None&#x27; = None, thread_id: &#x27;str&#x27; = &lt;factory&gt;, created_at: &#x27;datetime&#x27; = &lt;factory&gt;, updated_at: &#x27;datetime&#x27; = &lt;factory&gt;, messages: &#x27;list[Message]&#x27; = &lt;factory&gt;, turns: &#x27;list[Turn]&#x27; = &lt;factory&gt;) -&gt; None`
-- Ordered conversation history and turns for one Agent session.
+- Module: `super_harness.runtime.thread`
 
 ## `Tool`
 
 - Kind: `class`
-- Signature: `Tool(name: &#x27;str&#x27;, description: &#x27;str&#x27;, input_model: &#x27;type[BaseModel]&#x27;, handler: &#x27;ToolCallable&#x27;, metadata: &#x27;ToolMetadata&#x27; = &lt;factory&gt;) -&gt; None`
-- Tool(name: &#x27;str&#x27;, description: &#x27;str&#x27;, input_model: &#x27;type[BaseModel]&#x27;, handler: &#x27;ToolCallable&#x27;, metadata: &#x27;ToolMetadata&#x27; = &lt;factory&gt;)
+- Module: `super_harness.tools.definition`
 
 ## `ToolExecutor`
 
 - Kind: `class`
-- Signature: `ToolExecutor(registry: &#x27;ToolRegistry&#x27;, *, approval: &#x27;ApprovalPolicy | None&#x27; = None, hooks: &#x27;HookRegistry | None&#x27; = None) -&gt; &#x27;None&#x27;`
-- No public docstring.
+- Module: `super_harness.tools.executor`
 
 ## `ToolRegistry`
 
 - Kind: `class`
-- Signature: `ToolRegistry(tools: &#x27;Iterable[Tool]&#x27; = (), *, allowed_names: &#x27;Iterable[str] | None&#x27; = None) -&gt; &#x27;None&#x27;`
-- No public docstring.
+- Module: `super_harness.tools.registry`
 
 ## `ToolResult`
 
 - Kind: `class`
-- Signature: `ToolResult(call_id: &#x27;str&#x27;, name: &#x27;str&#x27;, output: &#x27;str&#x27;, success: &#x27;bool&#x27;, truncated: &#x27;bool&#x27; = False, original_chars: &#x27;int&#x27; = 0, error_type: &#x27;str | None&#x27; = None) -&gt; None`
-- ToolResult(call_id: &#x27;str&#x27;, name: &#x27;str&#x27;, output: &#x27;str&#x27;, success: &#x27;bool&#x27;, truncated: &#x27;bool&#x27; = False, original_chars: &#x27;int&#x27; = 0, error_type: &#x27;str | None&#x27; = None)
+- Module: `super_harness.tools.result`
 
 ## `TraceRecorder`
 
 - Kind: `class`
-- Signature: `TraceRecorder() -&gt; &#x27;None&#x27;`
-- Build hierarchical spans from normalized lifecycle events.
+- Module: `super_harness.observability.tracing`
 
 ## `TraceSpan`
 
 - Kind: `class`
-- Signature: `TraceSpan(name: &#x27;str&#x27;, category: &#x27;str&#x27;, trace_id: &#x27;str&#x27; = &lt;factory&gt;, span_id: &#x27;str&#x27; = &lt;factory&gt;, parent_span_id: &#x27;str | None&#x27; = None, started_at: &#x27;datetime&#x27; = &lt;factory&gt;, completed_at: &#x27;datetime | None&#x27; = None, status: &#x27;SpanStatus&#x27; = &lt;SpanStatus.RUNNING: &#x27;running&#x27;&gt;, attributes: &#x27;Mapping[str, Any]&#x27; = &lt;factory&gt;) -&gt; None`
-- TraceSpan(name: &#x27;str&#x27;, category: &#x27;str&#x27;, trace_id: &#x27;str&#x27; = &lt;factory&gt;, span_id: &#x27;str&#x27; = &lt;factory&gt;, parent_span_id: &#x27;str | None&#x27; = None, started_at: &#x27;datetime&#x27; = &lt;factory&gt;, completed_at: &#x27;datetime | None&#x27; = None, status: &#x27;SpanStatus&#x27; = &lt;SpanStatus.RUNNING: &#x27;running&#x27;&gt;, attributes: &#x27;Mapping[str, Any]&#x27; = &lt;factory&gt;)
+- Module: `super_harness.observability.models`
 
 ## `Turn`
 
 - Kind: `class`
-- Signature: `Turn(input: &#x27;str&#x27;, turn_id: &#x27;str&#x27; = &lt;factory&gt;, status: &#x27;TurnStatus&#x27; = &lt;TurnStatus.PENDING: &#x27;pending&#x27;&gt;, created_at: &#x27;datetime&#x27; = &lt;factory&gt;, started_at: &#x27;datetime | None&#x27; = None, completed_at: &#x27;datetime | None&#x27; = None, response: &#x27;ModelResponse | None&#x27; = None, error: &#x27;str | None&#x27; = None) -&gt; None`
-- One user-initiated execution and its terminal diagnostics.
+- Module: `super_harness.runtime.turn`
 
 ## `TurnHandle`
 
 - Kind: `class`
-- Signature: `TurnHandle(thread: &#x27;Thread&#x27;, input: &#x27;str&#x27;, *, tools: &#x27;Sequence[ToolDefinition]&#x27; = (), output_schema: &#x27;Mapping[str, Any] | None&#x27; = None) -&gt; &#x27;None&#x27;`
-- No public docstring.
+- Module: `super_harness.runtime.handle`
 
 ## `TurnStatus`
 
 - Kind: `class`
-- Signature: `TurnStatus(*values)`
-- Enum where members are also (and must be) strings
+- Module: `super_harness.runtime.turn`
 
 ## `VisionConfig`
 
 - Kind: `class`
-- Signature: `VisionConfig(*, provider: str = &#x27;zhipu&#x27;, model: str = &#x27;glm-4v-flash&#x27;) -&gt; None`
-- !!! abstract &quot;Usage Documentation&quot;
+- Module: `super_harness.config.models`
 
 ## `VisionResult`
 
 - Kind: `class`
-- Signature: `VisionResult(text: &#x27;str&#x27;, model: &#x27;str&#x27;, provider: &#x27;str&#x27;) -&gt; None`
-- VisionResult(text: &#x27;str&#x27;, model: &#x27;str&#x27;, provider: &#x27;str&#x27;)
+- Module: `super_harness.knowledge.types`
 
 ## `WebSearchConfig`
 
 - Kind: `class`
-- Signature: `WebSearchConfig(*, provider: str = &#x27;zhipu&#x27;, count: Annotated[int, Ge(ge=1), Le(le=50)] = 10) -&gt; None`
-- !!! abstract &quot;Usage Documentation&quot;
+- Module: `super_harness.config.models`
 
 ## `Workflow`
 
 - Kind: `class`
-- Signature: `Workflow(workflow_id: &#x27;str&#x27;, nodes: &#x27;Sequence[Node]&#x27;, edges: &#x27;Sequence[Edge]&#x27; = ()) -&gt; &#x27;None&#x27;`
-- Workflow(workflow_id: &#x27;str&#x27;, nodes: &#x27;Sequence[Node]&#x27;, edges: &#x27;Sequence[Edge]&#x27; = ()) -&gt; &#x27;None&#x27;
+- Module: `super_harness.orchestration.workflow`
 
 ## `WorkflowContext`
 
 - Kind: `class`
-- Signature: `WorkflowContext(workflow_id: &#x27;str&#x27;, run_id: &#x27;str&#x27;, node_id: &#x27;str&#x27;, workflow_input: &#x27;Any&#x27;, state: &#x27;Mapping[str, Any]&#x27;, results: &#x27;Mapping[str, NodeResult]&#x27;, attempt: &#x27;int&#x27;, iteration: &#x27;int&#x27;, emit: &#x27;Callable[[str, Mapping[str, Any]], Awaitable[None]]&#x27; = &lt;function _noop_emit at 0x0000022D5B3584A0&gt;) -&gt; None`
-- WorkflowContext(workflow_id: &#x27;str&#x27;, run_id: &#x27;str&#x27;, node_id: &#x27;str&#x27;, workflow_input: &#x27;Any&#x27;, state: &#x27;Mapping[str, Any]&#x27;, results: &#x27;Mapping[str, NodeResult]&#x27;, attempt: &#x27;int&#x27;, iteration: &#x27;int&#x27;, emit: &#x27;Callable[[str, Mapping[str, Any]], Awaitable[None]]&#x27; = &lt;function _noop_emit at 0x0000022D5B3584A0&gt;)
+- Module: `super_harness.orchestration.workflow`
 
 ## `WorkflowEngine`
 
 - Kind: `class`
-- Signature: `WorkflowEngine(*, max_concurrency: &#x27;int&#x27; = 8, store: &#x27;JSONWorkflowStore | None&#x27; = None, event_listener: &#x27;EventListener | None&#x27; = None) -&gt; &#x27;None&#x27;`
-- Execute validated DAGs in dependency batches with stable checkpoints.
+- Module: `super_harness.orchestration.workflow`
 
 ## `WorkflowEvent`
 
 - Kind: `class`
-- Signature: `WorkflowEvent(sequence: &#x27;int&#x27;, type: &#x27;str&#x27;, workflow_id: &#x27;str&#x27;, run_id: &#x27;str&#x27;, node_id: &#x27;str | None&#x27; = None, timestamp: &#x27;datetime&#x27; = &lt;factory&gt;, payload: &#x27;Mapping[str, Any]&#x27; = &lt;factory&gt;) -&gt; None`
-- WorkflowEvent(sequence: &#x27;int&#x27;, type: &#x27;str&#x27;, workflow_id: &#x27;str&#x27;, run_id: &#x27;str&#x27;, node_id: &#x27;str | None&#x27; = None, timestamp: &#x27;datetime&#x27; = &lt;factory&gt;, payload: &#x27;Mapping[str, Any]&#x27; = &lt;factory&gt;)
+- Module: `super_harness.orchestration.workflow`
 
 ## `WorkflowRun`
 
 - Kind: `class`
-- Signature: `WorkflowRun(workflow_id: &#x27;str&#x27;, run_id: &#x27;str&#x27;, workflow_input: &#x27;Any&#x27;, state: &#x27;WorkflowState&#x27;, node_results: &#x27;dict[str, NodeResult]&#x27;, status: &#x27;WorkflowStatus&#x27; = &lt;WorkflowStatus.PENDING: &#x27;pending&#x27;&gt;, events: &#x27;list[WorkflowEvent]&#x27; = &lt;factory&gt;, created_at: &#x27;datetime&#x27; = &lt;factory&gt;, updated_at: &#x27;datetime&#x27; = &lt;factory&gt;, completed_at: &#x27;datetime | None&#x27; = None, error: &#x27;str | None&#x27; = None) -&gt; None`
-- WorkflowRun(workflow_id: &#x27;str&#x27;, run_id: &#x27;str&#x27;, workflow_input: &#x27;Any&#x27;, state: &#x27;WorkflowState&#x27;, node_results: &#x27;dict[str, NodeResult]&#x27;, status: &#x27;WorkflowStatus&#x27; = &lt;WorkflowStatus.PENDING: &#x27;pending&#x27;&gt;, events: &#x27;list[WorkflowEvent]&#x27; = &lt;factory&gt;, created_at: &#x27;datetime&#x27; = &lt;factory&gt;, updated_at: &#x27;datetime&#x27; = &lt;factory&gt;, completed_at: &#x27;datetime | None&#x27; = None, error: &#x27;str | None&#x27; = None)
+- Module: `super_harness.orchestration.workflow`
 
 ## `WorkflowState`
 
 - Kind: `class`
-- Signature: `WorkflowState(values: &#x27;dict[str, Any]&#x27; = &lt;factory&gt;) -&gt; None`
-- WorkflowState(values: &#x27;dict[str, Any]&#x27; = &lt;factory&gt;)
+- Module: `super_harness.orchestration.workflow`
 
 ## `WorkflowStatus`
 
 - Kind: `class`
-- Signature: `WorkflowStatus(*values)`
-- Enum where members are also (and must be) strings
+- Module: `super_harness.orchestration.workflow`
 
 ## `WorkingMemory`
 
 - Kind: `class`
-- Signature: `WorkingMemory(max_items: &#x27;int&#x27; = 64, _values: &#x27;OrderedDict[str, object]&#x27; = &lt;factory&gt;) -&gt; None`
-- WorkingMemory(max_items: &#x27;int&#x27; = 64, _values: &#x27;OrderedDict[str, object]&#x27; = &lt;factory&gt;)
+- Module: `super_harness.memory.working`
 
 ## `ZhipuVisionProvider`
 
 - Kind: `class`
-- Signature: `ZhipuVisionProvider(*, api_key: &#x27;str | None&#x27; = None, endpoint: &#x27;str&#x27; = &#x27;https://open.bigmodel.cn/api/paas/v4/chat/completions&#x27;, model: &#x27;str&#x27; = &#x27;glm-4v-flash&#x27;, timeout: &#x27;float&#x27; = 30.0, retries: &#x27;int&#x27; = 1, max_image_bytes: &#x27;int&#x27; = 10000000, client: &#x27;httpx.AsyncClient | None&#x27; = None, trace_sink: &#x27;TraceSink | None&#x27; = None, observer: &#x27;EventObserver | None&#x27; = None) -&gt; &#x27;None&#x27;`
-- GLM-4V adapter supporting local files, data URLs, and HTTPS image URLs.
+- Module: `super_harness.knowledge.providers`
 
 ## `ZhipuWebSearchProvider`
 
 - Kind: `class`
-- Signature: `ZhipuWebSearchProvider(*, api_key: &#x27;str | None&#x27; = None, endpoint: &#x27;str&#x27; = &#x27;https://open.bigmodel.cn/api/paas/v4/web_search&#x27;, timeout: &#x27;float&#x27; = 20.0, retries: &#x27;int&#x27; = 2, client: &#x27;httpx.AsyncClient | None&#x27; = None, trace_sink: &#x27;TraceSink | None&#x27; = None, observer: &#x27;EventObserver | None&#x27; = None) -&gt; &#x27;None&#x27;`
-- Zhipu standalone web-search adapter.
+- Module: `super_harness.knowledge.providers`
 
 ## `activate_skill`
 
 - Kind: `function`
-- Signature: `activate_skill(metadata: &#x27;SkillMetadata&#x27;) -&gt; &#x27;ActivatedSkill&#x27;`
-- No public docstring.
+- Module: `super_harness.skills.models`
 
 ## `agent_node`
 
 - Kind: `function`
-- Signature: `agent_node(node_id: &#x27;str&#x27;, manager: &#x27;AgentManager&#x27;, task: &#x27;PromptBuilder&#x27;, *, role: &#x27;str&#x27; = &#x27;worker&#x27;, parent_agent_id: &#x27;str | None&#x27; = None, instructions: &#x27;str | None&#x27; = None, inheritance: &#x27;ContextInheritance&#x27; = &lt;ContextInheritance.MINIMAL: &#x27;minimal&#x27;&gt;, selected_sources: &#x27;Sequence[str]&#x27; = (), timeout: &#x27;float | None&#x27; = None, token_budget: &#x27;int | None&#x27; = None) -&gt; &#x27;Node&#x27;`
-- No public docstring.
+- Module: `super_harness.orchestration.hybrid`
 
 ## `basic_builtin_tools`
 
 - Kind: `function`
-- Signature: `basic_builtin_tools(workspace: &#x27;str | Path&#x27;) -&gt; &#x27;tuple[Tool, ...]&#x27;`
-- No public docstring.
+- Module: `super_harness.tools.builtins`
 
 ## `import_mcp_servers`
 
 - Kind: `function`
-- Signature: `import_mcp_servers(value: &#x27;str | Path | Mapping[str, Any]&#x27;) -&gt; &#x27;tuple[MCPServerConfig, ...]&#x27;`
-- No public docstring.
+- Module: `super_harness.mcp.config`
 
 ## `inspect_mcpb`
 
 - Kind: `function`
-- Signature: `inspect_mcpb(path: &#x27;str | Path&#x27;, *, expected_sha256: &#x27;str | None&#x27; = None) -&gt; &#x27;MCPBundle&#x27;`
-- No public docstring.
+- Module: `super_harness.mcp.mcpb`
 
 ## `install_mcpb`
 
 - Kind: `function`
-- Signature: `install_mcpb(path: &#x27;str | Path&#x27;, destination: &#x27;str | Path&#x27;, *, expected_sha256: &#x27;str | None&#x27; = None) -&gt; &#x27;MCPBundle&#x27;`
-- No public docstring.
+- Module: `super_harness.mcp.mcpb`
 
 ## `load_plugin`
 
 - Kind: `function`
-- Signature: `load_plugin(path: &#x27;str | Path&#x27;) -&gt; &#x27;PluginManifest&#x27;`
-- No public docstring.
+- Module: `super_harness.plugins.loader`
 
 ## `parse_skill`
 
 - Kind: `function`
-- Signature: `parse_skill(path: &#x27;str | Path&#x27;, *, source: &#x27;str&#x27; = &#x27;runtime&#x27;) -&gt; &#x27;SkillMetadata&#x27;`
-- No public docstring.
+- Module: `super_harness.skills.models`
 
 ## `subworkflow_node`
 
 - Kind: `function`
-- Signature: `subworkflow_node(node_id: &#x27;str&#x27;, workflow: &#x27;Workflow&#x27;, *, engine: &#x27;WorkflowEngine | None&#x27; = None, input_builder: &#x27;InputBuilder&#x27; = &lt;function _input at 0x0000022D5B32BF60&gt;, state_builder: &#x27;StateBuilder | None&#x27; = None) -&gt; &#x27;Node&#x27;`
-- No public docstring.
+- Module: `super_harness.orchestration.hybrid`
 
 ## `tool`
 
 - Kind: `function`
-- Signature: `tool(function: &#x27;ToolCallable | None&#x27; = None, *, name: &#x27;str | None&#x27; = None, description: &#x27;str | None&#x27; = None, namespace: &#x27;str | None&#x27; = None, source: &#x27;str&#x27; = &#x27;runtime&#x27;, risk: &#x27;str&#x27; = &#x27;low&#x27;, timeout: &#x27;float&#x27; = 30.0, max_output_chars: &#x27;int&#x27; = 20000, supports_parallel: &#x27;bool&#x27; = False, deferred: &#x27;bool&#x27; = False) -&gt; &#x27;Tool | Callable[[ToolCallable], Tool]&#x27;`
-- Decorate a typed sync or async callable as a model-visible tool.
+- Module: `super_harness.tools.definition`
