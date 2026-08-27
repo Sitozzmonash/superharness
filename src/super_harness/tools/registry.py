@@ -102,14 +102,15 @@ class ToolRegistry:
             return item
 
     def unregister(self, name: str) -> Tool:
-        if name in self._lazy:
-            raise ToolError("use unregister_lazy for an unloaded lazy tool")
-        try:
-            item = self._tools.pop(name)
-        except KeyError as exc:
-            raise ToolError(f"unknown tool {name!r}") from exc
-        self._disabled.discard(name)
-        return item
+        with self._lock:
+            if name in self._lazy:
+                raise ToolError("use unregister_lazy for an unloaded lazy tool")
+            try:
+                item = self._tools.pop(name)
+            except KeyError as exc:
+                raise ToolError(f"unknown tool {name!r}") from exc
+            self._disabled.discard(name)
+            return item
 
     def unregister_lazy(self, name: str) -> LazyTool:
         with self._lock:
@@ -120,29 +121,33 @@ class ToolRegistry:
         return metadata
 
     def get(self, name: str) -> Tool:
-        if name in self._disabled:
-            raise ToolError(f"tool {name!r} is disabled")
-        try:
-            return self._tools[name]
-        except KeyError as exc:
-            raise ToolError(f"unknown tool {name!r}") from exc
+        with self._lock:
+            if name in self._disabled:
+                raise ToolError(f"tool {name!r} is disabled")
+            try:
+                return self._tools[name]
+            except KeyError as exc:
+                raise ToolError(f"unknown tool {name!r}") from exc
 
     def enable(self, name: str) -> None:
-        if name not in self._tools:
-            raise ToolError(f"unknown tool {name!r}")
-        self._disabled.discard(name)
+        with self._lock:
+            if name not in self._tools:
+                raise ToolError(f"unknown tool {name!r}")
+            self._disabled.discard(name)
 
     def disable(self, name: str) -> None:
-        if name not in self._tools:
-            raise ToolError(f"unknown tool {name!r}")
-        self._disabled.add(name)
+        with self._lock:
+            if name not in self._tools:
+                raise ToolError(f"unknown tool {name!r}")
+            self._disabled.add(name)
 
     def list(self, *, include_disabled: bool = False) -> tuple[Tool, ...]:
-        return tuple(
-            item
-            for name, item in self._tools.items()
-            if include_disabled or name not in self._disabled
-        )
+        with self._lock:
+            return tuple(
+                item
+                for name, item in self._tools.items()
+                if include_disabled or name not in self._disabled
+            )
 
     def search(self, query: str, *, load_deferred: bool = False) -> tuple[Tool, ...]:
         needle = query.casefold().strip()
@@ -153,11 +158,12 @@ class ToolRegistry:
         )
         if not load_deferred:
             return found
-        lazy_names = tuple(
-            name
-            for name, (item, _) in self._lazy.items()
-            if needle in name.casefold() or needle in item.description.casefold()
-        )
+        with self._lock:
+            lazy_names = tuple(
+                name
+                for name, (item, _) in self._lazy.items()
+                if needle in name.casefold() or needle in item.description.casefold()
+            )
         return found + tuple(self.load(name) for name in lazy_names)
 
     def deferred(self) -> tuple[LazyTool, ...]:

@@ -177,8 +177,8 @@ This inventory is generated from the package's explicit `__all__` surface.
 ## `FallbackPolicy`
 
 - Kind: `class`
-- Signature: `FallbackPolicy(timeout: &#x27;float&#x27; = 60.0, retry_if: &#x27;RetryPredicate&#x27; = &lt;function _retryable_error at 0x000001CA54312480&gt;) -&gt; None`
-- FallbackPolicy(timeout: &#x27;float&#x27; = 60.0, retry_if: &#x27;RetryPredicate&#x27; = &lt;function _retryable_error at 0x000001CA54312480&gt;)
+- Signature: `FallbackPolicy(timeout: &#x27;float&#x27; = 60.0, retry_if: &#x27;RetryPredicate&#x27; = &lt;function _retryable_error at 0x0000022D58F6F600&gt;) -&gt; None`
+- FallbackPolicy(timeout: &#x27;float&#x27; = 60.0, retry_if: &#x27;RetryPredicate&#x27; = &lt;function _retryable_error at 0x0000022D58F6F600&gt;)
 
 ## `FallbackProvider`
 
@@ -651,7 +651,7 @@ This inventory is generated from the package's explicit `__all__` surface.
 ## `SubworkflowNode`
 
 - Kind: `class`
-- Signature: `SubworkflowNode(workflow: &#x27;Workflow&#x27;, engine: &#x27;WorkflowEngine&#x27;, input_builder: &#x27;InputBuilder&#x27; = &lt;function _input at 0x000001CA56F82FC0&gt;, state_builder: &#x27;StateBuilder | None&#x27; = None) -&gt; None`
+- Signature: `SubworkflowNode(workflow: &#x27;Workflow&#x27;, engine: &#x27;WorkflowEngine&#x27;, input_builder: &#x27;InputBuilder&#x27; = &lt;function _input at 0x0000022D5B32BF60&gt;, state_builder: &#x27;StateBuilder | None&#x27; = None) -&gt; None`
 - Workflow handler that executes or resumes a nested workflow.
 
 ## `SuperHarnessError`
@@ -753,8 +753,8 @@ This inventory is generated from the package's explicit `__all__` surface.
 ## `WorkflowContext`
 
 - Kind: `class`
-- Signature: `WorkflowContext(workflow_id: &#x27;str&#x27;, run_id: &#x27;str&#x27;, node_id: &#x27;str&#x27;, workflow_input: &#x27;Any&#x27;, state: &#x27;Mapping[str, Any]&#x27;, results: &#x27;Mapping[str, NodeResult]&#x27;, attempt: &#x27;int&#x27;, iteration: &#x27;int&#x27;, emit: &#x27;Callable[[str, Mapping[str, Any]], Awaitable[None]]&#x27; = &lt;function _noop_emit at 0x000001CA56F834C0&gt;) -&gt; None`
-- WorkflowContext(workflow_id: &#x27;str&#x27;, run_id: &#x27;str&#x27;, node_id: &#x27;str&#x27;, workflow_input: &#x27;Any&#x27;, state: &#x27;Mapping[str, Any]&#x27;, results: &#x27;Mapping[str, NodeResult]&#x27;, attempt: &#x27;int&#x27;, iteration: &#x27;int&#x27;, emit: &#x27;Callable[[str, Mapping[str, Any]], Awaitable[None]]&#x27; = &lt;function _noop_emit at 0x000001CA56F834C0&gt;)
+- Signature: `WorkflowContext(workflow_id: &#x27;str&#x27;, run_id: &#x27;str&#x27;, node_id: &#x27;str&#x27;, workflow_input: &#x27;Any&#x27;, state: &#x27;Mapping[str, Any]&#x27;, results: &#x27;Mapping[str, NodeResult]&#x27;, attempt: &#x27;int&#x27;, iteration: &#x27;int&#x27;, emit: &#x27;Callable[[str, Mapping[str, Any]], Awaitable[None]]&#x27; = &lt;function _noop_emit at 0x0000022D5B3584A0&gt;) -&gt; None`
+- WorkflowContext(workflow_id: &#x27;str&#x27;, run_id: &#x27;str&#x27;, node_id: &#x27;str&#x27;, workflow_input: &#x27;Any&#x27;, state: &#x27;Mapping[str, Any]&#x27;, results: &#x27;Mapping[str, NodeResult]&#x27;, attempt: &#x27;int&#x27;, iteration: &#x27;int&#x27;, emit: &#x27;Callable[[str, Mapping[str, Any]], Awaitable[None]]&#x27; = &lt;function _noop_emit at 0x0000022D5B3584A0&gt;)
 
 ## `WorkflowEngine`
 
@@ -855,7 +855,7 @@ This inventory is generated from the package's explicit `__all__` surface.
 ## `subworkflow_node`
 
 - Kind: `function`
-- Signature: `subworkflow_node(node_id: &#x27;str&#x27;, workflow: &#x27;Workflow&#x27;, *, engine: &#x27;WorkflowEngine | None&#x27; = None, input_builder: &#x27;InputBuilder&#x27; = &lt;function _input at 0x000001CA56F82FC0&gt;, state_builder: &#x27;StateBuilder | None&#x27; = None) -&gt; &#x27;Node&#x27;`
+- Signature: `subworkflow_node(node_id: &#x27;str&#x27;, workflow: &#x27;Workflow&#x27;, *, engine: &#x27;WorkflowEngine | None&#x27; = None, input_builder: &#x27;InputBuilder&#x27; = &lt;function _input at 0x0000022D5B32BF60&gt;, state_builder: &#x27;StateBuilder | None&#x27; = None) -&gt; &#x27;Node&#x27;`
 - No public docstring.
 
 ## `tool`

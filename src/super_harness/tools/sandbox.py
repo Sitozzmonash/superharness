@@ -348,7 +348,7 @@ class DockerSandbox:
             async with asyncio.timeout(self.timeout):
                 stdout, stderr = await process.communicate()
         except (TimeoutError, asyncio.CancelledError):
-            await self._cleanup(name, environment)
+            await asyncio.shield(asyncio.create_task(self._cleanup(name, environment)))
             await asyncio.shield(asyncio.create_task(LocalSandbox.terminate(process)))
             raise
         return ProcessResult(
@@ -377,6 +377,11 @@ class DockerSandbox:
                 stdout=asyncio.subprocess.DEVNULL,
                 stderr=asyncio.subprocess.DEVNULL,
             )
-            await cleanup.wait()
+            try:
+                async with asyncio.timeout(3.0):
+                    await cleanup.wait()
+            except TimeoutError:
+                cleanup.kill()
+                await cleanup.wait()
         except OSError:
             return

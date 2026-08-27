@@ -9,6 +9,7 @@ import json
 import os
 import platform
 import shutil
+import subprocess
 import sys
 from collections.abc import Sequence
 from dataclasses import asdict
@@ -236,7 +237,23 @@ def _doctor(paths: CLIPaths) -> dict[str, Any]:
     if not paths.root.exists():
         writable = paths.root.parent.exists() and os.access(paths.root.parent, os.W_OK)
     check("state_root", writable, str(paths.root))
-    check("docker", shutil.which("docker") is not None, shutil.which("docker") or "not found")
+    docker = shutil.which("docker")
+    check("docker", docker is not None, docker or "not found")
+    daemon = False
+    if docker is not None:
+        try:
+            daemon = (
+                subprocess.run(
+                    [docker, "version", "--format", "{{.Server.Version}}"],
+                    capture_output=True,
+                    check=False,
+                    timeout=3,
+                ).returncode
+                == 0
+            )
+        except (OSError, subprocess.TimeoutExpired):
+            daemon = False
+    check("docker_daemon", daemon, "available" if daemon else "unavailable")
     check("mcp_sdk", importlib.util.find_spec("mcp") is not None, "optional dependency")
     check("opentelemetry", importlib.util.find_spec("opentelemetry") is not None, "optional")
     credential = bool(os.environ.get("DEEPSEEK_API_KEY"))
