@@ -9,8 +9,9 @@ research, enterprise knowledge, multimodal, automation, and multi-agent applicat
 
 :::info Development status
 
-Development is complete through Phase 12 of the 14-phase route. External-provider E2Es remain
-credential gated and are never reported as passing when their credential is absent.
+Development is complete through Phase 13 of the 14-phase route as a release candidate.
+External-provider E2Es remain credential gated and are never reported as passing when their
+credential is absent; V1 is intentionally untagged until every release gate has evidence.
 
 :::
 

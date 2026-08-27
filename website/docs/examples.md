@@ -57,3 +57,17 @@ Examples `57`–`59` cover human/JSONL output, trace-tree and metric inspection,
 
 Examples `63`–`65` are credential-free and cover JSON doctor diagnostics, the local Skill CLI
 lifecycle, and provider-free durable Thread inspection.
+
+# Release-gate examples
+
+Examples `66`–`68` cover dynamic registration, metadata-only lazy discovery, and namespaced lazy
+loading. Examples `69`–`71` cover secure Docker argv, allowlisted environment forwarding, and a
+conditional real run that never pulls an image. Examples `72`–`74` cover priority, async context,
+defaults, and observation. Examples `75`–`77` cover identity, scopes, and named role templates.
+Examples `78`–`80` cover profiles, precedence, and masked secret providers. Examples `81`–`83`
+cover ordered fallback, safe stream switching, and timeout normalization.
+
+Examples `84`–`91` close earlier local documentation gaps with custom/retained compaction,
+file-search and process built-ins, allow/deny approval, and AGENTS override/repository-boundary
+discovery. All Phase 13 examples are credential-free; example 71 prints an explicit skip when the
+Docker runtime or pre-existing `alpine:3.20` image is absent.

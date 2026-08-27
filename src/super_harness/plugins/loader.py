@@ -53,7 +53,13 @@ def _load_harness(root: Path, path: Path) -> PluginManifest:
         if key not in {"name", "version", "description", "requires_super_harness"}
     )
     known_capabilities = {
-        "skills", "tools", "mcp", "assets", "personas", "commands", "config_schema",
+        "skills",
+        "tools",
+        "mcp",
+        "assets",
+        "personas",
+        "commands",
+        "config_schema",
         "config_defaults",
     }
     warnings.extend(
@@ -63,9 +69,7 @@ def _load_harness(root: Path, path: Path) -> PluginManifest:
     )
     hook_values = cast(list[Any], hooks_value)
     hooks = tuple(
-        _hook(root, cast(dict[str, Any], value))
-        for value in hook_values
-        if isinstance(value, dict)
+        _hook(root, cast(dict[str, Any], value)) for value in hook_values if isinstance(value, dict)
     )
     if len(hooks) != len(hook_values):
         raise PluginError("every plugin hook must be an object")
@@ -102,9 +106,23 @@ def _load_codex(root: Path, path: Path) -> PluginManifest:
         raise PluginError("Codex plugin manifest must be an object")
     raw = cast(dict[str, Any], decoded)
     known = {
-        "$schema", "name", "version", "description", "author", "homepage", "repository",
-        "license", "keywords", "skills", "mcpServers", "hooks", "commands", "assets",
-        "agents", "interface", "apps",
+        "$schema",
+        "name",
+        "version",
+        "description",
+        "author",
+        "homepage",
+        "repository",
+        "license",
+        "keywords",
+        "skills",
+        "mcpServers",
+        "hooks",
+        "commands",
+        "assets",
+        "agents",
+        "interface",
+        "apps",
     }
     warnings = [f"unsupported Codex field: {key}" for key in raw if key not in known]
     skill_value = raw.get("skills", "./skills" if (root / "skills").is_dir() else [])
@@ -205,9 +223,7 @@ def _entry(root: Path, value: str, field: str) -> None:
         raise PluginError(f"plugin {field} entry module does not exist")
 
 
-def _paths(
-    root: Path, value: object, field: str, *, directories: bool = False
-) -> tuple[Path, ...]:
+def _paths(root: Path, value: object, field: str, *, directories: bool = False) -> tuple[Path, ...]:
     paths = tuple(_relative(root, item, field) for item in _strings(value, field))
     for path in paths:
         if directories and not path.is_dir():

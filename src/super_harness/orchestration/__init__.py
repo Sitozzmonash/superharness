@@ -12,6 +12,7 @@ from .autonomous import (
     SpawnRequest,
 )
 from .hybrid import AutonomousAgentNode, SubworkflowNode, agent_node, subworkflow_node
+from .router import Route, RouteDecision, Router
 from .workflow import (
     Edge,
     JSONWorkflowStore,
@@ -48,6 +49,9 @@ __all__ = [
     "NodeResult",
     "NodeStatus",
     "RetryPolicy",
+    "Route",
+    "RouteDecision",
+    "Router",
     "SpawnRequest",
     "SubworkflowNode",
     "Workflow",

@@ -2,8 +2,11 @@
 
 from __future__ import annotations
 
+import os
 import re
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
+from typing import Protocol
 
 _SECRET_ASSIGNMENT = re.compile(r"(?i)(api[_-]?key|token|secret)(\s*[:=]\s*)([^\s,;]+)")
 _BEARER = re.compile(r"(?i)\bbearer\s+[A-Za-z0-9._~+/=-]+")
@@ -24,6 +27,42 @@ class SecretValue:
 
     def __repr__(self) -> str:
         return "SecretValue('********')"
+
+
+class SecretProvider(Protocol):
+    """Resolve one named secret without exposing it through diagnostics."""
+
+    def get(self, name: str) -> SecretValue | None: ...
+
+
+@dataclass(frozen=True, slots=True)
+class EnvironmentSecretProvider:
+    environment: Mapping[str, str] | None = None
+
+    def get(self, name: str) -> SecretValue | None:
+        source = os.environ if self.environment is None else self.environment
+        value = source.get(name)
+        return SecretValue(value) if value else None
+
+
+@dataclass(frozen=True, slots=True)
+class MappingSecretProvider:
+    values: Mapping[str, str]
+
+    def get(self, name: str) -> SecretValue | None:
+        value = self.values.get(name)
+        return SecretValue(value) if value else None
+
+
+@dataclass(frozen=True, slots=True)
+class CompositeSecretProvider:
+    providers: Sequence[SecretProvider]
+
+    def get(self, name: str) -> SecretValue | None:
+        for provider in self.providers:
+            if (value := provider.get(name)) is not None:
+                return value
+        return None
 
 
 def redact_text(value: str) -> str:

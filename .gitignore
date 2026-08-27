@@ -15,5 +15,5 @@ website/node_modules/
 website/build/
 website/.docusaurus/
 .super-harness/
-artifacts/test-reports/
-
+artifacts/test-reports/*
+!artifacts/test-reports/release-e2e.json

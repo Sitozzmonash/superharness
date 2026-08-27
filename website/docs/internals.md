@@ -89,3 +89,23 @@ delegate to their isolated adapters; Thread commands delegate to `SQLiteThreadSt
 Human and JSON renderers consume the same recursively redacted values. Plugin lifecycle commands
 stop before capability activation, while provider-free Thread inspection stays separate from
 credentialed resume.
+
+# Release cross-cutting boundaries
+
+Persona composition occurs before context assembly, so external fragments remain user-role data.
+Tool scopes are applied before registry construction. Deferred Tool metadata and loaders share one
+locked registry; loader results must return the exact qualified name before becoming visible.
+
+Configuration resolution deep-merges each source in a fixed order into frozen Pydantic models.
+Profiles seed defaults rather than bypassing later overrides. Secret retrieval is a separate
+protocol so config diagnostics never need raw credentials.
+
+The generic Router owns no provider or workflow state. It turns a value plus an immutable context
+view into a `RouteDecision`, and observations contain only route metadata. Provider fallback is a
+model-protocol decorator: capability claims are the intersection of the chain, each attempt has a
+bounded timeout, cancellation is not normalized, and an incomplete stream is a failure.
+
+The Docker backend builds argv directly and supplies secrets only through an allowlisted child
+environment. The container root remains read-only while the validated workspace mount follows the
+requested sandbox mode. Timeout/cancellation performs named-container cleanup and process-tree
+termination. Docker availability and images remain deployment prerequisites, not hidden downloads.

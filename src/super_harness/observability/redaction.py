@@ -17,9 +17,7 @@ _ASSIGNMENT = re.compile(
     r"(\s*[:=]\s*)([^\s,;&]+)"
 )
 _BEARER = re.compile(r"(?i)\bbearer\s+[A-Za-z0-9._~+/=-]+")
-_KNOWN_TOKEN = re.compile(
-    r"(?<![A-Za-z0-9])(?:sk-[A-Za-z0-9_-]{12,}|gh[pousr]_[A-Za-z0-9]{12,})"
-)
+_KNOWN_TOKEN = re.compile(r"(?<![A-Za-z0-9])(?:sk-[A-Za-z0-9_-]{12,}|gh[pousr]_[A-Za-z0-9]{12,})")
 _JWT = re.compile(r"\beyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\b")
 
 DEFAULT_SECRET_KEYS = frozenset(
@@ -55,9 +53,7 @@ class SecretRedactor:
     ) -> None:
         if max_depth < 1 or max_items < 1 or max_string_chars < 1:
             raise ValueError("redaction bounds must be positive")
-        self.secrets = tuple(
-            sorted((value for value in secrets if value), key=len, reverse=True)
-        )
+        self.secrets = tuple(sorted((value for value in secrets if value), key=len, reverse=True))
         self.secret_keys = DEFAULT_SECRET_KEYS | {
             _normalize_key(value) for value in secret_keys if value
         }
@@ -117,10 +113,7 @@ class SecretRedactor:
                 return output
             if isinstance(value, Sequence):
                 sequence = cast(Sequence[object], value)
-                return [
-                    self._redact(item, depth + 1, seen)
-                    for item in sequence[: self.max_items]
-                ]
+                return [self._redact(item, depth + 1, seen) for item in sequence[: self.max_items]]
             if is_dataclass(value) and not isinstance(value, type):
                 return {
                     item.name: self._redact(getattr(value, item.name), depth + 1, seen)

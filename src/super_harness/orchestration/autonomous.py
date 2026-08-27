@@ -20,7 +20,7 @@ from super_harness.hooks import HookContext, HookEvent, HookRegistry
 from super_harness.models import MessageRole, ModelResponse, Usage
 from super_harness.runtime.events import Event
 from super_harness.runtime.thread import Thread
-from super_harness.tools import Tool, ToolExecutor, tool
+from super_harness.tools import Tool, tool
 
 
 class AgentStatus(StrEnum):
@@ -449,9 +449,7 @@ class AgentManager:
     def results(self, agent_ids: Sequence[str] | None = None) -> tuple[AgentResult, ...]:
         targets = agent_ids or self._child_ids()
         return tuple(
-            result
-            for agent_id in targets
-            if (result := self._child(agent_id).result) is not None
+            result for agent_id in targets if (result := self._child(agent_id).result) is not None
         )
 
     def event_history(self, *, after_sequence: int = 0) -> tuple[AgentEvent, ...]:
@@ -696,8 +694,6 @@ class AgentManager:
                 agent.tool_registry.register(item)
         except ToolError as exc:
             raise MultiAgentError("Agent has a conflicting collaboration tool") from exc
-        if agent.tool_executor is None:
-            agent.tool_executor = ToolExecutor(agent.tool_registry, hooks=agent.hooks)
 
     def _check_global_budget(self) -> None:
         if self._tokens_used >= self.limits.total_token_budget:

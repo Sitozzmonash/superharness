@@ -13,26 +13,26 @@ Every row must reach `PASS` in required columns before V1 release.
 | ID | Feature | Codex research | Impl | Unit | Integration | Real E2E | User Guide | Internals | API Ref | >=3 examples | Obs | Status |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
 | F01 | Agent runtime loop | PASS | PASS | PASS | PASS | TODO | PASS | PASS | PASS | PASS | PASS | PARTIAL |
-| F02 | Thread / Turn | PASS | PASS | PASS | PASS | TODO | PASS | PASS | PASS | PASS | PASS | PARTIAL |
-| F03 | Context assembly | PASS | PASS | PASS | PASS | TODO | PASS | PASS | PASS | PASS | PASS | PARTIAL |
-| F04 | Compaction | PASS | PASS | PASS | PASS | TODO | PASS | PASS | PASS | PARTIAL | PASS | PARTIAL |
-| F05 | Interrupt / steer / cancel | PASS | PASS | PASS | PASS | TODO | PASS | PASS | PASS | PARTIAL | PASS | PARTIAL |
-| F06 | Event streaming | PASS | PARTIAL | PASS | PASS | TODO | PASS | PASS | PASS | PASS | PASS | PARTIAL |
+| F02 | Thread / Turn | PASS | PASS | PASS | PASS | N/A (local runtime) | PASS | PASS | PASS | PASS | PASS | PASS |
+| F03 | Context assembly | PASS | PASS | PASS | PASS | N/A (in-process assembly) | PASS | PASS | PASS | PASS | PASS | PASS |
+| F04 | Compaction | PASS | PASS | PASS | PASS | N/A (local state transform) | PASS | PASS | PASS | PASS (3) | PASS | PASS |
+| F05 | Interrupt / steer / cancel | PASS | PASS | PASS | PASS | N/A (local lifecycle) | PASS | PASS | PASS | PASS (3+) | PASS | PASS |
+| F06 | Event streaming | PASS | PASS | PASS | PASS | N/A (runtime event API) | PASS | PASS | PASS | PASS | PASS | PASS |
 | F07 | Model provider abstraction | PASS | PASS | PASS | PASS | TODO | PASS | PASS | PASS | PASS | PASS | PARTIAL |
 | F08 | DeepSeek provider | PASS | PASS | PASS | PARTIAL | TODO | PASS | PASS | PASS | PASS | PASS | PARTIAL |
 | F09 | Vision provider / GLM | PASS | PASS | PASS | PASS | TODO | PASS | PASS | PASS | PASS | PASS | PARTIAL |
 | F10 | OpenAI-compatible provider | PASS | PASS | PASS | PASS | TODO | PASS | PASS | PASS | PASS | PASS | PARTIAL |
 | F11 | Web search / Zhipu | PASS | PASS | PASS | PASS | TODO | PASS | PASS | PASS | PASS | PASS | PARTIAL |
 | F12 | External RAG provider | PASS | PASS | PASS | PASS | PASS (fixture) | PASS | PASS | PASS | PASS | PASS | PASS |
-| F13 | Working memory | PASS | PASS | PASS | PASS | TODO | PASS | PASS | PASS | PASS | PASS | PARTIAL |
-| F14 | Long-term memory | PASS | PASS | PASS | PASS | TODO | PASS | PASS | PASS | PASS | PASS | PARTIAL |
+| F13 | Working memory | PASS | PASS | PASS | PASS | N/A (in-process state) | PASS | PASS | PASS | PASS | PASS | PASS |
+| F14 | Long-term memory | PASS | PASS | PASS | PASS | N/A (local SQLite boundary) | PASS | PASS | PASS | PASS | PASS | PASS |
 | F15 | Function/tool calling | PASS | PASS | PASS | PASS | TODO | PASS | PASS | PASS | PASS | PASS | PARTIAL |
-| F16 | Built-in shell/file/python tools | PASS | PASS | PASS | PASS | TODO | PASS | PASS | PASS | PARTIAL | PASS | PARTIAL |
-| F17 | Dynamic/lazy tool registry | PASS | PARTIAL | PARTIAL | TODO | TODO | PASS | PASS | PASS | PARTIAL | PARTIAL | PARTIAL |
-| F18 | Sandbox local | PASS | PASS | PASS | PASS | TODO | PASS | PASS | PASS | PARTIAL | PASS | PARTIAL |
-| F19 | Sandbox Docker | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO |
-| F20 | Approval engine | PASS | PASS | PASS | PASS | TODO | PASS | PASS | PASS | PARTIAL | PASS | PARTIAL |
-| F21 | AGENTS.md | PASS | PASS | PASS | PASS | TODO | PASS | PASS | PASS | PARTIAL | PASS | PARTIAL |
+| F16 | Built-in shell/file/python tools | PASS | PASS | PASS | PASS | N/A (local Tool boundary) | PASS | PASS | PASS | PASS (3+) | PASS | PASS |
+| F17 | Dynamic/lazy tool registry | PASS | PASS | PASS | PASS | N/A (in-process registry) | PASS | PASS | PASS | PASS (3) | PASS | PASS |
+| F18 | Sandbox local | PASS | PASS | PASS | PASS | N/A (local path/process policy) | PASS | PASS | PASS | PASS (3+) | PASS | PASS |
+| F19 | Sandbox Docker | PASS | PASS | PASS | PASS | TODO | PASS | PASS | PASS | PASS (3) | PASS | PARTIAL |
+| F20 | Approval engine | PASS | PASS | PASS | PASS | N/A (application policy callback) | PASS | PASS | PASS | PASS (3) | PASS | PASS |
+| F21 | AGENTS.md | PASS | PASS | PASS | PASS | N/A (local file discovery) | PASS | PASS | PASS | PASS (3) | PASS | PASS |
 | F22 | Agent Skills / SKILL.md | PASS | PASS | PASS | PASS | PASS (pinned GitHub) | PASS | PASS | PASS | PASS | PASS | PASS |
 | F23 | MCP stdio | PASS | PASS | PASS | PASS | PASS (official 1.x/2.x SDKs) | PASS | PASS | PASS | PASS | PASS | PASS |
 | F24 | MCP HTTP | PASS | PASS | PASS | PASS | PASS (official SDK server) | PASS | PASS | PASS | PASS | PASS | PASS |
@@ -41,16 +41,16 @@ Every row must reach `PASS` in required columns before V1 release.
 | F27 | Autonomous multi-agent | PASS | PASS | PASS | PASS | TODO | PASS | PASS | PASS | PASS | PASS | PARTIAL |
 | F28 | Workflow engine | PASS | PASS | PASS | PASS | N/A (deterministic in-process) | PASS | PASS | PASS | PASS (5) | PASS | PASS |
 | F29 | Hybrid orchestration | PASS | PASS | PASS | PASS | N/A (in-process composition) | PASS | PASS | PASS | PASS (4) | PASS | PASS |
-| F30 | Router | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO |
-| F31 | Persistence / SQLite | PASS | PASS | PASS | PASS | TODO | PASS | PASS | PASS | PARTIAL | PASS | PARTIAL |
+| F30 | Router | PASS | PASS | PASS | PASS | N/A (in-process rule selection) | PASS | PASS | PASS | PASS (3) | PASS | PASS |
+| F31 | Persistence / SQLite | PASS | PASS | PASS | PASS | N/A (local SQLite boundary) | PASS | PASS | PASS | PASS (5+) | PASS | PASS |
 | F32 | Observability | PASS | PASS | PASS | PASS | N/A (observer/export API) | PASS | PASS | PASS | PASS (6) | PASS | PASS |
 | F33 | CLI | PASS | PASS | PASS | PASS | N/A (local management UX) | PASS | PASS | PASS | PASS (3) | PASS | PASS |
-| F34 | Documentation website | N/A | TODO | TODO | TODO | deployed | N/A | N/A | N/A | N/A | N/A | TODO |
+| F34 | Documentation website | N/A | PASS | N/A | PASS | TODO (deployment evidence) | N/A | N/A | N/A | N/A | N/A | PARTIAL |
 | F35 | Ecosystem installers | PASS | PASS | PASS | PASS | PASS (pinned GitHub) | PASS | PASS | PASS | PASS | PASS | PASS |
-| F36 | Persona / role | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | >=3 | TODO | TODO |
-| F37 | Config / profiles / secrets | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO | >=3 | TODO | TODO |
-| F38 | Retry / timeout / fallback / error model | PASS | PARTIAL | PASS | PASS | TODO | PASS | PASS | PARTIAL | PARTIAL | PASS | PARTIAL |
-| F39 | Security / hardening | PASS | PARTIAL | PASS | PASS | N/A (local controls) | PASS | PASS | PASS | PASS (3) | PASS | PARTIAL |
+| F36 | Persona / role | PASS | PASS | PASS | PASS | N/A (typed configuration layer) | PASS | PASS | PASS | PASS (3) | PASS | PASS |
+| F37 | Config / profiles / secrets | PASS | PASS | PASS | PASS | N/A (local resolution layer) | PASS | PASS | PASS | PASS (3) | PASS | PASS |
+| F38 | Retry / timeout / fallback / error model | PASS | PASS | PASS | PASS | TODO | PASS | PASS | PASS | PASS (3+) | PASS | PARTIAL |
+| F39 | Security / hardening | PASS | PASS | PASS | PASS | N/A (local controls) | PASS | PASS | PASS | PASS (6+) | PASS | PASS |
 | F40 | MCPB / MCP Registry compatibility | PASS | PASS | PASS | PASS | PASS (live Registry) | PASS | PASS | PASS | PASS | PASS | PASS |
 
 ## Required matrix discipline

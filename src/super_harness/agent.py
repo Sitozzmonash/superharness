@@ -10,6 +10,7 @@ from super_harness.context import AgentsMdLoader, ContextAssembler, ContextFragm
 from super_harness.hooks import HookRegistry
 from super_harness.models import ModelProvider, ModelResponse, ToolDefinition
 from super_harness.persistence import SQLiteThreadStore
+from super_harness.persona import Persona
 from super_harness.runtime.events import Event, EventObserver
 from super_harness.runtime.thread import Thread
 from super_harness.runtime.turn import TurnStatus
@@ -34,19 +35,31 @@ class Agent:
         agents_loader: AgentsMdLoader | None = None,
         store: SQLiteThreadStore | None = None,
         compaction_threshold_chars: int = 100_000,
+        persona: Persona | None = None,
     ) -> None:
         if max_model_steps < 1:
             raise ValueError("max_model_steps must be positive")
+        configured_tools = tuple(tools)
+        if persona is not None:
+            persona.validate_provider(provider)
+            configured_tools = persona.select_tools(configured_tools)
+            instructions = persona.compose_instructions(instructions)
         self.provider = provider
+        self.persona = persona
+        self.name = persona.name if persona else None
+        self.role = persona.role if persona else None
+        self.skill_scopes = persona.skill_scopes if persona else ("*",)
+        self.memory_scope = persona.memory_scope if persona else "thread"
         self.instructions = instructions
-        self.tool_registry = ToolRegistry(tools)
+        self.tool_registry = ToolRegistry(
+            configured_tools,
+            allowed_names=persona.tool_scopes if persona is not None else None,
+        )
         self.hooks = hooks
         self.observer = observer
-        self.tool_executor = (
-            ToolExecutor(self.tool_registry, approval=approval, hooks=hooks)
-            if self.tool_registry.list()
-            else None
-        )
+        # Keep an executor attached even when the initial registry is empty so
+        # tools discovered or registered after agent construction are usable.
+        self.tool_executor = ToolExecutor(self.tool_registry, approval=approval, hooks=hooks)
         self.max_model_steps = max_model_steps
         self.context = ContextAssembler()
         self.context.extend(context)
@@ -67,6 +80,7 @@ class Agent:
             compaction_threshold_chars=self.compaction_threshold_chars,
             hooks=self.hooks,
             observer=self.observer,
+            metadata=self.persona.metadata() if self.persona else {},
         )
         if self.store is not None:
             self.store.save(thread)

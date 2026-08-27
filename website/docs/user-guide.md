@@ -247,3 +247,40 @@ and `remove`. Plugin management never activates Python. Inspect output omits Thr
 default and MCP output exposes only environment/header key names. `thread resume` requires an
 explicit prompt and provider selection. OpenAI-compatible provider commands require `--base-url`,
 `--model`, and `--api-key-env`; the secret is read from that variable, never from an argument.
+
+# Persona and roles
+
+`Persona` is a typed identity/configuration layer. It composes name, role, goal, constraints, and
+application instructions into developer authority; filters Tools by qualified-name glob; records
+Skill and memory scopes; and can hold named subagent role templates. `Agent(..., persona=persona)`
+validates an optional model override and stores non-secret persona metadata with a new Thread.
+
+# Configuration, profiles, and secrets
+
+`ConfigResolver` validates precedence as defaults, user config, project config, environment, then
+runtime overrides. It accepts TOML or YAML under `.super-harness/config.*`; `.env` loading is
+disabled unless `load_dotenv=True` and never mutates `os.environ`. Built-in profiles are `china`,
+`global`, `offline`, and `test`. Diagnostics list source paths and overridden variable names, not
+secret values. Resolve credentials separately through `EnvironmentSecretProvider`,
+`MappingSecretProvider`, or `CompositeSecretProvider`.
+
+# Dynamic Tools and routing
+
+Use `ToolRegistry.register_lazy` to publish name/description/source metadata without importing its
+handler. `discover` is metadata-only; `load` performs one validated import and retains a failed
+loader for an explicit retry. An Agent keeps its executor attached when the registry starts empty,
+so later registrations are executable.
+
+`Router` evaluates explicit `Route` predicates in priority/name order, supports sync or async
+predicates and a default target, and emits a content-free `route.selected` event.
+
+# Provider fallback and Docker isolation
+
+`FallbackProvider` tries an ordered provider chain with a finite per-attempt timeout. Attempts and
+switches are observable. Caller cancellation always propagates. Streaming fallback is allowed only
+before visible text/tool output; after output it fails explicitly to prevent duplicated responses.
+
+Use `DockerSandbox` where local process isolation is insufficient. Its defaults are no network,
+read-only container root, all capabilities dropped, `no-new-privileges`, bounded CPU/memory/PIDs,
+and automatic removal. The workspace is the only writable mount in `workspace_write`; environment
+values must be allowlisted and are passed outside argv. Images are never pulled implicitly.

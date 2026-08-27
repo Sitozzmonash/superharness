@@ -56,11 +56,7 @@ class Observability:
         normalized = _normalize(event)
         if not self.include_deltas and normalized.type.endswith(".delta"):
             return
-        payload = (
-            normalized.payload
-            if self.include_content
-            else _omit_content(normalized.payload)
-        )
+        payload = normalized.payload if self.include_content else _omit_content(normalized.payload)
         safe_payload = cast(Mapping[str, Any], self.redactor.redact(payload))
         completed = self.tracer.observe(
             event_type=normalized.type,

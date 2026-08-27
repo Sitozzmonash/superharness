@@ -32,3 +32,20 @@ rather than cloning Codex app-server or marketplace protocols. CLI Real E2E is `
 CLI boundary is the local installed process and filesystem, both exercised by integration and
 wheel smoke tests; external provider and live Registry evidence remains attributed to their own
 feature rows.
+
+Phase 13 closes local gaps for lazy Tools, Router, Persona, configuration/secrets, and fallback.
+Their rule/configuration boundaries are in-process and use `Real E2E=N/A`; this does not waive live
+provider evidence for the providers they may select. Docker is different: command construction and
+cleanup are integration-tested, but `Real E2E` remains `TODO` until a Docker daemon and local image
+execute the isolation test. The test never downloads an image implicitly.
+
+The release candidate is therefore not tagged V1. Current external blockers are real DeepSeek,
+Zhipu search, and Zhipu vision credentials; opt-in network compatibility execution; a Docker
+runtime/local image; and a confirmed GitHub Pages deployment URL. Local PASS evidence cannot be
+substituted for any of those boundaries.
+
+The matrix also normalizes local-only rows to `Real E2E=N/A`: Thread/Turn, context assembly,
+compaction, lifecycle control, event iteration, working/SQLite memory, local built-ins/sandbox,
+approval callbacks, AGENTS discovery, and SQLite persistence expose no external service boundary.
+Their actual filesystem, process, cancellation, and database boundaries are covered by integration
+tests; provider-dependent behavior remains tracked only on the corresponding provider/Agent rows.

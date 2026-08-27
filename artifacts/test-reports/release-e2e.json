@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-08-26T04:00:00Z",
+  "release_candidate": "0.0.1.dev0",
+  "release_ready": false,
+  "local_gates": {
+    "pytest": {"status": "pass", "passed": 156, "skipped": 9},
+    "ruff_format": {"status": "pass"},
+    "ruff_lint": {"status": "pass"},
+    "pyright_strict": {"status": "pass", "errors": 0, "warnings": 0},
+    "secret_scan": {"status": "pass"},
+    "docs_production_build": {"status": "pass"},
+    "sdist_wheel_build": {"status": "pass"},
+    "wheel_install_smoke": {"status": "pass", "version": "0.0.1.dev0"},
+    "phase_13_focused": {"status": "pass", "passed": 21, "skipped": 1},
+    "phase_13_examples": {"status": "pass", "count": 26}
+  },
+  "external_gates": {
+    "deepseek": {"status": "skipped", "reason": "DEEPSEEK_API_KEY absent"},
+    "zhipu_search": {"status": "skipped", "reason": "ZHIPU_SEARCH_API_KEY absent"},
+    "zhipu_vision": {"status": "skipped", "reason": "ZHIPU_VISION_API_KEY absent"},
+    "external_compatibility": {
+      "status": "skipped",
+      "reason": "SUPER_HARNESS_EXTERNAL_COMPAT is not enabled"
+    },
+    "docker": {
+      "status": "skipped",
+      "client": "29.2.1",
+      "reason": "Docker daemon unavailable and alpine:3.20 not locally inspectable"
+    },
+    "github_pages": {"status": "pending", "reason": "candidate not yet pushed"}
+  },
+  "decision": "Do not create a V1 tag until every external gate has real passing evidence."
+}

@@ -145,9 +145,7 @@ def test_structured_logger_writes_human_and_jsonl_without_secret(tmp_path: Path)
 async def test_agent_observer_builds_trace_metrics_cost_and_omits_content() -> None:
     console = io.StringIO()
     jsonl = io.StringIO()
-    metrics = MetricsRegistry(
-        costs=CostEstimator({"observed-model": ModelPrice(2.0, 4.0)})
-    )
+    metrics = MetricsRegistry(costs=CostEstimator({"observed-model": ModelPrice(2.0, 4.0)}))
     observer = Observability(
         logger=StructuredLogger(console=console, jsonl=jsonl),
         metrics=metrics,

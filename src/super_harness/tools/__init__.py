@@ -11,14 +11,17 @@ from .builtins import (
 )
 from .definition import Tool, ToolMetadata, tool
 from .executor import ToolExecutor
-from .registry import ToolRegistry
+from .registry import LazyTool, LazyToolLoader, ToolRegistry
 from .result import ToolResult
-from .sandbox import LocalSandbox, ProcessResult, SandboxMode
+from .sandbox import DockerSandbox, LocalSandbox, ProcessResult, SandboxMode
 
 __all__ = [
     "ApprovalDecision",
     "ApprovalPolicy",
     "ApprovalRequest",
+    "DockerSandbox",
+    "LazyTool",
+    "LazyToolLoader",
     "LocalSandbox",
     "ProcessResult",
     "SandboxMode",

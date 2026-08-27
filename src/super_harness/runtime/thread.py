@@ -545,9 +545,7 @@ class Thread:
 
     async def aclose(self) -> None:
         if self.hooks is not None and self._session_started:
-            await self.hooks.dispatch(
-                HookContext(HookEvent.SESSION_END, thread_id=self.thread_id)
-            )
+            await self.hooks.dispatch(HookContext(HookEvent.SESSION_END, thread_id=self.thread_id))
             self._session_started = False
 
     def debug_context(self) -> ContextDebugSnapshot:

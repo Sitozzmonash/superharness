@@ -23,6 +23,7 @@ from super_harness.cli_state import (
     public_mcp_data,
     registry_install_config,
 )
+from super_harness.config import ConfigResolver
 from super_harness.exceptions import SuperHarnessError
 from super_harness.mcp import (
     MCPServerConfig,
@@ -231,11 +232,21 @@ def _doctor(paths: CLIPaths) -> dict[str, Any]:
 
     check("python", sys.version_info >= (3, 12), platform.python_version())
     check("git", shutil.which("git") is not None, shutil.which("git") or "not found")
-    check("state_root", paths.root.parent.exists(), str(paths.root))
+    writable = paths.root.exists() and os.access(paths.root, os.W_OK)
+    if not paths.root.exists():
+        writable = paths.root.parent.exists() and os.access(paths.root.parent, os.W_OK)
+    check("state_root", writable, str(paths.root))
+    check("docker", shutil.which("docker") is not None, shutil.which("docker") or "not found")
     check("mcp_sdk", importlib.util.find_spec("mcp") is not None, "optional dependency")
     check("opentelemetry", importlib.util.find_spec("opentelemetry") is not None, "optional")
     credential = bool(os.environ.get("DEEPSEEK_API_KEY"))
     check("deepseek_credential", credential, "configured" if credential else "not configured")
+    try:
+        resolved = ConfigResolver().resolve(cwd=paths.root.parent)
+        config_detail = resolved.diagnostics()
+        check("configuration", True, json.dumps(config_detail, ensure_ascii=False, default=str))
+    except SuperHarnessError as exc:
+        check("configuration", False, str(exc))
     if paths.mcp_config.exists():
         try:
             count = len(MCPConfigStore(paths.mcp_config).list())
@@ -423,9 +434,7 @@ def _snapshot_data(snapshot: Any, *, show_content: bool) -> dict[str, Any]:
         "turn_statuses": [item.status.value for item in turns],
     }
     if show_content:
-        data["messages"] = [
-            {"role": item.role.value, "content": item.content} for item in messages
-        ]
+        data["messages"] = [{"role": item.role.value, "content": item.content} for item in messages]
     return data
 
 
@@ -457,9 +466,7 @@ def _make_provider(args: argparse.Namespace) -> OpenAICompatibleProvider:
             stream_max_retries=0,
         )
     if not args.base_url or not args.model or not args.api_key_env:
-        raise CLIError(
-            "openai-compatible requires --base-url, --model, and --api-key-env"
-        )
+        raise CLIError("openai-compatible requires --base-url, --model, and --api-key-env")
     return OpenAICompatibleProvider(
         model=args.model,
         base_url=args.base_url,
@@ -474,9 +481,7 @@ def _human_line(value: object) -> str:
     if isinstance(value, dict):
         mapping = cast(dict[str, object], value)
         preferred = ("name", "thread_id", "provider", "version")
-        fields = [
-            f"{key}={_human_value(mapping[key])}" for key in preferred if key in mapping
-        ]
+        fields = [f"{key}={_human_value(mapping[key])}" for key in preferred if key in mapping]
         if fields:
             return "  ".join(fields)
         return _human_value(mapping)

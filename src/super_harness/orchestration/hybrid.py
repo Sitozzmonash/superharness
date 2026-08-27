@@ -289,8 +289,7 @@ async def _forward_subworkflow_events(
 
 def _child_run_id(parent_run_id: str, node_id: str) -> str:
     safe_node_id = "".join(
-        character if character.isalnum() or character in "-_" else "-"
-        for character in node_id
+        character if character.isalnum() or character in "-_" else "-" for character in node_id
     )
     return f"{parent_run_id}-{safe_node_id}"
 

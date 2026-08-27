@@ -9,6 +9,7 @@ const sidebars = {
     "internals",
     "examples",
     "api-reference",
+    "generated-api",
     "ecosystem",
     "compatibility",
     "troubleshooting",
@@ -16,4 +17,3 @@ const sidebars = {
 };
 
 module.exports = sidebars;
-

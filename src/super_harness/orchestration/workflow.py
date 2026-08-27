@@ -260,9 +260,7 @@ class WorkflowRun:
     @property
     def output(self) -> Any:
         completed = [
-            result
-            for result in self.node_results.values()
-            if result.status == NodeStatus.COMPLETED
+            result for result in self.node_results.values() if result.status == NodeStatus.COMPLETED
         ]
         return completed[-1].value if completed else None
 
@@ -487,7 +485,8 @@ class WorkflowEngine:
         try:
             while True:
                 pending = [
-                    node for node in workflow.nodes
+                    node
+                    for node in workflow.nodes
                     if run.node_results[node.node_id].status == NodeStatus.PENDING
                 ]
                 if not pending:
@@ -522,7 +521,8 @@ class WorkflowEngine:
                     self._node_tasks[run.run_id].difference_update(tasks)
                 await self._checkpoint(run)
                 failures = [
-                    result for result in run.node_results.values()
+                    result
+                    for result in run.node_results.values()
                     if result.status == NodeStatus.FAILED
                 ]
                 if failures:

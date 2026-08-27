@@ -152,3 +152,22 @@ Pass `observer=observability` to `Agent`, `HTTPRAGProvider`, `ZhipuWebSearchProv
 - `CLIPaths.resolve(cwd, global_scope=False)`: compute scoped state without exposing secrets.
 - `MCPConfigStore`: atomic `list`, `get`, `add`, `import_file`, and `remove` operations.
 - Exit `0` means completion; normalized failures return `2` and write redacted stderr.
+
+# Phase 13 API
+
+- `Persona`: instruction composition, Tool/Skill/memory scopes, model validation, subagent roles,
+  and safe metadata.
+- `ConfigResolver.resolve(...) -> ResolvedConfig`; `HarnessConfig`, `ModelConfig`, `VisionConfig`,
+  `WebSearchConfig`, `SandboxConfig`, `ApprovalConfig`, `MultiAgentConfig`, and
+  `PersistenceConfig` are frozen validated models.
+- `SecretProvider`; concrete `EnvironmentSecretProvider`, `MappingSecretProvider`, and
+  `CompositeSecretProvider` return masked `SecretValue` objects.
+- `ToolRegistry.register_lazy`, `load`, `unregister_lazy`, `deferred`, and `discover`;
+  `LazyTool` is metadata and `LazyToolLoader` is the deferred factory boundary.
+- `Route`, `RouteDecision`, and `Router.route` / `aroute` provide typed rule routing.
+- `FallbackPolicy` and `FallbackProvider` provide ordered, observable provider fallback.
+- `DockerSandbox.build_command`, `describe`, `available`, `run_exec`, and `run_shell` provide the
+  container backend.
+
+The adjacent Generated Public API page is rebuilt from `super_harness.__all__` by
+`python tools/generate_api_reference.py`; CI/build review detects drift between exports and docs.

@@ -158,7 +158,7 @@ def test_plugin_validation_codex_import_conflicts_and_no_auto_execution(tmp_path
     unsafe = _plugin(tmp_path / "unsafe")
     manifest_path = unsafe / ".super-harness" / "plugin.toml"
     manifest_path.write_text(
-        manifest_path.read_text(encoding="utf-8").replace('./skills', './../outside'),
+        manifest_path.read_text(encoding="utf-8").replace("./skills", "./../outside"),
         encoding="utf-8",
     )
     with pytest.raises(PluginError, match="stay in plugin root"):
@@ -180,10 +180,7 @@ def test_plugin_validation_codex_import_conflicts_and_no_auto_execution(tmp_path
 def test_official_codex_plugin_repository_compatibility(tmp_path: Path) -> None:
     if os.environ.get("SUPER_HARNESS_EXTERNAL_COMPAT") != "1":
         pytest.skip("set SUPER_HARNESS_EXTERNAL_COMPAT=1 for official plugin E2E")
-    source = (
-        "https://github.com/openai/plugins/tree/"
-        f"{PINNED_OPENAI_PLUGINS}/plugins/plugin-eval"
-    )
+    source = f"https://github.com/openai/plugins/tree/{PINNED_OPENAI_PLUGINS}/plugins/plugin-eval"
     installed = PluginInstaller(tmp_path / "installed").install(source)
     assert installed.manifest.format == "codex"
     assert installed.manifest.name == "plugin-eval"

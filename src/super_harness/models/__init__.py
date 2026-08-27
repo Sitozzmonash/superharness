@@ -2,6 +2,7 @@
 
 from .base import ModelProvider
 from .deepseek import DeepSeekProvider
+from .fallback import FallbackPolicy, FallbackProvider
 from .openai_compatible import OpenAICompatibleProvider, WireAPI
 from .types import (
     Message,
@@ -18,6 +19,8 @@ from .types import (
 
 __all__ = [
     "DeepSeekProvider",
+    "FallbackPolicy",
+    "FallbackProvider",
     "Message",
     "MessageRole",
     "ModelCapabilities",

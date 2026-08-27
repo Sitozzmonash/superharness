@@ -97,9 +97,7 @@ def _bundle(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def test_version_help_and_doctor_json(
-    project: Path, capsys: pytest.CaptureFixture[str]
-) -> None:
+def test_version_help_and_doctor_json(project: Path, capsys: pytest.CaptureFixture[str]) -> None:
     assert main(["--json", "doctor"]) == 0
     result = _json(capsys)
     assert result["version"] == "0.0.1.dev0"

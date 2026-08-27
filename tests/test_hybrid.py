@@ -250,9 +250,7 @@ async def test_workflow_cancel_cascades_into_agent_subtree() -> None:
     assert run.status == WorkflowStatus.INTERRUPTED
     child = manager.list_agents(parent_agent_id=manager.root_agent_id)[0]
     assert child.status == AgentStatus.CANCELLED
-    assert any(
-        event.payload.get("source") == "autonomous_agent" for event in run.events
-    )
+    assert any(event.payload.get("source") == "autonomous_agent" for event in run.events)
 
 
 @pytest.mark.asyncio
