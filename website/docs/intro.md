@@ -17,3 +17,9 @@ credential is absent; V1 is intentionally untagged until every release gate has 
 
 The project keeps OpenAI optional, provides China-ready provider abstractions, treats RAG as an
 external retrieval-service contract, and supports autonomous, deterministic, and hybrid orchestration.
+
+## Documentation deployment
+
+The public site is built and deployed from `website/` by GitHub Actions. Deployment happens only
+after the production documentation build succeeds; the release-status page distinguishes local
+validation from externally verified release evidence.
