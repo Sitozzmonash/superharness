@@ -404,6 +404,8 @@ def test_docker_rejects_path_escape_env_and_unsafe_mount(tmp_path: Path) -> None
 @pytest.mark.integration
 @pytest.mark.asyncio
 async def test_docker_real_isolation_when_local_image_available(tmp_path: Path) -> None:
+    if os.environ.get("SUPER_HARNESS_DOCKER_E2E") != "1":
+        pytest.skip("set SUPER_HARNESS_DOCKER_E2E=1 for Docker daemon E2E")
     docker = shutil.which("docker")
     if docker is None:
         pytest.skip("Docker CLI is not installed")

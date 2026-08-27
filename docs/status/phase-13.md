@@ -33,6 +33,7 @@ Machine-readable evidence is stored at `artifacts/test-reports/release-e2e.json`
 - `DEEPSEEK_API_KEY`, `ZHIPU_SEARCH_API_KEY`, and `ZHIPU_VISION_API_KEY` are absent.
 - `SUPER_HARNESS_EXTERNAL_COMPAT=1` is not enabled for network-backed compatibility checks.
 - Docker CLI 29.2.1 is present, but its daemon is unavailable and `alpine:3.20` cannot be inspected.
+  Real isolation runs require explicit `SUPER_HARNESS_DOCKER_E2E=1`.
 - GitHub Pages deployment must be confirmed after this candidate reaches `main`.
 
 These are recorded as `TODO`, `skipped`, or `pending`, never as inferred passes. No V1 tag should be
